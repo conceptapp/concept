@@ -15,7 +15,7 @@
     <div class="card">
       <div class="card-header">Concept</div>
       <div class="card-body">
-        <img style="width:250px" src="@/assets/logo.png" />
+        Lorem ipsum
       </div>
     </div>
   </section>
