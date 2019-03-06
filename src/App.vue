@@ -7,7 +7,7 @@
           <b> {{type.fields.Title_fr}} </b><br />
         </div>
         <div class="row">
-          <div class="col" v-for="card in type.fields.Cards" :key="card">
+          <div class="col-sm" v-for="card in type.fields.Cards" :key="card">
             <card v-bind:cards="cards" v-bind:cards2="cards2" v-bind:cardId="card" v-bind:type="type.fields.Type"></card>
           </div>
         </div>
@@ -60,17 +60,17 @@ export default {
       ).then(function (response) {
         if (recordType == 'Types') { 
           this.types = response.data.records
-          console.log("App Vue this.types", this.types)
+          // console.log("App Vue this.types", this.types)
         } else {  // get the cards data
           if (offset === '') { 
             this.cards = response.data.records
-            console.log("App Vue this.cards", this.cards)
+            // console.log("App Vue this.cards", this.cards)
             this.retrieveRecords('Cards', response.data.offset)
           } else {
             // this.cards = this.cards.concat(response.data.records)
             this.cards2 = response.data.records
-            console.log("App Vue this.cards2", this.cards2)
-            // this.cards.push.apply(this.cards, response.data.records)
+            // console.log("App Vue this.cards2", this.cards2)
+            this.cards.push.apply(this.cards, response.data.records)
           }
         }
       }.bind(this)).catch(function (error) {

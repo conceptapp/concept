@@ -15,7 +15,6 @@ TODO add rollover to display tooltip
 <template>
   <section>
     <div>
-      ----
       <img v-bind:src="icon" v-bind:alt="arrCard.Tooltip_fr" v-bind:title="arrCard.Tooltip_fr" /> 
     </div>
   </section>
@@ -33,18 +32,18 @@ export default {
   },
   computed: {
     arrCard: function() {
-      console.log("this.cards: ", this.cards)
+      // console.log("this.cards: ", this.cards)
       var arr = this.cards.find(obj => {
         return obj.id === this.cardId
       })
-      console.log("Array", arr)
+      // console.log("Array", arr)
       if (arr == null) {
-        console.log(this.cardId)
+        // console.log(this.cardId)
         var arr = this.cards2.find(obj => {
           return obj.id === this.cardId
         })
       }
-      console.log("Finall arr: ", arr)
+      // console.log("Finall arr: ", arr)
       return arr.fields
     },
     icon: function() {
