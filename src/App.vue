@@ -4,11 +4,11 @@
     <div class="container">
       <section v-for="type in types" :key="type.id"> <!--- justify-content-start -->
         <div class="row"> 
-          <b>{{type.fields.Title_fr}} </b><br />
+          <b> {{type.fields.Title_fr}} </b><br />
         </div>
         <div class="row">
           <div class="col" v-for="card in type.fields.Cards" :key="card">
-            <card v-bind:cards="cards" v-bind:cardId="card" v-bind:type="type.fields.Type"></card>
+            <card v-bind:cards="cards" v-bind:cards2="cards2" v-bind:cardId="card" v-bind:type="type.fields.Type"></card>
           </div>
         </div>
       </section>
@@ -18,12 +18,33 @@
 
 <script>
 import axios from 'axios'
+// import { setupCache } from 'axios-cache-adapter'
 import card from '@/components/card'
+
+// // Create axios-cache-adapter instance // Cache 15 minutes
+// const cache = setupCache({
+//   maxAxe: 15 * 60 * 1000
+// })
+
+// // Create axios istance passing the newly created cache.adapter
+// const api = axios.create({
+//   adapter: cache.adapter
+// })
+
+/* 
+api({
+  url: '',
+  method: 'get'  
+}).then( async(response) => {
+  console.log('Request response:', response)
+})
+*/
 
 var appKey = 'keyrkS74q9vL9FBHT'
 var appId = 'appzdYVnVaVLTKUB7'
 var types = []
 var cards = []
+var cards2 = []
 
 export default {
   name: 'App',
@@ -38,17 +59,18 @@ export default {
         }
       ).then(function (response) {
         if (recordType == 'Types') { 
-          this.types = response.data.records 
+          this.types = response.data.records
+          console.log("App Vue this.types", this.types)
         } else {  // get the cards data
           if (offset === '') { 
             this.cards = response.data.records
-            console.log(this.cards)
+            console.log("App Vue this.cards", this.cards)
             this.retrieveRecords('Cards', response.data.offset)
           } else {
             // this.cards = this.cards.concat(response.data.records)
-            this.cards.push(...response.data.records)
+            this.cards2 = response.data.records
+            console.log("App Vue this.cards2", this.cards2)
             // this.cards.push.apply(this.cards, response.data.records)
-            console.log(this.cards)
           }
         }
       }.bind(this)).catch(function (error) {
@@ -65,7 +87,8 @@ export default {
   },
   data: function () {
     return {types: types,
-      cards: cards}
+      cards: cards,
+      cards2: cards2}
   }
 }
 </script>
