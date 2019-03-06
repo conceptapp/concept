@@ -7,7 +7,7 @@
           <b> {{type.fields.Title_fr}} </b><br />
         </div>
         <div class="row">
-          <div class="col-sm" v-for="card in type.fields.Cards" :key="card">
+          <div class="card" v-for="card in type.fields.Cards" :key="card">
             <card v-bind:cards="cards" v-bind:cards2="cards2" v-bind:cardId="card" v-bind:type="type.fields.Type"></card>
           </div>
         </div>
@@ -26,7 +26,6 @@ import cards1json from '../data/cards-1.json'
 import cards2json from '../data/cards-2.json'
 
 const LOCAL = true
-
 
 // // Create axios-cache-adapter instance // Cache 15 minutes
 // const cache = setupCache({
