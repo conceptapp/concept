@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <img style="width:150px" src="assets/logo.png" />
+    <img style="width:150px" src="./assets/logo.png" />
     <div class="container">
       <section v-for="type in types" :key="type.id"> <!--- justify-content-start -->
         <div class="row"> 
@@ -21,6 +21,13 @@ import axios from 'axios'
 // import { setupCache } from 'axios-cache-adapter'
 import card from '@/components/card'
 
+import typesjson from '../data/types.json'
+import cards1json from '../data/cards-1.json'
+import cards2json from '../data/cards-2.json'
+
+const LOCAL = true
+
+
 // // Create axios-cache-adapter instance // Cache 15 minutes
 // const cache = setupCache({
 //   maxAxe: 15 * 60 * 1000
@@ -40,6 +47,7 @@ api({
 })
 */
 
+
 var appKey = 'keyrkS74q9vL9FBHT'
 var appId = 'appzdYVnVaVLTKUB7'
 var types = []
@@ -52,30 +60,40 @@ export default {
   methods: {
     retrieveRecords : function(recordType, offset) {
       var offset = offset !== undefined ? '&offset=' + offset : ''
-      axios.get(
-        'https://api.airtable.com/v0/' + appId + '/' + recordType + '?sort%5B0%5D%5Bfield%5D=index' + offset,
-        {
-          headers: { Authorization: 'Bearer ' + appKey }
-        }
-      ).then(function (response) {
-        if (recordType == 'Types') { 
-          this.types = response.data.records
-          // console.log("App Vue this.types", this.types)
-        } else {  // get the cards data
-          if (offset === '') { 
-            this.cards = response.data.records
-            // console.log("App Vue this.cards", this.cards)
-            this.retrieveRecords('Cards', response.data.offset)
-          } else {
-            // this.cards = this.cards.concat(response.data.records)
-            this.cards2 = response.data.records
-            // console.log("App Vue this.cards2", this.cards2)
-            this.cards.push.apply(this.cards, response.data.records)
+      if (!LOCAL) {
+        axios.get(
+          'https://api.airtable.com/v0/' + appId + '/' + recordType + '?sort%5B0%5D%5Bfield%5D=index' + offset,
+          {
+            headers: { Authorization: 'Bearer ' + appKey }
           }
+        ).then(function (response) {
+          if (recordType == 'Types') {
+            this.types = response.data.records
+            // console.log("App Vue this.types", this.types)
+          } else {  // get the cards data
+            if (offset === '') { 
+              this.cards = response.data.records
+              // console.log("App Vue this.cards", this.cards)
+              this.retrieveRecords('Cards', response.data.offset)
+            } else {
+              // this.cards = this.cards.concat(response.data.records)
+              this.cards2 = response.data.records
+              // console.log("App Vue this.cards2", this.cards2)
+              this.cards.push.apply(this.cards, response.data.records)
+            }
+          }
+        }.bind(this)).catch(function (error) {
+          console.log(error)
+        })
+      } else {
+        if (recordType == 'Types') {
+          this.types = typesjson.records
+          console.log(this.types)
+        } else {
+          this.cards = cards1json.records
+          this.cards2 = cards2json.records
         }
-      }.bind(this)).catch(function (error) {
-        console.log(error)
-      })
+      }
     }
   },
   created () {
@@ -86,7 +104,8 @@ export default {
 
   },
   data: function () {
-    return {types: types,
+    return {
+      types: types,
       cards: cards,
       cards2: cards2}
   }
