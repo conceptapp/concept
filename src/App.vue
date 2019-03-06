@@ -1,7 +1,27 @@
 <template>
   <div id="app">
-    <img style="width:150px" src="./assets/logo.png" />
     <div class="container">
+      <div class="row">
+        <div class="col-2">
+          <span class="d-none d-sm-block">
+            <!-- hide on screens smaller than lg / md / sm -->
+            <img style="max-height:180px" src="./assets/logo.png" />
+          </span>
+          <span class="d-sm-none" style="color:green">
+            <!-- hide on screens wider than lg / md / sm (TODO test on devices to choose the best breakpoint) -->
+            ?
+          </span>
+        </div>
+        <div class="col-10">
+          <!-- components/card/#card-column -->
+          <div class="card-columns">
+            <div class="card"> Green icon </div>
+          </div>
+          <div class="card-columns">
+            <div class="card"> Red icon </div>
+          </div>
+        </div>
+      </div>        
       <section v-for="type in types" :key="type.id"> <!--- justify-content-start -->
         <div class="row"> 
           <b> {{type.fields.Title_fr}} </b><br />
@@ -118,6 +138,6 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  margin-top: 10px;
 }
 </style>

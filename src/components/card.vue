@@ -14,8 +14,15 @@ TODO add rollover to display tooltip
 
 <template>
   <section>
-    <div>
-      <img v-bind:src="icon" v-bind:alt="arrCard.Tooltip_fr" v-bind:title="arrCard.Tooltip_fr" /> 
+    <div class="row no-gutters">
+      <div class="col-auto">
+        <img v-bind:src="icon" v-bind:alt="arrCard.Tooltip_fr" v-bind:title="arrCard.Tooltip_fr" />
+      </div>
+      <div class="col">
+        <div class="card-block px-2">
+          <p class="card-text" v-html="arrCard.Tooltip_fr"></p>
+        </div>
+      </div>
     </div>
   </section>
 </template>
@@ -55,6 +62,10 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.card {
+.card-text {
+  white-space: pre-wrap;
+  font-size: 0.9em;
+  line-height: 1.1;
+  text-align: left;
 }
 </style>
