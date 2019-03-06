@@ -15,7 +15,7 @@
     <div class="card">
       <div class="card-header">Concept</div>
       <div class="card-body">
-        Lorem ipsum
+        Lorem 
       </div>
     </div>
   </section>
