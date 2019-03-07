@@ -23,3 +23,4 @@ For a detailed explanation on how things work, check out the [guide](http://vuej
 ## Dependencies
 
 Using bootstrap Vue - see this tuto: https://bootstrap-vue.js.org/docs/
+Using Footawsome for Vue - see this: https://fontawesome.com/how-to-use/on-the-web/using-with/vuejs
