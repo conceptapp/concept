@@ -14,15 +14,17 @@ TODO add rollover to display tooltip
 
 <template>
   <section>
-    <div class="row no-gutters">
+    <div class="row no-gutters concept-icon" v-on:click="tooltipShown = !tooltipShown">
       <div class="col-auto">
         <img v-bind:src="icon" v-bind:alt="arrCard.Tooltip_fr" v-bind:title="arrCard.Tooltip_fr" />
       </div>
-      <div class="col">
-        <div class="card-block px-2">
-          <p class="card-text" v-html="arrCard.Tooltip_fr"></p>
+      <transition name="fade">
+        <div v-show="tooltipShown" class="col">
+          <div class="card-block px-2">
+            <p class="card-text" v-html="arrCard.Tooltip_fr"></p>
+          </div>
         </div>
-      </div>
+      </transition>
     </div>
   </section>
 </template>
@@ -34,7 +36,8 @@ export default {
   methods: {
   },
   data: function () {
-    return {
+    return { 
+      tooltipShown: false
     }
   },
   computed: {
@@ -67,5 +70,14 @@ export default {
   font-size: 0.9em;
   line-height: 1.1;
   text-align: left;
+}
+.concept-icon {
+  cursor: pointer;
+}
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
 }
 </style>

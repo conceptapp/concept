@@ -21,16 +21,20 @@
             <div class="card"> Red icon </div>
           </div>
         </div>
-      </div>        
-      <section v-for="type in types" :key="type.id"> <!--- justify-content-start -->
+      </div>
+      <!-- display all the concept types -->
+      <section v-for="type in types" :key="type.id">
         <div class="row"> 
           <b> {{type.fields.Title_fr}} </b><br />
         </div>
         <div class="row">
-          <div class="card" v-for="card in type.fields.Cards" :key="card">
-            <card v-bind:cards="cards" v-bind:cards2="cards2" v-bind:cardId="card" v-bind:type="type.fields.Type"></card>
-          </div>
-        </div>
+          <!-- for each type, display the concept icons -->
+<!--           <transition-group name="list-complete" tag="p">
+ -->            <div class="card" v-for="card in type.fields.Cards" :key="card">
+              <card v-bind:cards="cards" v-bind:cards2="cards2" v-bind:cardId="card" v-bind:type="type.fields.Type"></card>
+            </div>
+<!--           </transition-group>
+ -->        </div>
       </section>
     </div>
   </div>
@@ -139,5 +143,6 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 10px;
+  overflow: hidden;
 }
 </style>
