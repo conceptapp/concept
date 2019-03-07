@@ -14,14 +14,24 @@ TODO add rollover to display tooltip
 
 <template>
   <section>
-    <div class="row no-gutters concept-icon" v-on:click="tooltipShown = !tooltipShown">
-      <div class="col-auto">
-        <img v-bind:src="icon" v-bind:alt="arrCard.Tooltip_fr" v-bind:title="arrCard.Tooltip_fr" />
+    <div class="row no-gutters">
+      <div class="col-auto concept-icon" v-on:click="tooltipShown = !tooltipShown">
+        <img v-bind:src="icon" v-bind:alt="cardInfo.Tooltip_fr" v-bind:title="cardInfo.Tooltip_fr" />
       </div>
       <transition name="fade">
         <div v-show="tooltipShown" class="col">
-          <div class="card-block px-2">
-            <p class="card-text" v-html="arrCard.Tooltip_fr"></p>
+          <div class="container-fluid">
+            <div class="row align-items-center">
+              <div class="col px-2">
+                <p class="card-text" v-html="cardInfo.Tooltip_fr"></p>
+              </div>
+              <div v-if="addOrRemove == 'add'" class="col icon-pointer" v-on:click="tooltipShown = !tooltipShown;$emit('add-icon', cardInfo)">
+                <font-awesome-icon icon="plus-circle" size="2x" :color="color" />
+              </div>
+              <div v-if="addOrRemove == 'remove'" class="col icon-pointer" v-on:click="tooltipShown = !tooltipShown;$emit('remove-icon', cardInfo)">
+                <font-awesome-icon icon="minus-circle" size="2x" :color="color" />
+              </div>
+            </div>
           </div>
         </div>
       </transition>
@@ -32,32 +42,18 @@ TODO add rollover to display tooltip
 <script>
 export default {
   name: 'card',
-  props: ['cards', 'cards2', 'cardId', 'type'],
+  props: ['cardInfo', 'addOrRemove'],
   methods: {
   },
   data: function () {
     return { 
-      tooltipShown: false
+      tooltipShown: false,
+      color: "green"
     }
   },
   computed: {
-    arrCard: function() {
-      // console.log("this.cards: ", this.cards)
-      var arr = this.cards.find(obj => {
-        return obj.id === this.cardId
-      })
-      // console.log("Array", arr)
-      if (arr == null) {
-        // console.log(this.cardId)
-        var arr = this.cards2.find(obj => {
-          return obj.id === this.cardId
-        })
-      }
-      // console.log("Finall arr: ", arr)
-      return arr.fields
-    },
     icon: function() {
-      return require('../assets/images/cards/' + this.type + '/' + this.arrCard.Name + '.png')
+      return require('../assets/images/cards/' + this.cardInfo.type + '/' + this.cardInfo.Name + '.png')
     }
   }
 }
@@ -71,7 +67,7 @@ export default {
   line-height: 1.1;
   text-align: left;
 }
-.concept-icon {
+.concept-icon, .icon-pointer {
   cursor: pointer;
 }
 .fade-enter-active, .fade-leave-active {
@@ -79,5 +75,8 @@ export default {
 }
 .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
   opacity: 0;
+}
+.fa-circle-plus{
+  color: green;
 }
 </style>

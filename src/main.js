@@ -10,7 +10,19 @@ import BootstrapVue from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 
+
+// import FontAwesome components
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { FontAwesomeIcon, FontAwesomeLayers, FontAwesomeLayersText } from '@fortawesome/vue-fontawesome'
+import { faPlus, faPlusCircle, faMinusCircle, faQuestionCircle, faExclamationCircle } from '@fortawesome/free-solid-svg-icons'
+
 // Vue.use(BootstrapVue)
+
+library.add(faPlus, faPlusCircle, faMinusCircle, faQuestionCircle, faExclamationCircle)
+Vue.component('font-awesome-icon', FontAwesomeIcon)
+Vue.component('font-awesome-layers', FontAwesomeLayers)
+Vue.component('font-awesome-layers-text', FontAwesomeLayersText)
+
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */
