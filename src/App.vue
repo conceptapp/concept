@@ -87,8 +87,9 @@ var appId = 'appzdYVnVaVLTKUB7'
 var types = []
 var cards = []
 // var guessCards = {}
-var selectedColor = "green" // select a default color
-var colors = ["green", "red", "blue", "purple"]
+var colors = ["#10C177", "#FE4365", "#1693A5", "#420943"]
+var selectedColor = colors[0] // select a default color
+
 
 export default {
   name: 'App',
@@ -173,7 +174,7 @@ export default {
 
 <style>
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+<!--   font-family: 'Avenir', Helvetica, Arial, sans-serif; -->
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;

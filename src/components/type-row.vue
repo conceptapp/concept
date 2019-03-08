@@ -7,17 +7,17 @@ It calls the card component to display
 ## Props ##
 cards: all the cards of the game
 type: the current type object of the row
-color: the current selected color
+selectedColor: the current selected color
 
 ## Behavior ##
-On clickl, display tooltip next to the icon
+On click, display tooltip next to the icon
 
 */
 
 <template>
   <section>
     <div class="row"> 
-      <b> {{type.fields.Title_fr}} </b><br />
+      <span class="font-weight-bold">{{type.fields.Title_fr}} </span>
     </div>
     <div class="row">
       <!-- for each type, display the concept icons -->
