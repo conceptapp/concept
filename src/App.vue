@@ -3,21 +3,14 @@
     <div class="container">
       <div class="row">
         <div class="col-2">
-          <span class="d-none d-sm-block">
-            <!-- hide on screens smaller than lg / md / sm -->
-            <img style="max-height:180px" src="./assets/logo.png" />
-          </span>
-          <span class="d-sm-none" style="color:green">
-            <!-- hide on screens wider than lg / md / sm (TODO test on devices to choose the best breakpoint) -->
-            ?
-          </span>
+          <mainCard></mainCard>
         </div>
         <div class="col-10">
           <!-- show all the concept by row, one color each -->
           <!-- any need for a no-gutters class ? -->
           <div
             v-for="(color, index) in colors"
-            class="row align-items-center rounded guess-row"
+            class="row align-items-center rounded shadow-sm guess-row"
             v-bind:class="{ 'active': color == selectedColor }"
             v-on:click="selectedColor = color"
           >
@@ -53,6 +46,7 @@
 <script>
 import axios from 'axios'
 // import { setupCache } from 'axios-cache-adapter'
+import mainCard from '@/components/main-card'
 import typeRow from '@/components/type-row'
 import card from '@/components/card'
 
@@ -93,7 +87,7 @@ var selectedColor = colors[0] // select a default color
 
 export default {
   name: 'App',
-  components: { typeRow, card },
+  components: { mainCard, typeRow, card },
   methods: {
     retrieveRecords: function(recordType, offset) {
       var offset = offset !== undefined ? '&offset=' + offset : ''
@@ -180,6 +174,7 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 10px;
+  padding-top:10px;
   overflow: hidden;
 }
 .active {
@@ -191,6 +186,7 @@ export default {
 .guess-row {
   min-height: 50px;
   cursor: pointer;
+  margin: 0 0 14px 0;
 }
 .guess-cards {
   display: inherit;
