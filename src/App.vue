@@ -3,7 +3,9 @@
     <div class="container">
       <div class="row">
         <div class="col-2">
-          <mainCard></mainCard>
+          <mainCard
+            v-on:reset="reset"
+          ></mainCard>
         </div>
         <div class="col-10">
           <!-- show all the concept by row, one color each -->
@@ -84,6 +86,14 @@ var cards = []
 var colors = ["#10C177", "#FE4365", "#1693A5", "#420943"]
 var selectedColor = colors[0] // select a default color
 
+// initialize an empty array to be pushed for every color
+var initGuessCards = function() {
+  var obj = {}
+  for (var i = 0; i < colors.length; i++) {
+    obj[colors[i]] = []
+  }
+  return obj
+}
 
 export default {
   name: 'App',
@@ -137,6 +147,10 @@ export default {
       })
       this.guessCards[this.selectedColor].splice(removeIndex)
       this.$forceUpdate()
+    },
+    reset: function() {
+      this.guessCards = initGuessCards()
+      this.selectedColor = this.colors[0] // select the default color
     }
   },
   created () {
@@ -144,6 +158,7 @@ export default {
     this.retrieveRecords('Types')
     // retrieve all the cards from airtable (100 records max per request)
     this.retrieveRecords('Cards')
+    this.guessCards = initGuessCards()
   },
   data: function () {
     return {
@@ -151,16 +166,7 @@ export default {
       cards: cards,
       selectedColor: selectedColor,
       colors: colors,
-    }
-  },
-  computed: {
-    guessCards: function() {
-      // initialize an empty array to be pushed for every color
-      var obj = {}
-      for (var i = 0; i < colors.length; i++) {
-        obj[colors[i]] = []
-      }
-      return obj
+      guessCards: {}
     }
   }
 }
