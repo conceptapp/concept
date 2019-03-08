@@ -14,44 +14,37 @@
         </div>
         <div class="col-10">
           <!-- show all the concept by row, one color each -->
+          <!-- any need for a no-gutters class ? -->
           <div
             v-for="(color, index) in colors"
-            class="row no-gutters align-items-center guess-row"
+            class="row align-items-center rounded guess-row"
             v-bind:class="{ 'active': color == selectedColor }"
             v-on:click="selectedColor = color"
           >
-            <div class="col-auto"> 
+            <div class="col-auto guess-icon">
               <font-awesome-icon v-bind:icon="index == 0 ? 'question-circle' : 'exclamation-circle'" size="2x" :color="color" />
             </div>
-            <div v-for="(card, index) in guessCards[color]" :key="index" class="card">
-              <card
-                v-bind:cardInfo="card"
-                addOrRemove="remove"
-                v-on:remove-icon="removeIcon"
-              ></card>
-            </div>
+            <transition-group name="fade" class="guess-cards">
+              <div v-for="(card, index) in guessCards[color]" :key="index" class="card">
+                <card
+                  v-bind:cardInfo="card"
+                  v-bind:iconColor="color"
+                  addOrRemove="remove"
+                  v-on:remove-icon="removeIcon"
+                ></card>
+              </div>
+            </transition-group>
           </div>
         </div>
       </div>
       <!-- display all the concept types -->
       <section v-for="type in types" :key="type.id">
-        <div class="row"> 
-          <b> {{type.fields.Title_fr}} </b><br />
-        </div>
-        <div class="row">
-          <!-- for each type, display the concept icons -->
-<!--           <transition-group name="list-complete" tag="p"> -->
-           <div class="card" v-for="card in type.fields.Cards" :key="card">
-              <cardFinder 
-                v-bind:cards="cards" 
-                v-bind:cards2="cards2"
-                v-bind:cardId="card"
-                v-bind:type="type.fields.Type"
-                v-on:add-icon="addIcon"
-              ></cardFinder>
-            </div>
-<!--           </transition-group> -->
-        </div>
+        <typeRow
+          v-bind:cards="cards" 
+          v-bind:type="type"
+          v-bind:selectedColor="selectedColor"
+          v-on:add-icon="addIcon"
+        ></typeRow>
       </section>
     </div>
   </div>
@@ -60,7 +53,7 @@
 <script>
 import axios from 'axios'
 // import { setupCache } from 'axios-cache-adapter'
-import cardFinder from '@/components/card-finder'
+import typeRow from '@/components/type-row'
 import card from '@/components/card'
 
 import typesjson from '../data/types.json'
@@ -93,14 +86,13 @@ var appKey = 'keyrkS74q9vL9FBHT'
 var appId = 'appzdYVnVaVLTKUB7'
 var types = []
 var cards = []
-var cards2 = []
 // var guessCards = {}
 var selectedColor = "green" // select a default color
-var colors = ["green", "red", "blue"]
+var colors = ["green", "red", "blue", "purple"]
 
 export default {
   name: 'App',
-  components: { cardFinder, card },
+  components: { typeRow, card },
   methods: {
     retrieveRecords: function(recordType, offset) {
       var offset = offset !== undefined ? '&offset=' + offset : ''
@@ -120,10 +112,7 @@ export default {
               // console.log("App Vue this.cards", this.cards)
               this.retrieveRecords('Cards', response.data.offset)
             } else {
-              // this.cards = this.cards.concat(response.data.records)
-              this.cards2 = response.data.records
-              // console.log("App Vue this.cards2", this.cards2)
-              this.cards.push.apply(this.cards, response.data.records)
+              this.cards.concat(response.data.records)
             }
           }
         }.bind(this)).catch(function (error) {
@@ -134,8 +123,7 @@ export default {
           this.types = typesjson.records
           // console.log(this.types)
         } else {
-          this.cards = cards1json.records
-          this.cards2 = cards2json.records
+          this.cards = cards1json.records.concat(cards2json.records)
         }
       }
     },
@@ -161,13 +149,11 @@ export default {
     this.retrieveRecords('Types')
     // retrieve all the cards from airtable (100 records max per request)
     this.retrieveRecords('Cards')
-
   },
   data: function () {
     return {
       types: types,
       cards: cards,
-      cards2: cards2,
       selectedColor: selectedColor,
       colors: colors,
     }
@@ -198,8 +184,20 @@ export default {
 .active {
   background-color: #e9ecef;
 }
+.guess-icon {
+  padding: 0px 5px 0px 5px !important;
+}
 .guess-row {
   min-height: 50px;
   cursor: pointer;
+}
+.guess-cards {
+  display: inherit;
+}
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s;
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0;
 }
 </style>

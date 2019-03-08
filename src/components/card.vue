@@ -20,16 +20,16 @@ TODO add rollover to display tooltip
       </div>
       <transition name="fade">
         <div v-show="tooltipShown" class="col">
-          <div class="container-fluid">
-            <div class="row align-items-center">
-              <div class="col px-2">
+          <div class="container-fluid tooltip-row">
+            <div class="row align-items-center tooltip-row">
+              <div class="col-auto px-2">
                 <p class="card-text" v-html="cardInfo.Tooltip_fr"></p>
               </div>
-              <div v-if="addOrRemove == 'add'" class="col icon-pointer" v-on:click="tooltipShown = !tooltipShown;$emit('add-icon', cardInfo)">
-                <font-awesome-icon icon="plus-circle" size="2x" :color="color" />
+              <div v-if="addOrRemove == 'add'" class="col-auto icon-pointer" v-on:click="tooltipShown = !tooltipShown;$emit('add-icon', cardInfo)">
+                <font-awesome-icon icon="plus-circle" size="2x" :color="selectedColor" />
               </div>
-              <div v-if="addOrRemove == 'remove'" class="col icon-pointer" v-on:click="tooltipShown = !tooltipShown;$emit('remove-icon', cardInfo)">
-                <font-awesome-icon icon="minus-circle" size="2x" :color="color" />
+              <div v-if="addOrRemove == 'remove'" class="col-auto icon-pointer" v-on:click="tooltipShown = !tooltipShown;$emit('remove-icon', cardInfo)">
+                <font-awesome-icon icon="trash" size="2x" :color="iconColor" />
               </div>
             </div>
           </div>
@@ -42,13 +42,12 @@ TODO add rollover to display tooltip
 <script>
 export default {
   name: 'card',
-  props: ['cardInfo', 'addOrRemove'],
+  props: ['cardInfo', 'addOrRemove', 'selectedColor', 'iconColor'],
   methods: {
   },
   data: function () {
     return { 
       tooltipShown: false,
-      color: "green"
     }
   },
   computed: {
@@ -76,7 +75,7 @@ export default {
 .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
   opacity: 0;
 }
-.fa-circle-plus{
-  color: green;
+.tooltip-row {
+  height: 100%;
 }
 </style>
