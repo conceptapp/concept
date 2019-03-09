@@ -84,7 +84,7 @@ var types = []
 var cards = []
 // var guessCards = {}
 var colors = ["#10C177", "#FE4365", "#1693A5", "#420943"]
-var selectedColor = colors[0] // select a default color
+const selectedColor = colors[0] // select a default color
 
 // initialize an empty array to be pushed for every color
 var initGuessCards = function() {
@@ -164,7 +164,7 @@ export default {
     return {
       types: types,
       cards: cards,
-      selectedColor: selectedColor,
+      selectedColor,
       colors: colors,
       guessCards: {}
     }

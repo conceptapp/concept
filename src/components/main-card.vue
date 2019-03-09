@@ -26,7 +26,7 @@ This component displays the main card of the game
         </div>
         <div slot="back">
           <div class="card main-card shadow">
-            <b-button variant="primary" @click="play">Jouer</b-button>
+            <b-button variant="primary" v-b-modal.modalplay>Jouer</b-button>
             <b-button variant="secondary" @click="reset">Réinitialiser</b-button>
             <b-button variant="secondary" v-b-modal.modalrules>Règles</b-button>
             <b-button variant="light" v-b-modal.modalabout>A propos</b-button>
@@ -34,6 +34,15 @@ This component displays the main card of the game
         </div>
       </vue-flip>
     </div>
+    <b-modal id="modalplay" title="C'est parti !"
+      ok-title="Ok, c'est parti" cancel-title="Une autre carte"
+      @cancel="shuffleWords">
+      <section v-if="words.danger.length > 0 && words.warning.length > 0 && words.success.length > 0" v-for="(wordtype, variant, index) in words" :key="index">
+        <section v-for="(definition, key, index) in wordtype[0].fields" :key="index">
+          <b-alert :variant="variant" show>{{definition}}</b-alert>
+        </section>
+      </section>
+    </b-modal>
     <b-modal ok-only ok-title="Merci" id="modalrules" title="Règles du jeu">
       <p class="text-left">Un premier joueur ouvre le jeu sur son téléphone (ou tous les autres joueurs quittent leurs yeux de l'écran). Ce joueur clique sur le bouton "Jouer" caché derrière la carte "Concept".</p>
       <p class="text-left">Sur la carte, il choisit le mot ou l'expression qu'il veut faire deviner.</p>
@@ -51,28 +60,91 @@ This component displays the main card of the game
 <script>
 import VueFlip from 'vue-flip'
 
+import axios from 'axios'
+import easyjson from '../../data/success.json'
+import mediumjson from '../../data/warning.json'
+import hardjson from '../../data/danger.json'
+
+const LOCAL = false
+var appKey = 'keyrkS74q9vL9FBHT'
+var appId = 'appzdYVnVaVLTKUB7'
+
 export default {
   name: 'mainCard',
   components: { 'vue-flip': VueFlip },
   props: [],
   methods: {
-    play: function() {
-      alert("Play")
-    },
     reset: function() {
       this.$emit('reset')
     },
-    rules: function() {
-      alert("Rules")
+    retrieveRecords: function(recordType, offset) {
+      var offset = offset !== undefined ? '?offset=' + offset : ''
+      if (!LOCAL) {
+        axios.get(
+          'https://api.airtable.com/v0/' + appId + '/' + recordType + offset,
+          {
+            headers: { Authorization: 'Bearer ' + appKey }
+          }
+        ).then(function (response) {
+          if (offset === '') { 
+            this.words[recordType] = response.data.records
+          } else {
+            this.words[recordType].concat(response.data.records)
+          }
+          // it there is some more data to fetch, call again the function
+          if ('offset' in response.data) {
+            this.retrieveRecords(recordType, offset)
+          } else {
+            // append the first row at the end of the array to use the first row as the current guess words
+            this.words[recordType].push(this.words[recordType][0])
+            // choose a first set of words to guess
+            this.shuffleWords(undefined, recordType)
+          }
+      }.bind(this)).catch(function (error) {
+          console.log(error)
+        })
+      } else {
+        switch(recordType) {
+          case 'success':
+            this.words[recordType] = easyjson.records    
+            break;
+          case 'warning':
+            this.words[recordType] = mediumjson.records
+            break;
+          default:
+            this.words[recordType] = hardjson.records
+        }
+        // append the first row at the end of the array to use the first row as the current guess words
+        this.words[recordType].push(this.words[recordType][0])
+        // choose a first set of words to guess
+        this.shuffleWords(undefined, recordType)
+      }
     },
-    about: function() {
-      alert("about")
+    shuffleWords: function(evt, key) {
+      // pick a random index in each word subset and store the random index values at index 0 of the array
+      if ( key === undefined ) {
+        for (var iKey in this.words) {
+          this.words[iKey][0] = this.words[iKey][Math.floor(Math.random() * this.words[iKey].length)];
+        }
+      } else {
+        this.words[key][0] = this.words[key][Math.floor(Math.random() * this.words[key].length)];
+      } 
+      // prevent modal from closing
+      if ( !(evt === undefined) ) {
+        evt.preventDefault()
+        this.$forceUpdate()
+      }
     }
   },
   data: function () {
-    return { }
+    return { 
+      words: { success: [], warning: [], danger: [] }
+    }
   },
-  computed: {
+  created () { 
+    for (var key in this.words) {
+      this.retrieveRecords(key)
+    }
   }
 }
 </script>
@@ -92,5 +164,8 @@ export default {
 .front, .back {
   width: 100%;
   height: 100%;
+}
+.alert {
+  padding: 0 !important;
 }
 </style>
