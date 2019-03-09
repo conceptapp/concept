@@ -42,6 +42,10 @@ This component displays the main card of the game
           <b-alert :variant="variant" show>{{definition}}</b-alert>
         </section>
       </section>
+      <p class="text-right"><a href="https://jrmie818423.typeform.com/to/K3klN1" class="text-secondary" target="_blank">>> Proposer des mots faciles</a></p>
+       <p class="text-right"><a href="https://jrmie818423.typeform.com/to/si5AVD" class="text-secondary" target="_blank">>> Proposer des mots moyens</a></p>
+      <p class="text-right"><a href="https://jrmie818423.typeform.com/to/Ey1sq0" class="text-secondary" target="_blank">>> Proposer des mots difficiles</a></p>
+      <!-- TODO see https://admin.typeform.com/form/K3klN1/share#/embed to try to embed -->
     </b-modal>
     <b-modal ok-only ok-title="Merci" id="modalrules" title="Règles du jeu">
       <p class="text-left">Un premier joueur ouvre le jeu sur son téléphone (ou tous les autres joueurs quittent leurs yeux de l'écran). Ce joueur clique sur le bouton "Jouer" caché derrière la carte "Concept".</p>
