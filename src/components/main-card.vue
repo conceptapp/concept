@@ -21,7 +21,7 @@ This component displays the main card of the game
       <vue-flip :active-click="true" width="100%" height="auto">
         <div slot="front">
           <div class="card main-card shadow">
-            <img style="max-height:230px" :src="require('@/assets/images/logo.png')" />
+            <img style="max-height:230px;width:100%;" :src="require('@/assets/images/logo.png')" />
           </div>
         </div>
         <div slot="back">
@@ -29,7 +29,7 @@ This component displays the main card of the game
             <b-button variant="primary" v-b-modal.modalplay>Jouer</b-button>
             <b-button variant="secondary" @click="reset">Réinitialiser</b-button>
             <b-button variant="secondary" v-b-modal.modalrules>Règles</b-button>
-            <b-button variant="light" v-b-modal.modalabout>A propos</b-button>
+            <b-button variant="light" v-b-modal.modalabout>A propos</b-button> <!-- class="d-sm-none"  -->
           </div>
         </div>
       </vue-flip>
@@ -42,10 +42,8 @@ This component displays the main card of the game
           <b-alert :variant="variant" show>{{definition}}</b-alert>
         </section>
       </section>
-      <p class="text-right"><a href="https://jrmie818423.typeform.com/to/K3klN1" class="text-secondary" target="_blank">>> Proposer des mots faciles</a></p>
-       <p class="text-right"><a href="https://jrmie818423.typeform.com/to/si5AVD" class="text-secondary" target="_blank">>> Proposer des mots moyens</a></p>
-      <p class="text-right"><a href="https://jrmie818423.typeform.com/to/Ey1sq0" class="text-secondary" target="_blank">>> Proposer des mots difficiles</a></p>
-      <!-- TODO see https://admin.typeform.com/form/K3klN1/share#/embed to try to embed -->
+      <p class="text-right"><a href="https://jrmie818423.typeform.com/to/Kf9Ux6" class="text-secondary" target="_blank">>> Proposer des mots ou expressions</a></p>
+      <!-- TODO see https://admin.typeform.com/form/Kf9Ux6/share#/embed to try to embed -->
     </b-modal>
     <b-modal ok-only ok-title="Merci" id="modalrules" title="Règles du jeu">
       <p class="text-left">Un premier joueur ouvre le jeu sur son téléphone (ou tous les autres joueurs quittent leurs yeux de l'écran). Ce joueur clique sur le bouton "Jouer" caché derrière la carte "Concept".</p>

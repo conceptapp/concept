@@ -32,15 +32,17 @@
           </div>
         </div>
       </div>
-      <!-- display all the concept types -->
-      <section v-for="type in types" :key="type.id">
-        <typeRow
-          v-bind:cards="cards" 
-          v-bind:type="type"
-          v-bind:selectedColor="selectedColor"
-          v-on:add-icon="addIcon"
-        ></typeRow>
-      </section>
+      <div id="concept_cards">
+        <!-- display all the concept types -->
+        <section v-for="type in types" :key="type.id">
+          <typeRow
+            v-bind:cards="cards" 
+            v-bind:type="type"
+            v-bind:selectedColor="selectedColor"
+            v-on:add-icon="addIcon"
+          ></typeRow>
+        </section>
+      </div>
     </div>
   </div>
 </template>
@@ -182,6 +184,9 @@ export default {
   margin-top: 10px;
   padding-top:10px;
   overflow: hidden;
+}
+#concept_cards {
+  margin-left: 15px;
 }
 .active {
   background-color: #e9ecef;
