@@ -29,7 +29,7 @@ This component displays the main card of the game
             <b-button variant="primary" v-b-modal.modalplay>Jouer</b-button>
             <b-button variant="secondary" @click="reset">Réinitialiser</b-button>
             <b-button variant="secondary" v-b-modal.modalrules>Règles</b-button>
-            <b-button variant="light" v-b-modal.modalabout>A propos</b-button> <!-- class="d-sm-none"  -->
+            <b-button variant="light" v-b-modal.modalabout>A propos</b-button>
           </div>
         </div>
       </vue-flip>

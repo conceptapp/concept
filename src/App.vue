@@ -1,47 +1,82 @@
 <template>
   <div id="app">
     <div class="container">
-      <div class="row">
-        <div class="col-2">
-          <mainCard
-            v-on:reset="reset"
-          ></mainCard>
-        </div>
-        <div class="col-10">
-          <!-- show all the concept by row, one color each -->
-          <!-- any need for a no-gutters class ? -->
-          <div
-            v-for="(color, index) in colors"
-            class="row align-items-center rounded shadow-sm guess-row"
-            v-bind:class="{ 'active': color == selectedColor }"
-            v-on:click="selectedColor = color"
-          >
-            <div class="col-auto guess-icon">
-              <font-awesome-icon v-bind:icon="index == 0 ? 'question-circle' : 'exclamation-circle'" size="2x" :color="color" />
-            </div>
-            <transition-group name="fade" class="guess-cards">
-              <div v-for="(card, index) in guessCards[color]" :key="index" class="card">
-                <card
-                  v-bind:cardInfo="card"
-                  v-bind:iconColor="color"
-                  addOrRemove="remove"
-                  v-on:remove-icon="removeIcon"
-                ></card>
+      <!-- TODO début du composant à intégrer à main-card -->
+      <!-- garder la marque au milieu sur mobile -->
+      <b-navbar class="navbar navbar-expand-lg navbar-light bg-light d-none d-sm-block">
+        <b-navbar-nav>
+          <b-navbar-brand class="navbar-brand" href="#">Concept</b-navbar-brand>
+          <b-nav-item-dropdown text="Jouer">
+            <b-dropdown-item href="#">Afficher la carte en cours</b-dropdown-item>
+            <b-dropdown-item href="#">Tirer une autre carte</b-dropdown-item>
+            <b-dropdown-item href="#">----------------------</b-dropdown-item>
+            <b-dropdown-item href="#">Réinitialiser le jeu</b-dropdown-item>
+          </b-nav-item-dropdown>
+          <b-nav-item href="#">Contribuer</b-nav-item>
+          <b-nav-item href="#">Règles du jeu</b-nav-item>
+          <b-nav-item href="#">A propos</b-nav-item>
+        </b-navbar-nav>
+      </b-navbar>
+      <!-- mobile navbar TODO ajouter les events -->
+      <div class="container d-sm-none" style="line-height:1.3em;">
+        <b-navbar class="navbar navbar-expand-lg navbar-dark bg-dark" fixed="bottom" style="padding-top:0;padding-bottom:0;">
+          <b-navbar-nav>
+            <b-nav-item href="#"><font-awesome-icon icon="play-circle" /><br />Jouer</b-nav-item>          
+            <b-nav-item href="#"><font-awesome-icon icon="trash-restore" /><br />Réinitialiser</b-nav-item>
+            <b-nav-item href="#"><font-awesome-icon icon="book-open" /><br />Règles</b-nav-item>
+            <b-nav-item href="#"><font-awesome-icon icon="plus-square" /><br />Contribuer</b-nav-item>
+            <b-nav-item href="#"><font-awesome-icon icon="bars" /><br />More</b-nav-item>
+          </b-navbar-nav>
+        </b-navbar>
+      </div>
+      <!-- end of mobile navbar -->
+      <div class="container-body">
+        <div id="header-row" class="row">
+          <div class="col-2 d-none d-sm-block">
+            <mainCard
+              v-on:reset="reset"
+            ></mainCard>
+          </div>
+          <div class="col-1 d-sm-none"></div>
+          <div class="col-10">
+            <!-- show all the concept by row, one color each -->
+            <!-- TODO wrap all this in a component to get flexibility on mobile design ? -->
+            <div
+              v-for="(color, index) in colors"
+              class="row align-items-center rounded shadow-sm guess-row"
+              v-bind:class="{ 'active': color == selectedColor }"
+              v-on:click="selectedColor = color"
+            >
+              <div class="col-auto guess-icon">
+                <font-awesome-icon v-bind:icon="index == 0 ? 'question-circle' : 'exclamation-circle'" size="2x" :color="color" />
               </div>
-            </transition-group>
+              <transition-group name="fade" class="guess-cards">
+                <div v-for="(card, index) in guessCards[color]" :key="index" class="card">
+                  <card
+                    v-bind:cardInfo="card"
+                    v-bind:iconColor="color"
+                    addOrRemove="remove"
+                    v-on:remove-icon="removeIcon"
+                  ></card>
+                </div>
+              </transition-group>
+            </div>
           </div>
         </div>
       </div>
-      <div id="concept_cards">
-        <!-- display all the concept types -->
-        <section v-for="type in types" :key="type.id">
-          <typeRow
-            v-bind:cards="cards" 
-            v-bind:type="type"
-            v-bind:selectedColor="selectedColor"
-            v-on:add-icon="addIcon"
-          ></typeRow>
-        </section>
+      <!-- TODO fin du composant à intégrer à main-card -->
+      <div class="container-body">
+        <div id="concept-cards">
+          <!-- display all the concept types -->
+          <section v-for="type in types" :key="type.id">
+            <typeRow
+              v-bind:cards="cards" 
+              v-bind:type="type"
+              v-bind:selectedColor="selectedColor"
+              v-on:add-icon="addIcon"
+            ></typeRow>
+          </section>
+        </div>
       </div>
     </div>
   </div>
@@ -181,12 +216,17 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 10px;
-  padding-top:10px;
   overflow: hidden;
 }
-#concept_cards {
+#header-row{
+  padding-right: 15px;
+}
+#concept-cards {
   margin-left: 15px;
+}
+.container-body {
+  padding-top:10px;
+  margin-top: 10px;
 }
 .active {
   background-color: #e9ecef;
