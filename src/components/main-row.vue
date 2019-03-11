@@ -16,9 +16,9 @@ This component displays the main header row
       <b-navbar-nav>
         <b-navbar-brand class="navbar-brand">Concept</b-navbar-brand>
         <b-nav-item v-b-modal.modalplay>Jouer</b-nav-item>
-        <b-nav-item v-b-modal.modalplay>Multijoueurs</b-nav-item>
+        <b-nav-item v-b-modal.modalmultiplayers>Multijoueurs</b-nav-item>
         <b-nav-item @click="reset">Réinitialiser le jeu</b-nav-item>
-        <b-nav-item href="#">Contribuer</b-nav-item>
+        <b-nav-item href="https://jrmie818423.typeform.com/to/Kf9Ux6" target="_blank">Contribuer</b-nav-item>
         <b-nav-item v-b-modal.modalrules>Règles du jeu</b-nav-item>
         <!-- hide about on tablets -->
         <b-nav-item class="d-md-none" v-b-modal.modalabout>A propos</b-nav-item>
@@ -34,7 +34,7 @@ This component displays the main header row
       <b-navbar class="navbar navbar-expand-lg navbar-dark bg-dark" fixed="bottom" style="padding-top:0;padding-bottom:0;">
         <b-navbar-nav class="ml-auto mx-auto">
           <b-nav-item v-b-modal.modalplay><font-awesome-icon icon="play-circle" /><br />Jouer</b-nav-item>          
-          <b-nav-item href="#"><font-awesome-icon icon="users" /><br />Multijoueurs</b-nav-item>
+          <b-nav-item v-b-modal.modalmultiplayers><font-awesome-icon icon="users" /><br />Multijoueurs</b-nav-item>
           <b-nav-item @click="reset"><font-awesome-icon icon="trash-restore" /><br />Réinitialiser</b-nav-item>
 <!--           <b-nav-item href="#"><font-awesome-icon icon="plus-square" /><br />Contribuer</b-nav-item> -->
           <b-nav-item v-b-modal.modalrules><font-awesome-icon icon="book-open" /><br />Règles</b-nav-item>
@@ -53,7 +53,6 @@ This component displays the main header row
         <div class="col-1 d-sm-none"></div>
         <div class="col-10">
           <!-- show all the concept by row, one color each -->
-          <!-- TODO wrap all this in a component to get flexibility on mobile design ? -->
           <div
             v-for="(color, index) in sharedState.colors"
             class="row align-items-center rounded shadow-sm guess-row"

@@ -8,9 +8,6 @@
         <div id="concept-cards">
           <!-- display all the concept types -->
           <section v-for="type in sharedState.types" :key="type.id">
-              <!-- v-bind:cards="cards" 
-              v-bind:selectedColor="selectedColor" 
-              v-on:add-icon="addIcon"-->
             <typeRow
               v-bind:store="store"
               v-bind:type="type"
