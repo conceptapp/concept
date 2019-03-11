@@ -18,6 +18,8 @@
           </section>
         </div>
       </div>
+      <!-- append a blank div to placehold the navbar on mobile and give some space on the other devices -->
+      <div class="container" style="height:70px;"></div>
     </div>
   </div>
 </template>
@@ -53,7 +55,6 @@ api({
   console.log('Request response:', response)
 })
 */
-
 
 var appKey = 'keyrkS74q9vL9FBHT'
 var appId = 'appzdYVnVaVLTKUB7'

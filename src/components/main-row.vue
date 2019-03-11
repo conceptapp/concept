@@ -11,40 +11,45 @@ This component displays the main header row
 
 <template>
 	<div id="main-row">
-    <!-- garder la marque au milieu sur mobile -->
+    <!-- desktop navbar -->
     <b-navbar class="navbar navbar-expand-lg navbar-light bg-light d-none d-sm-block">
       <b-navbar-nav>
-        <b-navbar-brand class="navbar-brand" href="#">Concept</b-navbar-brand>
-        <b-nav-item-dropdown text="Jouer">
-          <b-dropdown-item href="#">Afficher la carte en cours</b-dropdown-item>
-          <b-dropdown-item href="#">Tirer une autre carte</b-dropdown-item>
-          <b-dropdown-item href="#">----------------------</b-dropdown-item>
-          <b-dropdown-item href="#">Réinitialiser le jeu</b-dropdown-item>
-        </b-nav-item-dropdown>
+        <b-navbar-brand class="navbar-brand">Concept</b-navbar-brand>
+        <b-nav-item v-b-modal.modalplay>Jouer</b-nav-item>
+        <b-nav-item v-b-modal.modalplay>Multijoueurs</b-nav-item>
+        <b-nav-item @click="reset">Réinitialiser le jeu</b-nav-item>
         <b-nav-item href="#">Contribuer</b-nav-item>
-        <b-nav-item href="#">Règles du jeu</b-nav-item>
-        <b-nav-item href="#">A propos</b-nav-item>
+        <b-nav-item v-b-modal.modalrules>Règles du jeu</b-nav-item>
+        <!-- hide about on tablets -->
+        <b-nav-item class="d-md-none" v-b-modal.modalabout>A propos</b-nav-item>
       </b-navbar-nav>
     </b-navbar>
-    <!-- mobile navbar TODO ajouter les events -->
-    <div class="container d-sm-none" style="line-height:1.3em;">
+    <!-- mobile navbar - top navbar to display brand && bottom navbar for navigation -->
+    <div class="d-sm-none" style="line-height:1.3em;">
+	    <b-navbar id="brand-navbar" class="navbar navbar-expand-lg navbar-dark bg-dark">
+	      <b-navbar-nav class="ml-auto mx-auto">
+        	<b-navbar-brand class="navbar-brand">Concept</b-navbar-brand>
+      	</b-navbar-nav>
+    	</b-navbar>
       <b-navbar class="navbar navbar-expand-lg navbar-dark bg-dark" fixed="bottom" style="padding-top:0;padding-bottom:0;">
-        <b-navbar-nav>
-          <b-nav-item href="#"><font-awesome-icon icon="play-circle" /><br />Jouer</b-nav-item>          
-          <b-nav-item href="#"><font-awesome-icon icon="trash-restore" /><br />Réinitialiser</b-nav-item>
-          <b-nav-item href="#"><font-awesome-icon icon="book-open" /><br />Règles</b-nav-item>
-          <b-nav-item href="#"><font-awesome-icon icon="plus-square" /><br />Contribuer</b-nav-item>
-          <b-nav-item href="#"><font-awesome-icon icon="bars" /><br />More</b-nav-item>
+        <b-navbar-nav class="ml-auto mx-auto">
+          <b-nav-item v-b-modal.modalplay><font-awesome-icon icon="play-circle" /><br />Jouer</b-nav-item>          
+          <b-nav-item href="#"><font-awesome-icon icon="users" /><br />Multijoueurs</b-nav-item>
+          <b-nav-item @click="reset"><font-awesome-icon icon="trash-restore" /><br />Réinitialiser</b-nav-item>
+<!--           <b-nav-item href="#"><font-awesome-icon icon="plus-square" /><br />Contribuer</b-nav-item> -->
+          <b-nav-item v-b-modal.modalrules><font-awesome-icon icon="book-open" /><br />Règles</b-nav-item>
+<!--           <b-nav-item href="#"><font-awesome-icon icon="bars" /><br />More</b-nav-item> -->
         </b-navbar-nav>
       </b-navbar>
     </div>
     <!-- end of mobile navbar -->
     <div class="container-body">
       <div id="header-row" class="row">
+        <!-- hide on screens smaller than lg / md / sm -->
         <div class="col-2 d-none d-sm-block">
-          <conceptCard
-          ></conceptCard>
+          <conceptCard></conceptCard>
         </div>
+        <!-- show only on mobile -->
         <div class="col-1 d-sm-none"></div>
         <div class="col-10">
           <!-- show all the concept by row, one color each -->
@@ -73,6 +78,7 @@ This component displays the main header row
         </div>
       </div>
     </div>
+    <modals></modals>
   </div>
 </template>
 
@@ -80,10 +86,11 @@ This component displays the main header row
 import { EventBus } from '@/event-bus.js'
 import card from '@/components/card'
 import conceptCard from '@/components/concept-card'
+import modals from '@/components/modals'
 
 export default {
   name: 'mainRow',
-  components: { card, conceptCard },
+  components: { card, conceptCard, modals },
   props: ['store', 'type'],
   data: function () {
     return { 
@@ -132,5 +139,8 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
+#brand-navbar {
+	margin-left: -15px;
+	margin-right: -15px;
+}
 </style>

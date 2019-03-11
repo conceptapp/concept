@@ -23,8 +23,6 @@ On click, display tooltip next to the icon
       <!-- for each type, display the concept icons -->
 <!--           <transition-group name="list-complete" tag="p"> -->
        <div class="card" v-for="card in currentCards" :key="card.id">
-          <!-- v-bind:selectedColor="selectedColor" -->
-          <!-- v-on:add-icon="addIcon" -->
           <card 
             v-bind:store="store"
             v-bind:cardInfo="card.fields"
@@ -43,13 +41,8 @@ import card from '@/components/card'
 export default {
   name: 'typeRow',
   components: { card },
-  props: ['store', 'type'], // 'cards', 'selectedColor'
+  props: ['store', 'type'],
   methods: {
-    // addIcon: function(data) {
-    //   // this.$emit('add-icon', data)
-    //   console.log("add-icon from bus")
-    //   EventBus.$emit('add-icon', data)
-    // }
   },
   data: function () {
     return { 
