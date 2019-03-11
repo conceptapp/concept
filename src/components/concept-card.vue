@@ -61,6 +61,7 @@ This component displays the main card of the game
 
 <script>
 import VueFlip from 'vue-flip'
+import { EventBus } from '@/event-bus.js'
 
 import axios from 'axios'
 import easyjson from '../../data/success.json'
@@ -72,12 +73,13 @@ var appKey = 'keyrkS74q9vL9FBHT'
 var appId = 'appzdYVnVaVLTKUB7'
 
 export default {
-  name: 'mainCard',
+  name: 'conceptCard',
   components: { 'vue-flip': VueFlip },
   props: [],
   methods: {
     reset: function() {
-      this.$emit('reset')
+      // this.$emit('reset')
+      EventBus.$emit('reset', {})
     },
     retrieveRecords: function(recordType, offset) {
       var offset = offset !== undefined ? '?offset=' + offset : ''

@@ -25,10 +25,11 @@ TODO add rollover to display tooltip
               <div class="col-auto px-2">
                 <p class="card-text" v-html="cardInfo.Tooltip_fr"></p>
               </div>
-              <div v-if="addOrRemove == 'add'" class="col-auto icon-pointer" v-on:click="tooltipShown = !tooltipShown;$emit('add-icon', cardInfo)">
-                <font-awesome-icon icon="plus-circle" size="2x" :color="selectedColor" />
+              <!-- $emit('add-icon', cardInfo) -->
+              <div v-if="addOrRemove == 'add'" class="col-auto icon-pointer" v-on:click="tooltipShown = !tooltipShown;changeIcon('add-icon', cardInfo)">
+                <font-awesome-icon icon="plus-circle" size="2x" :color="sharedState.selectedColor" />
               </div>
-              <div v-if="addOrRemove == 'remove'" class="col-auto icon-pointer" v-on:click="tooltipShown = !tooltipShown;$emit('remove-icon', cardInfo)">
+              <div v-if="addOrRemove == 'remove'" class="col-auto icon-pointer" v-on:click="tooltipShown = !tooltipShown;changeIcon('remove-icon', cardInfo)">
                 <font-awesome-icon icon="trash" size="2x" :color="iconColor" />
               </div>
             </div>
@@ -40,14 +41,21 @@ TODO add rollover to display tooltip
 </template>
 
 <script>
+import { EventBus } from '@/event-bus.js'
+
 export default {
   name: 'card',
-  props: ['cardInfo', 'addOrRemove', 'selectedColor', 'iconColor'],
+  props: ['store', 'cardInfo', 'addOrRemove', 'iconColor'], // 'selectedColor', 
   methods: {
+    changeIcon: function(addOrRemove, data) {
+      // EventBus.$emit('remove-icon', cardInfo)
+      EventBus.$emit(addOrRemove, data)
+    }
   },
   data: function () {
     return { 
       tooltipShown: false,
+      sharedState: this.store.state
     }
   },
   computed: {

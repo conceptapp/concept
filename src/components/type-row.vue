@@ -17,17 +17,18 @@ On click, display tooltip next to the icon
 <template>
   <section>
     <div class="row"> 
-      <span class="font-weight-bold">{{type.fields.Title_fr}} </span>
+      <span class="font-weight-bold">{{type.fields.Title_fr}}</span>
     </div>
     <div class="row">
       <!-- for each type, display the concept icons -->
 <!--           <transition-group name="list-complete" tag="p"> -->
        <div class="card" v-for="card in currentCards" :key="card.id">
+          <!-- v-bind:selectedColor="selectedColor" -->
+          <!-- v-on:add-icon="addIcon" -->
           <card 
+            v-bind:store="store"
             v-bind:cardInfo="card.fields"
-            v-bind:selectedColor="selectedColor"
             addOrRemove="add"
-            v-on:add-icon="addIcon"
           ></card>
         </div>
 <!--           </transition-group> -->
@@ -36,31 +37,36 @@ On click, display tooltip next to the icon
 </template>
 
 <script>
+import { EventBus } from '@/event-bus.js'
 import card from '@/components/card'
 
 export default {
   name: 'typeRow',
   components: { card },
-  props: ['cards', 'type', 'selectedColor'],
+  props: ['store', 'type'], // 'cards', 'selectedColor'
   methods: {
-    addIcon: function(data) {
-      this.$emit('add-icon', data)
-    }
+    // addIcon: function(data) {
+    //   // this.$emit('add-icon', data)
+    //   console.log("add-icon from bus")
+    //   EventBus.$emit('add-icon', data)
+    // }
   },
   data: function () {
-    return { }
+    return { 
+      sharedState: this.store.state
+    }
   },
   computed: {
     currentCards: function() {
       var t = this.type
-      var a = this.cards.filter(function (el) {
+      var a = this.sharedState.cards.filter(function (el) {
         return el.fields.Type[0] == t.id
       })
       // append the type of the card to the array for use in the child component
       a = a.map(function (card) {
         card['fields']['type'] = t.fields.Type
         return card
-      })
+      }, this)
       return a
     }
   }
