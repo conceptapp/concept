@@ -19,8 +19,8 @@ import { faPlus, faPlusCircle, faMinusCircle, faQuestionCircle, faExclamationCir
 
 // import and connect to the concept server-side with websocket thanks to Vue Socket IO
 import VueSocketIO from 'vue-socket.io'
-Vue.use(VueSocketIO, 'http://localhost:5000')
-// Vue.use(VueSocketIO, 'https://thawing-atoll-31460.herokuapp.com/')
+// Vue.use(VueSocketIO, 'http://localhost:5000')
+Vue.use(VueSocketIO, 'https://thawing-atoll-31460.herokuapp.com/')
 
 Vue.use(BootstrapVue)
 
