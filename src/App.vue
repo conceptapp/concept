@@ -67,9 +67,9 @@ var store = {
     guessCards: {},
     colors: colors,
     selectedColor: colors[0],   // select a default color
+    isMultiPlayer: false,
     currentGameRoom: '',
-    currentPlayersCount: 1,
-    isMultiPlayer: false
+    gameRooms: []
   },
   setMessageAction (newValue) {
     if (this.debug) console.log('setMessageAction triggered with', newValue)

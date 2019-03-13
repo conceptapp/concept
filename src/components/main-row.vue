@@ -24,7 +24,7 @@ This component displays the main header row
         <b-nav-item class="d-md-none" v-b-modal.modalabout>A propos</b-nav-item>
         <!-- right aligned items -->
         <b-navbar-nav class="ml-auto" v-if="sharedState.currentGameRoom!=''">
-          <b-navbar-brand>{{ sharedState.currentGameRoom }}</b-navbar-brand>
+          <b-nav-item v-b-modal.modalmultiplayers>{{ sharedState.currentGameRoom }} <small class="text-muted">(<font-awesome-icon icon="male" /> x {{ sharedState.gameRooms[sharedState.currentGameRoom] }})</small></b-nav-item>
         </b-navbar-nav>
       </b-navbar-nav>
     </b-navbar>
@@ -68,7 +68,6 @@ This component displays the main header row
             </div>
             <transition-group name="fade" class="guess-cards">
               <div v-for="(card, index) in sharedState.guessCards[color]" :key="index" class="card">
-								<!-- v-on:remove-icon="removeIcon" -->
                 <card
                 	v-bind:store="store"
                   v-bind:cardInfo="card"
@@ -154,6 +153,10 @@ export default {
       if (data.currentGameRoom == this.sharedState.currentGameRoom) {
         this.sharedState.guessCards = data.guessCards
       }
+    },
+    update_game_rooms (data) {
+      console.log("updating game rooms: ", data)
+      this.sharedState.gameRooms = data
     }
   },
   created () {
