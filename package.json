@@ -20,8 +20,10 @@
     "axios-cache-adapter": "^2.3.0",
     "bootstrap": "^4.3.1",
     "bootstrap-vue": "^2.0.0-rc.13",
+    "concept_server": "file:server",
     "document-ready": "^2.0.2",
     "i": "^0.3.6",
+    "nodemon": "^1.18.10",
     "npm": "^6.9.0",
     "postscribe": "^2.0.8",
     "vue": "^2.6.8",
@@ -29,6 +31,7 @@
     "vue-loader": "^11.0.0",
     "vue-router": "^3.0.1",
     "vue-script-component": "^0.1.7",
+    "vue-socket.io": "^2.1.1-b",
     "vue-template-compiler": "^2.6.8"
   },
   "devDependencies": {

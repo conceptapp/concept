@@ -22,6 +22,10 @@ This component displays the main header row
         <b-nav-item v-b-modal.modalrules>Règles du jeu</b-nav-item>
         <!-- hide about on tablets -->
         <b-nav-item class="d-md-none" v-b-modal.modalabout>A propos</b-nav-item>
+        <!-- right aligned items -->
+        <b-navbar-nav class="ml-auto" v-if="sharedState.currentGameRoom!=''">
+          <b-navbar-brand>{{ sharedState.currentGameRoom }}</b-navbar-brand>
+        </b-navbar-nav>
       </b-navbar-nav>
     </b-navbar>
     <!-- mobile navbar - top navbar to display brand && bottom navbar for navigation -->
@@ -77,7 +81,9 @@ This component displays the main header row
         </div>
       </div>
     </div>
-    <modals></modals>
+    <modals 
+      v-bind:store=store
+    ></modals>
   </div>
 </template>
 
@@ -104,6 +110,7 @@ export default {
         this.sharedState.guessCards[this.sharedState.selectedColor] = []
       }
       this.sharedState.guessCards[this.sharedState.selectedColor].push(data)
+      this.pushWebsocket()
     },
     removeIcon: function(data) {
       // remove clicked icon from current active color
@@ -111,6 +118,7 @@ export default {
         function(obj) {
           return !(obj.Name == data.Name)
       })
+      this.pushWebsocket()
     },
     // initialize an empty array to be pushed for every color
 		initGuessCards: function() {
@@ -123,6 +131,29 @@ export default {
     reset: function() {
       this.sharedState.guessCards = this.initGuessCards()
       this.sharedState.selectedColor = this.sharedState.colors[0] // select the default color
+      this.pushWebsocket()
+    },
+    pushWebsocket: function() {
+      // if playing in multiplayer mode, push the info to the websocket server
+      if ( this.sharedState.isMultiPlayer ) {
+        // console.log("updated info on the websocket server: ", this.sharedState.guessCards)
+        this.$socket.emit('update_cards_from_client', { 
+          'currentGameRoom': this.sharedState.currentGameRoom,
+          'guessCards': this.sharedState.guessCards
+        })
+      }
+    }
+  },
+  sockets: {
+    connect () {
+      // console.log('connected to main server')
+    },
+    update_cards_from_server (data) {
+      // console.log('server asked to update cards: ', data)
+      // if this is current game, then update the cards
+      if (data.currentGameRoom == this.sharedState.currentGameRoom) {
+        this.sharedState.guessCards = data.guessCards
+      }
     }
   },
   created () {

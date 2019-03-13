@@ -27,6 +27,7 @@ import { EventBus } from '@/event-bus.js'
 // import { setupCache } from 'axios-cache-adapter'
 import mainRow from '@/components/main-row'
 import typeRow from '@/components/type-row'
+import websocket from '@/components/websocket'
 
 import typesjson from '../data/types.json'
 import cards1json from '../data/cards-1.json'
@@ -65,7 +66,10 @@ var store = {
     cards: [],
     guessCards: {},
     colors: colors,
-    selectedColor: colors[0]   // select a default color
+    selectedColor: colors[0],   // select a default color
+    currentGameRoom: '',
+    currentPlayersCount: 1,
+    isMultiPlayer: false
   },
   setMessageAction (newValue) {
     if (this.debug) console.log('setMessageAction triggered with', newValue)
@@ -79,7 +83,7 @@ var store = {
 
 export default {
   name: 'App',
-  components: { mainRow, typeRow },
+  components: { mainRow, typeRow, websocket },
   methods: {
     retrieveRecords: function(recordType, offset) {
       // query all the data from airtable or local JSON stored in /data

@@ -15,12 +15,17 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon, FontAwesomeLayers, FontAwesomeLayersText } from '@fortawesome/vue-fontawesome'
 import { faPlus, faPlusCircle, faMinusCircle, faQuestionCircle, faExclamationCircle, faTrash, faPlayCircle, faTrashRestore, faBookOpen, faPlusSquare, 
-	faUsers, faBars } from '@fortawesome/free-solid-svg-icons'
+	faUsers, faBars, faMale } from '@fortawesome/free-solid-svg-icons'
+
+// import and connect to the concept server-side with websocket thanks to Vue Socket IO
+import VueSocketIO from 'vue-socket.io'
+Vue.use(VueSocketIO, 'http://localhost:5000')
+// Vue.use(VueSocketIO, 'https://thawing-atoll-31460.herokuapp.com/')
 
 Vue.use(BootstrapVue)
 
 library.add(faPlus, faPlusCircle, faMinusCircle, faQuestionCircle, faExclamationCircle, faTrash, faPlayCircle, faTrashRestore, faBookOpen, faPlusSquare,
-	faUsers, faBars)
+	faUsers, faBars, faMale)
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 Vue.component('font-awesome-layers', FontAwesomeLayers)
 Vue.component('font-awesome-layers-text', FontAwesomeLayersText)
