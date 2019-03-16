@@ -148,7 +148,7 @@ export default {
       // console.log('connected to main server')
     },
     update_cards_from_server (data) {
-      // console.log('server asked to update cards: ', data)
+      console.log('server asked to update cards: ', data)
       // if this is current game, then update the cards
       if (data.currentGameRoom == this.sharedState.currentGameRoom) {
         this.sharedState.guessCards = data.guessCards

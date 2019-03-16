@@ -1,7 +1,7 @@
 /*
 
 ### Component ###
-This component contains the modal dialogs
+This component contains the modal dialogs and some websocket calls for multiplayer games
 
 ## Props ##
 
@@ -49,6 +49,7 @@ This component contains the modal dialogs
                 type="text"
                 class="mb2 mr-sm-2 mb-sm-0"
                 v-model.trim="new_game"
+                maxlength="30"
                 placeholder="La partie de Max" />
               <b-button variant="light" v-if="new_game in this.sharedState.gameRooms" @click="join_game(new_game)">Rejoindre</b-button>
               <b-button variant="primary" v-else @click="create_game(new_game)">Créer</b-button>
@@ -160,6 +161,8 @@ export default {
       console.log("joining game: ", game)
       // register this game as the current game room
       this.sharedState.currentGameRoom = game
+      // join the game server side
+      this.$socket.emit('join_game', game)
       // activate multiplayer mode
       this.sharedState.isMultiPlayer = true
     },
