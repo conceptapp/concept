@@ -166,6 +166,7 @@ export default {
     EventBus.$on('reset', args => this.reset(args))
     EventBus.$on('add-icon', data => this.addIcon(data))
     EventBus.$on('remove-icon', data => this.removeIcon(data))
+    EventBus.$on('update-cards', data => this.pushWebsocket())
   }
 }
 </script>

@@ -77,6 +77,8 @@ This component contains the modal dialogs and some websocket calls for multiplay
 
 <script>
 import axios from 'axios'
+import { EventBus } from '@/event-bus.js'
+
 import easyjson from '../../data/success.json'
 import mediumjson from '../../data/warning.json'
 import hardjson from '../../data/danger.json'
@@ -153,7 +155,12 @@ export default {
       // register this new game as the current game room
       this.sharedState.currentGameRoom = this.new_game
       // create a new game server-side
-      this.$socket.emit('create_game', this.new_game)
+      this.$socket.emit('create_game', { 
+          'currentGameRoom': this.new_game,
+          'guessCards': this.sharedState.guessCards
+        })
+      // push current guess cards to the server
+      EventBus.$emit('update-cards') 
       // activate multiplayer mode
       this.sharedState.isMultiPlayer = true
     },
