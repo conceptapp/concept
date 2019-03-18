@@ -69,7 +69,9 @@ var store = {
     selectedColor: colors[0],   // select a default color
     isMultiPlayer: false,
     currentGameRoom: '',
-    gameRooms: []
+    gameRooms: [],
+    gameMode: '',
+    gameModeIsGod: false
   },
   setMessageAction (newValue) {
     if (this.debug) console.log('setMessageAction triggered with', newValue)

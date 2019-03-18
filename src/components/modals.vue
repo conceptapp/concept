@@ -42,25 +42,49 @@ This component contains the modal dialogs and some websocket calls for multiplay
         <div class="row text-left" v-if="!sharedState.isMultiPlayer">
           <div class="col">
             <h5 class="card-title text-left">Créer une nouvelle partie</h5>
-            <b-form inline>
-              <label class="mr-sm-2" for="create_game_room">Nom du jeu :</label>
-              <b-form-input
-                id="create_game_room"
-                type="text"
-                class="mb2 mr-sm-2 mb-sm-0"
-                v-model.trim="new_game"
-                maxlength="30"
-                placeholder="La partie de Max" />
-              <b-button variant="light" v-if="new_game in this.sharedState.gameRooms" @click="join_game(new_game)">Rejoindre</b-button>
-              <b-button variant="primary" v-else @click="create_game(new_game)">Créer</b-button>
+            <b-form > <!-- inline -->
+              <b-form-group 
+                id="gameTypeForm"
+                label= "Type de partie :"
+                label-cols-xl="4"
+                label-cols-lg="3"
+                label-for="game_type_select"
+              >
+              <b-form-select v-model="sharedState.gameMode" id="game_type_select">
+                <option value="" selected disabled="">Sélectionnez un type de jeu</option>
+                <option value="godMode">Vous seul pouvez ajouter des cartes</option>
+                <option value="allPlayersMode">Tous les joueurs peuvent proposer des cartes</option>
+                <option value="asyncMode" disabled>Proposer un plateau que d'autres joueurs doivent deviner</option>
+              </b-form-select>
+              </b-form-group>
+              <b-form-group 
+                id="gameTypeForm"
+                label= "Nom du jeu :"
+                label-cols-xl="4"
+                label-cols-lg="3"
+                label-for="create_game_room"
+              >
+                <b-form-input
+                  id="create_game_room"
+                  type="text"
+                  class=""
+                  v-model.trim="new_game"
+                  maxlength="30"
+                  placeholder="La partie de Max" />
+              </b-form-group>
+              <div class="text-right">
+                <b-button variant="light" v-if="new_game in this.sharedState.gameRooms" @click="join_game(new_game)">Rejoindre</b-button>
+                <b-button variant="primary" v-else @click="create_game(new_game)">Créer</b-button>
+              </div>
             </b-form>
-            <div v-if="Object.keys(this.sharedState.gameRooms).length">
+            <div v-if="Object.keys(multiplayersGameModes).length">
               <hr />
               <h5 class="card-title text-left">Rejoindre une partie</h5>
               <div class="container-fluid">
-                <div class="row text-left align-items-center" v-for="(game_room, key, index) in this.sharedState.gameRooms" :key="index">
-                  <div class="col-md-8"><i>{{ key }}</i></div>
-                  <div class="col-md-4"><b-button @click="join_game(key)" type="submit" variant="light">Rejoindre</b-button></div>
+                <div class="row text-left align-items-center my-2" v-for="(game_room, key, index) in multiplayersGameModes" :key="index">
+                  <div class="col-lg-1 p-0"><img style="max-height:20px;" :src="require('@/assets/images/bullet-puzzle.png')" /></div>
+                  <div class="col-lg-8 p-0" style="line-height: initial;">{{ key }}<br /><small><i>{{ game_room.mode == 'godMode' ? "Jeu géré par l'organisateur" : "Jeu ouvert à tous les participants"}}</i></small></div>
+                  <div class="col-lg-3 p-0"><b-button @click="join_game(key)" type="submit" variant="light">Rejoindre</b-button></div>
                 </div>
               </div>
             </div>
@@ -150,14 +174,19 @@ export default {
         this.$forceUpdate()
       }
     },
-    create_game: function() {
-      console.log("creating game: ", this.new_game)
+    create_game: function(new_game) {
+      console.log("creating game: ", new_game)
       // register this new game as the current game room
-      this.sharedState.currentGameRoom = this.new_game
+      this.sharedState.currentGameRoom = new_game
+      // set god mode by default if nothing selected
+      if (this.sharedState.gameMode == '') { this.sharedState.gameMode = 'godMode' }
+      // game creator is God by default
+      this.sharedState.gameModeIsGod = true
       // create a new game server-side
       this.$socket.emit('create_game', { 
           'currentGameRoom': this.new_game,
-          'guessCards': this.sharedState.guessCards
+          'guessCards': this.sharedState.guessCards,
+          'gameMode': this.sharedState.gameMode
         })
       // push current guess cards to the server
       EventBus.$emit('update-cards') 
@@ -168,19 +197,26 @@ export default {
       console.log("joining game: ", game)
       // register this game as the current game room
       this.sharedState.currentGameRoom = game
-      // join the game server side
-      this.$socket.emit('join_game', game)
       // activate multiplayer mode
       this.sharedState.isMultiPlayer = true
+      // set current gameMode
+      console.log('current game: ', this.sharedState.gameRooms[game])
+      this.sharedState.gameMode = this.sharedState.gameRooms[game]['mode']
+      // join the game server side
+      this.$socket.emit('join_game', game)
     },
     leave_game: function() {
       console.log("leaving game: ", this.sharedState.currentGameRoom)
-      // tell the server we're leaving the game
-      this.$socket.emit('leave_game', this.sharedState.currentGameRoom)
       // reset current game room
       this.sharedState.currentGameRoom = ''
       // deactivate multiplayer mode
       this.sharedState.isMultiPlayer = false
+      // reset current gameMode
+      this.sharedState.gameMode = ''
+      // reset god credentials
+      this.sharedState.gameModeIsGod = false
+      // tell the server we're leaving the game
+      this.$socket.emit('leave_game', this.sharedState.currentGameRoom)
     }
   },
   data: function () {
@@ -193,6 +229,17 @@ export default {
   created () { 
     for (var key in this.words) {
       this.retrieveRecords(key)
+    }
+  },
+  computed: {
+    multiplayersGameModes: function() {
+      var filteredGames = {}
+      for (var el in this.sharedState.gameRooms) {
+        if (this.sharedState.gameRooms[el].mode != 'asyncMode') {
+          filteredGames[el] = this.sharedState.gameRooms[el]
+        }
+      }
+      return filteredGames
     }
   }
 }

@@ -24,7 +24,7 @@ This component displays the main header row
         <b-nav-item class="d-md-none" v-b-modal.modalabout>A propos</b-nav-item>
         <!-- right aligned items -->
         <b-navbar-nav class="ml-auto" v-if="sharedState.currentGameRoom!=''">
-          <b-nav-item v-b-modal.modalmultiplayers>{{ sharedState.currentGameRoom }} <small class="text-muted">(<font-awesome-icon icon="male" /> x {{ sharedState.gameRooms[sharedState.currentGameRoom] }})</small></b-nav-item>
+          <b-nav-item v-b-modal.modalmultiplayers>{{ sharedState.currentGameRoom }} <small v-if="sharedState.gameRooms[sharedState.currentGameRoom]" class="text-muted">(<font-awesome-icon icon="male" /> x {{ sharedState.gameRooms[sharedState.currentGameRoom]['count'] }})</small></b-nav-item>
         </b-navbar-nav>
       </b-navbar-nav>
     </b-navbar>

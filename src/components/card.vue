@@ -25,11 +25,10 @@ TODO add rollover to display tooltip
               <div class="col-auto px-2">
                 <p class="card-text" v-html="cardInfo.Tooltip_fr"></p>
               </div>
-              <!-- $emit('add-icon', cardInfo) -->
-              <div v-if="addOrRemove == 'add'" class="col-auto icon-pointer" v-on:click="tooltipShown = !tooltipShown;changeIcon('add-icon', cardInfo)">
+              <div v-if="addOrRemove == 'add' && isGod" class="col-auto icon-pointer" v-on:click="tooltipShown = !tooltipShown;changeIcon('add-icon', cardInfo)">
                 <font-awesome-icon icon="plus-circle" size="2x" :color="sharedState.selectedColor" />
               </div>
-              <div v-if="addOrRemove == 'remove'" class="col-auto icon-pointer" v-on:click="tooltipShown = !tooltipShown;changeIcon('remove-icon', cardInfo)">
+              <div v-if="addOrRemove == 'remove' && isGod" class="col-auto icon-pointer" v-on:click="tooltipShown = !tooltipShown;changeIcon('remove-icon', cardInfo)">
                 <font-awesome-icon icon="trash" size="2x" :color="iconColor" />
               </div>
             </div>
@@ -61,6 +60,11 @@ export default {
   computed: {
     icon: function() {
       return require('../assets/images/cards/' + this.cardInfo.type + '/' + this.cardInfo.Name + '.png')
+    },
+    isGod: function() {
+      // if game mode is godMode, check if user is God to be allowed to remove cards
+      if (this.sharedState.gameMode == 'godMode' && !this.sharedState.gameModeIsGod) { return false }
+      return true
     }
   }
 }
