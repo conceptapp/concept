@@ -82,9 +82,9 @@ This component contains the modal dialogs and some websocket calls for multiplay
               <h5 class="card-title text-left">Rejoindre une partie</h5>
               <div class="container-fluid">
                 <div class="row text-left align-items-center my-2" v-for="(game_room, key, index) in multiplayersGameModes" :key="index">
-                  <div class="col-lg-1 p-0"><img style="max-height:20px;" :src="require('@/assets/images/bullet-puzzle.png')" /></div>
-                  <div class="col-lg-8 p-0" style="line-height: initial;">{{ key }}<br /><small><i>{{ game_room.mode == 'godMode' ? "Jeu géré par l'organisateur" : "Jeu ouvert à tous les participants"}}</i></small></div>
-                  <div class="col-lg-3 p-0"><b-button @click="join_game(key)" type="submit" variant="light">Rejoindre</b-button></div>
+                  <div class="col-lg-1 d-none d-lg-block p-0"><img style="max-height:20px;" :src="require('@/assets/images/bullet-puzzle.png')" /></div>
+                  <div class="col-8 p-0" style="line-height: initial;">{{ key }}<br /><small><i>{{ game_room.mode == 'godMode' ? "Jeu géré par l'organisateur" : "Jeu ouvert à tous les participants"}}</i></small></div>
+                  <div class="col-3 p-0"><b-button @click="join_game(key)" type="submit" variant="light">Rejoindre</b-button></div>
                 </div>
               </div>
             </div>
