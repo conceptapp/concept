@@ -177,4 +177,24 @@ export default {
 	margin-left: -15px;
 	margin-right: -15px;
 }
+.guess-cards {
+  display: contents;
+}
+.guess-icon {
+  padding: 0px 5px 0px 5px !important;
+}
+.guess-row {
+  min-height: 50px;
+  cursor: pointer;
+  margin: 0 0 14px 0;
+}
+.active {
+  background-color: #e9ecef;
+} 
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s;
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+}
 </style>

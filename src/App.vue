@@ -153,24 +153,4 @@ export default {
   padding-top:10px;
   margin-top: 10px;
 }
-.active {
-  background-color: #e9ecef;
-}
-.guess-icon {
-  padding: 0px 5px 0px 5px !important;
-}
-.guess-row {
-  min-height: 50px;
-  cursor: pointer;
-  margin: 0 0 14px 0;
-}
-.guess-cards {
-  display: inherit;
-}
-.fade-enter-active, .fade-leave-active {
-  transition: opacity .5s;
-}
-.fade-enter, .fade-leave-to {
-  opacity: 0;
-}
 </style>

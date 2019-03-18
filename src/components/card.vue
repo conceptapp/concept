@@ -22,13 +22,13 @@ TODO add rollover to display tooltip
         <div v-show="tooltipShown" class="col">
           <div class="container-fluid tooltip-row">
             <div class="row align-items-center tooltip-row">
-              <div class="col-auto px-2">
+              <div class="col-auto px-1 px-sm-2">
                 <p class="card-text" v-html="cardInfo.Tooltip_fr"></p>
               </div>
-              <div v-if="addOrRemove == 'add' && isGod" class="col-auto icon-pointer" v-on:click="tooltipShown = !tooltipShown;changeIcon('add-icon', cardInfo)">
+              <div v-if="addOrRemove == 'add' && isGod" class="col-auto px-1 px-sm-2 icon-pointer" v-on:click="tooltipShown = !tooltipShown;changeIcon('add-icon', cardInfo)">
                 <font-awesome-icon icon="plus-circle" size="2x" :color="sharedState.selectedColor" />
               </div>
-              <div v-if="addOrRemove == 'remove' && isGod" class="col-auto icon-pointer" v-on:click="tooltipShown = !tooltipShown;changeIcon('remove-icon', cardInfo)">
+              <div v-if="addOrRemove == 'remove' && isGod" class="col-auto px-1 px-sm-2 icon-pointer" v-on:click="tooltipShown = !tooltipShown;changeIcon('remove-icon', cardInfo)">
                 <font-awesome-icon icon="trash" size="2x" :color="iconColor" />
               </div>
             </div>
