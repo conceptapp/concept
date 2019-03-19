@@ -104,7 +104,14 @@ import { EventBus } from '@/event-bus.js'
 export default {
   name: 'MenuBar',
   components: { },
-  props: ['store'],
+  props: {
+    store: {
+      type: Object,
+      default: function () {
+        return {}
+      }
+    }
+  },
   data: function () {
     return {
       sharedState: this.store.state
@@ -127,7 +134,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 #brand-navbar {
-	margin-left: -15px;
-	margin-right: -15px;
+  margin-left: -15px;
+  margin-right: -15px;
 }
 </style>

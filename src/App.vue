@@ -2,28 +2,34 @@
   <div id="app">
     <div class="container">
       <mainRow
-        v-bind:store="store"
-      ></mainRow>
+        :store="store"
+      />
       <div class="container-body">
         <div id="concept-cards">
           <!-- display all the concept types -->
-          <section v-for="type in sharedState.types" :key="type.id">
+          <section
+            v-for="type in sharedState.types"
+            :key="type.id"
+          >
             <typeRow
-              v-bind:store="store"
-              v-bind:type="type"
-            ></typeRow>
+              :store="store"
+              :type="type"
+            />
           </section>
         </div>
       </div>
       <!-- append a blank div to placehold the navbar on mobile and give some space on the other devices -->
-      <div class="container" style="height:70px;"></div>
+      <div
+        class="container"
+        style="height:70px;"
+      />
     </div>
   </div>
 </template>
 
 <script>
 import axios from 'axios'
-import { EventBus } from '@/event-bus.js'
+// import { EventBus } from '@/event-bus.js'
 // import { setupCache } from 'axios-cache-adapter'
 import mainRow from '@/components/main-row'
 import typeRow from '@/components/type-row'
@@ -45,10 +51,10 @@ const LOCAL = true
 //   adapter: cache.adapter
 // })
 
-/* 
+/*
 api({
   url: '',
-  method: 'get'  
+  method: 'get'
 }).then( async(response) => {
   console.log('Request response:', response)
 })
@@ -56,7 +62,7 @@ api({
 
 var appKey = 'keyrkS74q9vL9FBHT'
 var appId = 'appzdYVnVaVLTKUB7'
-const colors = ["#10C177", "#FE4365", "#1693A5", "#420943"]
+const colors = ['#10C177', '#FE4365', '#1693A5', '#420943']
 
 // defines a store to be used all over the app according to https://vuejs.org/v2/guide/state-management.html#Simple-State-Management-from-Scratch
 var store = {
@@ -67,7 +73,7 @@ var store = {
     guessCards: {},
     cardDragged: {},
     colors: colors,
-    selectedColor: colors[0],   // select a default color
+    selectedColor: colors[0], // select a default color
     isMultiPlayer: false,
     currentGameRoom: '',
     gameRooms: [],
@@ -89,9 +95,9 @@ export default {
   name: 'App',
   components: { mainRow, typeRow, websocket },
   methods: {
-    retrieveRecords: function(recordType, offset) {
+    retrieveRecords: function (recordType, offset) {
       // query all the data from airtable or local JSON stored in /data
-      var offset = offset !== undefined ? '&offset=' + offset : ''
+      offset = offset !== undefined ? '&offset=' + offset : ''
       if (!LOCAL) {
         axios.get(
           'https://api.airtable.com/v0/' + appId + '/' + recordType + '?sort%5B0%5D%5Bfield%5D=index' + offset,
@@ -99,10 +105,11 @@ export default {
             headers: { Authorization: 'Bearer ' + appKey }
           }
         ).then(function (response) {
-          if (recordType == 'Types') {
+          if (recordType === 'Types') {
             this.sharedState.types = response.data.records
-          } else {  // get the cards data
-            if (offset === '') { 
+          } else {
+            // get the cards data
+            if (offset === '') {
               this.sharedState.cards = response.data.records
               this.retrieveRecords('Cards', response.data.offset)
             } else {
@@ -113,7 +120,7 @@ export default {
           console.log(error)
         })
       } else {
-        if (recordType == 'Types') {
+        if (recordType === 'Types') {
           this.sharedState.types = typesjson.records
         } else {
           this.sharedState.cards = cards1json.records.concat(cards2json.records)

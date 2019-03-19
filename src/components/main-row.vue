@@ -11,8 +11,8 @@ This component displays the main header row
 
 <template>
   <div id="main-row">
-    <menuBar
-      v-bind:store="store"
+    <MenuBar
+      :store="store"
     />
     <div class="container-body">
       <div
@@ -21,17 +21,19 @@ This component displays the main header row
       >
         <!-- hide on screens smaller than lg / md / sm -->
         <div class="col-2 d-none d-sm-block">
-          <conceptCard />
+          <ConceptCard />
         </div>
         <!-- show only on mobile -->
         <div class="col-1 d-sm-none" />
         <div class="col-10">
           <!-- show all the concept by row, one color each -->
+          <!-- eslinnt-disable-next-line vue/use-v-on-style -->
           <div
             v-for="(color, index) in sharedState.colors"
+            :key="index"
             :id="color"
-            v-bind:class="{ 'active': color == sharedState.selectedColor }"
-            v-on:click="sharedState.selectedColor = color"
+            :class="{ 'active': color == sharedState.selectedColor }"
+            @:click="sharedState.selectedColor = color"
             :droppable="sharedState.gameModeAllowChange"
             v-on:dragover="dragover"
             v-on:dragenter="dragenter"
@@ -40,7 +42,7 @@ This component displays the main header row
           >
             <div class="col-auto guess-icon">
               <font-awesome-icon
-                v-bind:icon="index == 0 ? 'question-circle' : 'exclamation-circle'"
+                :icon="index == 0 ? 'question-circle' : 'exclamation-circle'"
                 :color="color"
                 size="2x"
               />
@@ -51,13 +53,13 @@ This component displays the main header row
             >
               <div
                 v-for="(card, index) in sharedState.guessCards[color]"
-                :key="index"
+                :key="index + 1"
                 class="card"
               >
-                <card
-                  v-bind:store="store"
-                  v-bind:cardInfo="card"
-                  v-bind:iconColor="color"
+                <Card
+                  :store="store"
+                  :card-info="card"
+                  :icon-color="color"
                   add-or-remove="remove"
                 />
               </div>
@@ -66,23 +68,36 @@ This component displays the main header row
         </div>
       </div>
     </div>
-    <modals
-      v-bind:store="store"
+    <Modals
+      :store="store"
     />
   </div>
 </template>
 
 <script>
 import { EventBus } from '@/event-bus.js'
-import conceptCard from '@/components/concept-card'
-import menuBar from '@/components/menu-bar'
-import card from '@/components/card'
-import modals from '@/components/modals'
+import ConceptCard from '@/components/concept-card'
+import MenuBar from '@/components/menu-bar'
+import Card from '@/components/card'
+import Modals from '@/components/modals'
 
 export default {
   name: 'MainRow',
   components: { Card, ConceptCard, Modals, MenuBar },
-  props: ['store', 'type'],
+  props: {
+    store: {
+      type: Object,
+      default: function () {
+        return {}
+      }
+    },
+    type: {
+      type: Object,
+      default: function () {
+        return {}
+      }
+    }
+  },
   data: function () {
     return {
       sharedState: this.store.state
@@ -110,17 +125,17 @@ export default {
       // remove clicked icon from current active color
       this.sharedState.guessCards[this.sharedState.selectedColor] = this.sharedState.guessCards[this.sharedState.selectedColor].filter(
         function (obj) {
-          return !(obj.Name == data.Name)
+          return !(obj.Name === data.Name)
         })
       this.pushWebsocket()
     },
     // initialize an empty array to be pushed for every color
     initGuessCards: function () {
-		  var obj = {}
-		  for (var i = 0; i < this.sharedState.colors.length; i++) {
-		    obj[this.sharedState.colors[i]] = []
-		  }
-		  return obj
+      var obj = {}
+      for (var i = 0; i < this.sharedState.colors.length; i++) {
+        obj[this.sharedState.colors[i]] = []
+      }
+      return obj
     },
     pushWebsocket: function () {
       // if playing in multiplayer mode, push the info to the websocket server
@@ -158,7 +173,7 @@ export default {
     update_cards_from_server (data) {
       console.log('server asked to update cards: ', data)
       // if this is current game, then update the cards
-      if (data.currentGameRoom == this.sharedState.currentGameRoom) {
+      if (data.currentGameRoom === this.sharedState.currentGameRoom) {
         this.sharedState.guessCards = data.guessCards
       }
     },

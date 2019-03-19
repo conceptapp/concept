@@ -24,8 +24,8 @@ This component contains the modal dialogs and some websocket calls for multiplay
         :key="index"
       >
         <section
-          v-for="(definition, key, index) in wordtype[0].fields"
-          :key="index"
+          v-for="(definition, key, index_w) in wordtype[0].fields"
+          :key="index_w"
         >
           <b-alert
             :variant="variant"
@@ -245,7 +245,12 @@ export default {
   name: 'Modals',
   components: { },
   props: {
-    store: Object
+    store: {
+      type: Object,
+      default: function () {
+        return {}
+      }
+    }
   },
   data: function () {
     return {

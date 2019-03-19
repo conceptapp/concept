@@ -16,7 +16,7 @@ TODO add rollover to display tooltip
   <section>
     <div class="row no-gutters">
       <div
-        v-on:click="tooltipShown = !tooltipShown"
+        @click="tooltipShown = !tooltipShown"
         :draggable="gameModeAllowChange"
         v-on:dragstart="dragstart"
         v-on:dragend="dragend"
@@ -25,9 +25,9 @@ TODO add rollover to display tooltip
         <!-- v-on:dragover="dragover"
         v-on:dragenter="dragenter" -->
         <img
-          v-bind:src="icon"
-          v-bind:alt="cardInfo.Tooltip_fr"
-          v-bind:title="cardInfo.Tooltip_fr"
+          :src="icon"
+          :alt="cardInfo.Tooltip_fr"
+          :title="cardInfo.Tooltip_fr"
         >
       </div>
       <transition name="fade">
@@ -45,7 +45,7 @@ TODO add rollover to display tooltip
               </div>
               <div
                 v-if="addOrRemove == 'add' && gameModeAllowChange"
-                v-on:click="tooltipShown = !tooltipShown;changeIcon('add-icon', cardInfo)"
+                @click="tooltipShown = !tooltipShown;changeIcon('add-icon', cardInfo)"
                 class="col-auto px-1 px-sm-2 icon-pointer"
               >
                 <font-awesome-icon
@@ -56,7 +56,7 @@ TODO add rollover to display tooltip
               </div>
               <div
                 v-if="addOrRemove == 'remove' && gameModeAllowChange"
-                v-on:click="tooltipShown = !tooltipShown;changeIcon('remove-icon', cardInfo)"
+                @click="tooltipShown = !tooltipShown;changeIcon('remove-icon', cardInfo)"
                 class="col-auto px-1 px-sm-2 icon-pointer"
               >
                 <font-awesome-icon
@@ -78,7 +78,28 @@ import { EventBus } from '@/event-bus.js'
 
 export default {
   name: 'Card',
-  props: ['store', 'cardInfo', 'addOrRemove', 'iconColor'],
+  props: {
+    store: {
+      type: Object,
+      default: function () {
+        return {}
+      }
+    },
+    cardInfo: {
+      type: Object,
+      default: function () {
+        return {}
+      }
+    },
+    addOrRemove: {
+      type: String,
+      default: 'add'
+    },
+    iconColor: {
+      type: String,
+      default: '#10C177'
+    }
+  },
   data: function () {
     return {
       tooltipShown: false,
@@ -89,11 +110,17 @@ export default {
     icon: function () {
       return require('../assets/images/cards/' + this.cardInfo.type + '/' + this.cardInfo.Name + '.png')
     },
-    gameModeAllowChange: function () {
-      // if game mode is godMode, check if user is God to be allowed to remove cards
-      this.sharedState.gameModeAllowChange = !(this.sharedState.gameMode == 'godMode' && !this.sharedState.gameModeIsGod)
-      console.log(this.sharedState.gameMode == 'godMode', !this.sharedState.gameModeIsGod, this.sharedState.gameModeAllowChange)
-      return this.sharedState.gameModeAllowChange
+    gameModeAllowChange: {
+      // getter
+      get: function () {
+        return this.sharedState.gameModeAllowChange
+      },
+      // setter
+      set: function () {
+        // if game mode is godMode, check if user is God to be allowed to remove cards
+        this.sharedState.gameModeAllowChange = !(this.sharedState.gameMode === 'godMode' && !this.sharedState.gameModeIsGod)
+        // console.log(this.sharedState.gameMode === 'godMode', !this.sharedState.gameModeIsGod, this.sharedState.gameModeAllowChange)
+      }
     }
   },
   methods: {

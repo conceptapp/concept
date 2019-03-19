@@ -27,9 +27,9 @@ On click, display tooltip next to the icon
         :key="card.id"
         class="card"
       >
-        <card
-          v-bind:store="store"
-          v-bind:cardInfo="card.fields"
+        <Card
+          :store="store"
+          :card-info="card.fields"
           add-or-remove="add"
         />
       </div>
@@ -39,13 +39,26 @@ On click, display tooltip next to the icon
 </template>
 
 <script>
-import { EventBus } from '@/event-bus.js'
-import card from '@/components/card'
+// import { EventBus } from '@/event-bus.js'
+import Card from '@/components/card'
 
 export default {
   name: 'TypeRow',
   components: { Card },
-  props: ['store', 'type'],
+  props: {
+    store: {
+      type: Object,
+      default: function () {
+        return {}
+      }
+    },
+    type: {
+      type: Object,
+      default: function () {
+        return {}
+      }
+    }
+  },
   data: function () {
     return {
       sharedState: this.store.state
@@ -55,7 +68,7 @@ export default {
     currentCards: function () {
       var t = this.type
       var a = this.sharedState.cards.filter(function (el) {
-        return el.fields.Type[0] == t.id
+        return el.fields.Type[0] === t.id
       })
       // append the type of the card to the array for use in the child component
       a = a.map(function (card) {
