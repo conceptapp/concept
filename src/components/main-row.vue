@@ -132,7 +132,6 @@ export default {
       var cardColor = Object.keys(this.sharedState.cardDragged).length > 0 ? data.color : this.sharedState.selectedColor
       this.sharedState.guessCards[cardColor] = this.sharedState.guessCards[cardColor].filter(
         function (obj) {
-          console.log('obj: ', obj)
           return !(obj.Name === data.Name)
         })
       this.pushWebsocket()

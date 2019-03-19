@@ -17,7 +17,7 @@ TODO add rollover to display tooltip
     <div class="row no-gutters">
       <div
         @click="tooltipShown = !tooltipShown"
-        :draggable="gameModeAllowChange"
+        :draggable="this.sharedState.gameModeAllowChange"
         v-on:dragstart="dragstart"
         v-on:dragend="dragend"
         class="col-auto concept-icon"
@@ -44,7 +44,7 @@ TODO add rollover to display tooltip
                 />
               </div>
               <div
-                v-if="addOrRemove == 'add' && gameModeAllowChange"
+                v-if="addOrRemove == 'add' && this.sharedState.gameModeAllowChange"
                 @click="tooltipShown = !tooltipShown;changeIcon('add-icon', cardInfo)"
                 class="col-auto px-1 px-sm-2 icon-pointer"
               >
@@ -55,7 +55,7 @@ TODO add rollover to display tooltip
                 />
               </div>
               <div
-                v-if="addOrRemove == 'remove' && gameModeAllowChange"
+                v-if="addOrRemove == 'remove' && this.sharedState.gameModeAllowChange"
                 @click="tooltipShown = !tooltipShown;changeIcon('remove-icon', cardInfo)"
                 class="col-auto px-1 px-sm-2 icon-pointer"
               >
@@ -110,17 +110,13 @@ export default {
     icon: function () {
       return require('../assets/images/cards/' + this.cardInfo.type + '/' + this.cardInfo.Name + '.png')
     },
-    gameModeAllowChange: {
-      // getter
-      get: function () {
-        return this.sharedState.gameModeAllowChange
-      },
-      // setter
-      set: function () {
-        // if game mode is godMode, check if user is God to be allowed to remove cards
-        this.sharedState.gameModeAllowChange = !(this.sharedState.gameMode === 'godMode' && !this.sharedState.gameModeIsGod)
-        // console.log(this.sharedState.gameMode === 'godMode', !this.sharedState.gameModeIsGod, this.sharedState.gameModeAllowChange)
-      }
+    gameMode: function() {
+      return this.sharedState.gameMode
+    }
+  },
+  watch: {
+    gameMode: function (oldValue, newValue) {
+      this.sharedState.gameModeAllowChange = !(this.sharedState.gameMode === 'godMode' && !this.sharedState.gameModeIsGod)
     }
   },
   methods: {
