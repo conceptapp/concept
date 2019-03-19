@@ -97,7 +97,7 @@ export default {
     },
     iconColor: {
       type: String,
-      default: '#10C177'
+      default: ''
     }
   },
   data: function () {
@@ -131,8 +131,14 @@ export default {
     dragstart: function (ev) {
       // store the current card dragged
       this.sharedState.cardDragged = this.cardInfo
+      // add current icon color (if empty, card comes from type rows, if color is set, card comes from guess row)
+      this.sharedState.cardDragged['color'] = this.iconColor
     },
     dragend: function (ev) {
+      // if card is dragged from guess row, remove card
+      if (this.sharedState.cardDragged['color'] !== '') {
+        EventBus.$emit('remove-icon', this.cardInfo)
+      }
       // reset current dragged card
       this.sharedState.cardDragged = {}
     }

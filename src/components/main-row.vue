@@ -114,6 +114,8 @@ export default {
   methods: {
     addIcon: function (data) {
       // Name, Tooltip_fr
+      // check if user is allowed to change guess cards
+      if (!this.sharedState.gameModeAllowChange) { return false }
       // first time a color is called, need to create the empty array
       if (this.sharedState.guessCards[this.sharedState.selectedColor] == null) {
         this.sharedState.guessCards[this.sharedState.selectedColor] = []
@@ -122,9 +124,15 @@ export default {
       this.pushWebsocket()
     },
     removeIcon: function (data) {
-      // remove clicked icon from current active color
-      this.sharedState.guessCards[this.sharedState.selectedColor] = this.sharedState.guessCards[this.sharedState.selectedColor].filter(
+      // check if user is allowed to change guess cards
+      if (!this.sharedState.gameModeAllowChange) { return false }
+      // remove clicked icon 
+      // color row depends from the call 
+      // if dragged, use color from data, else, use active color
+      var cardColor = Object.keys(this.sharedState.cardDragged).length > 0 ? data.color : this.sharedState.selectedColor
+      this.sharedState.guessCards[cardColor] = this.sharedState.guessCards[cardColor].filter(
         function (obj) {
+          console.log('obj: ', obj)
           return !(obj.Name === data.Name)
         })
       this.pushWebsocket()
