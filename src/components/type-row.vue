@@ -40,7 +40,7 @@ import card from '@/components/card'
 
 export default {
   name: 'typeRow',
-  components: { card },
+  components: { Card },
   props: ['store', 'type'],
   methods: {
   },

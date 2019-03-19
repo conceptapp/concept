@@ -48,7 +48,7 @@ TODO add rollover to display tooltip
 import { EventBus } from '@/event-bus.js'
 
 export default {
-  name: 'card',
+  name: 'Card',
   props: ['store', 'cardInfo', 'addOrRemove', 'iconColor'],
   data: function () {
     return { 

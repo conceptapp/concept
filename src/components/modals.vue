@@ -69,13 +69,13 @@ This component contains the modal dialogs and some websocket calls for multiplay
                   id="create_game_room"
                   type="text"
                   class=""
-                  v-model.trim="new_game"
+                  v-model.trim="newGame"
                   maxlength="30"
                   placeholder="La partie de Max" />
               </b-form-group>
               <div class="text-right">
-                <b-button variant="light" v-if="new_game in this.sharedState.gameRooms" @click="join_game(new_game)">Rejoindre</b-button>
-                <b-button variant="primary" v-else @click="create_game(new_game)">Créer</b-button>
+                <b-button variant="light" v-if="newGame in this.sharedState.gameRooms" @click="join_game(newGame)">Rejoindre</b-button>
+                <b-button variant="primary" v-else @click="create_game(newGame)">Créer</b-button>
               </div>
             </b-form>
             <div v-if="Object.keys(multiplayersGameModes).length">
@@ -113,12 +113,37 @@ var appKey = 'keyrkS74q9vL9FBHT'
 var appId = 'appzdYVnVaVLTKUB7'
 
 export default {
-  name: 'modals',
+  name: 'Modals',
   components: { },
-  props: ['store'],
+  props: {
+    store: Object
+  },
+  data: function () {
+    return {
+      sharedState: this.store.state,
+      words: { success: [], warning: [], danger: [] },
+      newGame: ''
+    }
+  },
+  computed: {
+    multiplayersGameModes: function () {
+      var filteredGames = {}
+      for (var el in this.sharedState.gameRooms) {
+        if (this.sharedState.gameRooms[el].mode !== 'asyncMode') {
+          filteredGames[el] = this.sharedState.gameRooms[el]
+        }
+      }
+      return filteredGames
+    }
+  },
+  created () {
+    for (var key in this.words) {
+      this.retrieveRecords(key)
+    }
+  },
   methods: {
-    retrieveRecords: function(recordType, offset) {
-      var offset = offset !== undefined ? '?offset=' + offset : ''
+    retrieveRecords: function (recordType, offset) {
+      offset = offset !== undefined ? '?offset=' + offset : ''
       if (!LOCAL) {
         axios.get(
           'https://api.airtable.com/v0/' + appId + '/' + recordType + offset,
@@ -126,7 +151,7 @@ export default {
             headers: { Authorization: 'Bearer ' + appKey }
           }
         ).then(function (response) {
-          if (offset === '') { 
+          if (offset === '') {
             this.words[recordType] = response.data.records
           } else {
             this.words[recordType].concat(response.data.records)
@@ -140,17 +165,17 @@ export default {
             // choose a first set of words to guess
             this.shuffleWords(undefined, recordType)
           }
-      }.bind(this)).catch(function (error) {
+        }.bind(this)).catch(function (error) {
           console.log(error)
         })
       } else {
-        switch(recordType) {
+        switch (recordType) {
           case 'success':
-            this.words[recordType] = easyjson.records    
-            break;
+            this.words[recordType] = easyjson.records
+            break
           case 'warning':
             this.words[recordType] = mediumjson.records
-            break;
+            break
           default:
             this.words[recordType] = hardjson.records
         }
@@ -160,42 +185,42 @@ export default {
         this.shuffleWords(undefined, recordType)
       }
     },
-    shuffleWords: function(evt, key) {
+    shuffleWords: function (evt, key) {
       // pick a random index in each word subset and store the random index values at index 0 of the array
-      if ( key === undefined ) {
+      if (key === undefined) {
         for (var iKey in this.words) {
-          this.words[iKey][0] = this.words[iKey][Math.floor(Math.random() * this.words[iKey].length)];
+          this.words[iKey][0] = this.words[iKey][Math.floor(Math.random() * this.words[iKey].length)]
         }
       } else {
-        this.words[key][0] = this.words[key][Math.floor(Math.random() * this.words[key].length)];
-      } 
+        this.words[key][0] = this.words[key][Math.floor(Math.random() * this.words[key].length)]
+      }
       // prevent modal from closing
-      if ( !(evt === undefined) ) {
+      if (!(evt === undefined)) {
         evt.preventDefault()
         this.$forceUpdate()
       }
     },
-    create_game: function(new_game) {
-      console.log("creating game: ", new_game)
+    create_game: function (newGame) {
+      console.log('creating game: ', newGame)
       // register this new game as the current game room
-      this.sharedState.currentGameRoom = new_game
+      this.sharedState.currentGameRoom = newGame
       // set god mode by default if nothing selected
-      if (this.sharedState.gameMode == '') { this.sharedState.gameMode = 'godMode' }
+      if (this.sharedState.gameMode === '') { this.sharedState.gameMode = 'godMode' }
       // game creator is God by default
       this.sharedState.gameModeIsGod = true
       // create a new game server-side
-      this.$socket.emit('create_game', { 
-          'currentGameRoom': this.new_game,
-          'guessCards': this.sharedState.guessCards,
-          'gameMode': this.sharedState.gameMode
-        })
+      this.$socket.emit('create_game', {
+        'currentGameRoom': this.newGame,
+        'guessCards': this.sharedState.guessCards,
+        'gameMode': this.sharedState.gameMode
+      })
       // push current guess cards to the server
-      EventBus.$emit('update-cards') 
+      EventBus.$emit('update-cards')
       // activate multiplayer mode
       this.sharedState.isMultiPlayer = true
     },
-    join_game: function(game) {
-      console.log("joining game: ", game)
+    join_game: function (game) {
+      console.log('joining game: ', game)
       // register this game as the current game room
       this.sharedState.currentGameRoom = game
       // activate multiplayer mode
@@ -206,8 +231,8 @@ export default {
       // join the game server side
       this.$socket.emit('join_game', game)
     },
-    leave_game: function() {
-      console.log("leaving game: ", this.sharedState.currentGameRoom)
+    leave_game: function () {
+      console.log('leaving game: ', this.sharedState.currentGameRoom)
       // reset current game room
       this.sharedState.currentGameRoom = ''
       // deactivate multiplayer mode
@@ -219,31 +244,8 @@ export default {
       // tell the server we're leaving the game
       this.$socket.emit('leave_game', this.sharedState.currentGameRoom)
     },
-    hideModal: function() {
+    hideModal: function () {
       this.$refs.modalmultiplayers.hide()
-    }
-  },
-  data: function () {
-    return { 
-      sharedState: this.store.state,
-      words: { success: [], warning: [], danger: [] },
-      new_game: ''
-    }
-  },
-  created () { 
-    for (var key in this.words) {
-      this.retrieveRecords(key)
-    }
-  },
-  computed: {
-    multiplayersGameModes: function() {
-      var filteredGames = {}
-      for (var el in this.sharedState.gameRooms) {
-        if (this.sharedState.gameRooms[el].mode != 'asyncMode') {
-          filteredGames[el] = this.sharedState.gameRooms[el]
-        }
-      }
-      return filteredGames
     }
   }
 }

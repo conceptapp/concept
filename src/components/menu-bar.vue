@@ -54,7 +54,7 @@ This component displays the main menu bar
 import { EventBus } from '@/event-bus.js'
 
 export default {
-  name: 'menuBar',
+  name: 'MenuBar',
   components: { },
   props: ['store'],
   data: function () {
