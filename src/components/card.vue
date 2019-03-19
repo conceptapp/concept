@@ -49,7 +49,13 @@ import { EventBus } from '@/event-bus.js'
 
 export default {
   name: 'card',
-  props: ['store', 'cardInfo', 'addOrRemove', 'iconColor'], // 'selectedColor', 
+  props: ['store', 'cardInfo', 'addOrRemove', 'iconColor'],
+  data: function () {
+    return { 
+      tooltipShown: false,
+      sharedState: this.store.state
+    }
+  },
   methods: {
     changeIcon: function(addOrRemove, data) {
       // EventBus.$emit('remove-icon', cardInfo)
@@ -78,12 +84,6 @@ export default {
 //     dragover: function(ev) {
 //       // console.log('dragover: ', ev)
 //     }
-  },
-  data: function () {
-    return { 
-      tooltipShown: false,
-      sharedState: this.store.state
-    }
   },
   computed: {
     icon: function() {

@@ -68,7 +68,7 @@ import modals from '@/components/modals'
 
 export default {
   name: 'mainRow',
-  components: { card, conceptCard, modals, menuBar },
+  components: { card, ConceptCard, modals, menuBar },
   props: ['store', 'type'],
   data: function () {
     return { 

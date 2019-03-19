@@ -9,17 +9,15 @@ import BootstrapVue from 'bootstrap-vue'
 
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
-// import { Modal } from 'bootstrap-vue/es/components'
 
 // import FontAwesome components
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon, FontAwesomeLayers, FontAwesomeLayersText } from '@fortawesome/vue-fontawesome'
 import { faPlus, faPlusCircle, faMinusCircle, faQuestionCircle, faExclamationCircle, faTrash, faPlayCircle, faTrashRestore, faBookOpen, faPlusSquare, 
-	faUsers, faBars, faMale } from '@fortawesome/free-solid-svg-icons'
+  faUsers, faBars, faMale } from '@fortawesome/free-solid-svg-icons'
 
 // import and connect to the concept server-side with websocket thanks to Vue Socket IO
 import VueSocketIO from 'vue-socket.io'
-// console.log(process.env.SOCKET_IO_URL)
 Vue.use(VueSocketIO, process.env.SOCKET_IO_URL)
 
 Vue.use(BootstrapVue)

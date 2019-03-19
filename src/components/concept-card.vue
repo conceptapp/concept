@@ -38,11 +38,11 @@ import VueFlip from 'vue-flip'
 import { EventBus } from '@/event-bus.js'
 
 export default {
-  name: 'conceptCard',
+  name: 'ConceptCard',
   components: { 'vue-flip': VueFlip },
   props: [],
   methods: {
-    reset: function() {
+    reset: function () {
       // this.$emit('reset')
       EventBus.$emit('reset', {})
     }

@@ -20,13 +20,12 @@
     "axios-cache-adapter": "^2.3.0",
     "bootstrap": "^4.3.1",
     "bootstrap-vue": "^2.0.0-rc.13",
-    "concept_server": "file:server",
     "document-ready": "^2.0.2",
     "i": "^0.3.6",
     "nodemon": "^1.18.10",
     "npm": "^6.9.0",
     "postscribe": "^2.0.8",
-    "vue": "^2.6.8",
+    "vue": "^2.6.9",
     "vue-flip": "^0.2.5",
     "vue-loader": "^11.0.0",
     "vue-router": "^3.0.1",
@@ -46,7 +45,7 @@
     "babel-preset-env": "^1.3.2",
     "babel-preset-stage-2": "^6.22.0",
     "chalk": "^2.0.1",
-    "copy-webpack-plugin": "^4.0.1",
+    "copy-webpack-plugin": "^4.6.0",
     "css-loader": "^0.28.0",
     "eslint": "^4.19.1",
     "eslint-config-standard": "^10.2.1",
@@ -57,9 +56,9 @@
     "eslint-plugin-promise": "^3.8.0",
     "eslint-plugin-standard": "^3.1.0",
     "eslint-plugin-vue": "^4.0.0",
-    "extract-text-webpack-plugin": "^3.0.0",
+    "extract-text-webpack-plugin": "^3.0.2",
     "file-loader": "^1.1.4",
-    "friendly-errors-webpack-plugin": "^1.6.1",
+    "friendly-errors-webpack-plugin": "^1.7.0",
     "html-webpack-plugin": "^2.30.1",
     "node-notifier": "^5.1.2",
     "optimize-css-assets-webpack-plugin": "^3.2.0",
@@ -74,10 +73,10 @@
     "uglifyjs-webpack-plugin": "^1.1.1",
     "url-loader": "^0.5.8",
     "vue-style-loader": "^3.0.1",
-    "webpack": "^3.6.0",
+    "webpack": "^3.12.0",
     "webpack-bundle-analyzer": "^2.9.0",
     "webpack-dev-server": "^2.9.1",
-    "webpack-merge": "^4.1.0"
+    "webpack-merge": "^4.2.1"
   },
   "engines": {
     "node": ">= 6.0.0",
@@ -87,5 +86,15 @@
     "> 1%",
     "last 2 versions",
     "not ie <= 8"
-  ]
+  ],
+  "main": ".eslintrc.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/conceptapp/concept.git"
+  },
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/conceptapp/concept/issues"
+  },
+  "homepage": "https://github.com/conceptapp/concept#readme"
 }
