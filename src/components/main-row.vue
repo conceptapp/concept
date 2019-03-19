@@ -12,7 +12,7 @@ This component displays the main header row
 <template>
 	<div id="main-row">
     <menuBar
-      v-bind:store=store
+      v-bind:store="store"
     > </menuBar>
     <div class="container-body">
       <div id="header-row" class="row">
@@ -26,9 +26,14 @@ This component displays the main header row
           <!-- show all the concept by row, one color each -->
           <div
             v-for="(color, index) in sharedState.colors"
+            :id="color"
             class="row align-items-center rounded shadow-sm guess-row"
             v-bind:class="{ 'active': color == sharedState.selectedColor }"
             v-on:click="sharedState.selectedColor = color"
+            :droppable="sharedState.gameModeAllowChange"
+            v-on:dragover="dragover"
+            v-on:dragenter="dragenter"
+            v-on:drop="drop"
           >
             <div class="col-auto guess-icon">
               <font-awesome-icon v-bind:icon="index == 0 ? 'question-circle' : 'exclamation-circle'" size="2x" :color="color" />
@@ -48,7 +53,7 @@ This component displays the main header row
       </div>
     </div>
     <modals 
-      v-bind:store=store
+      v-bind:store="store"
     ></modals>
   </div>
 </template>
@@ -105,6 +110,24 @@ export default {
           'guessCards': this.sharedState.guessCards
         })
       }
+    },
+    dragenter: function(ev) {
+      ev.preventDefault()
+    },
+    dragover: function(ev) {
+      // set current color as the div being dragged over to set active class
+      this.sharedState.selectedColor = ev.target.id
+      ev.preventDefault()
+    },
+    drop: function(ev) {
+      // if user is allowed to change state, add icon nto current color row
+      if (this.sharedState.gameModeAllowChange) { 
+        this.addIcon(this.sharedState.cardDragged) 
+      } else {
+        alert("Dans ce mode de jeu, vous n'êtes pas autorisé à changer les cartes, désolé.")
+      }
+      ev.preventDefault()
+      // return true
     }
   },
   sockets: {

@@ -65,13 +65,15 @@ var store = {
     types: [],
     cards: [],
     guessCards: {},
+    cardDragged: {},
     colors: colors,
     selectedColor: colors[0],   // select a default color
     isMultiPlayer: false,
     currentGameRoom: '',
     gameRooms: [],
     gameMode: '',
-    gameModeIsGod: false
+    gameModeIsGod: false,
+    gameModeAllowChange: true
   },
   setMessageAction (newValue) {
     if (this.debug) console.log('setMessageAction triggered with', newValue)
