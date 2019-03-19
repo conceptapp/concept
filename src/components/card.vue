@@ -15,26 +15,55 @@ TODO add rollover to display tooltip
 <template>
   <section>
     <div class="row no-gutters">
-      <div class="col-auto concept-icon" v-on:click="tooltipShown = !tooltipShown" 
-        :draggable="gameModeAllowChange" 
-        v-on:dragstart="dragstart" 
-        v-on:dragend="dragend">
-                <!-- v-on:dragover="dragover"
+      <div
+        v-on:click="tooltipShown = !tooltipShown"
+        :draggable="gameModeAllowChange"
+        v-on:dragstart="dragstart"
+        v-on:dragend="dragend"
+        class="col-auto concept-icon"
+      >
+        <!-- v-on:dragover="dragover"
         v-on:dragenter="dragenter" -->
-        <img v-bind:src="icon" v-bind:alt="cardInfo.Tooltip_fr" v-bind:title="cardInfo.Tooltip_fr" />
+        <img
+          v-bind:src="icon"
+          v-bind:alt="cardInfo.Tooltip_fr"
+          v-bind:title="cardInfo.Tooltip_fr"
+        >
       </div>
       <transition name="fade">
-        <div v-show="tooltipShown" class="col">
+        <div
+          v-show="tooltipShown"
+          class="col"
+        >
           <div class="container-fluid tooltip-row">
             <div class="row align-items-center tooltip-row">
               <div class="col-auto px-1 px-sm-2">
-                <p class="card-text" v-html="cardInfo.Tooltip_fr"></p>
+                <p
+                  v-html="cardInfo.Tooltip_fr"
+                  class="card-text"
+                />
               </div>
-              <div v-if="addOrRemove == 'add' && gameModeAllowChange" class="col-auto px-1 px-sm-2 icon-pointer" v-on:click="tooltipShown = !tooltipShown;changeIcon('add-icon', cardInfo)">
-                <font-awesome-icon icon="plus-circle" size="2x" :color="sharedState.selectedColor" />
+              <div
+                v-if="addOrRemove == 'add' && gameModeAllowChange"
+                v-on:click="tooltipShown = !tooltipShown;changeIcon('add-icon', cardInfo)"
+                class="col-auto px-1 px-sm-2 icon-pointer"
+              >
+                <font-awesome-icon
+                  :color="sharedState.selectedColor"
+                  icon="plus-circle"
+                  size="2x"
+                />
               </div>
-              <div v-if="addOrRemove == 'remove' && gameModeAllowChange" class="col-auto px-1 px-sm-2 icon-pointer" v-on:click="tooltipShown = !tooltipShown;changeIcon('remove-icon', cardInfo)">
-                <font-awesome-icon icon="trash" size="2x" :color="iconColor" />
+              <div
+                v-if="addOrRemove == 'remove' && gameModeAllowChange"
+                v-on:click="tooltipShown = !tooltipShown;changeIcon('remove-icon', cardInfo)"
+                class="col-auto px-1 px-sm-2 icon-pointer"
+              >
+                <font-awesome-icon
+                  :color="iconColor"
+                  icon="trash"
+                  size="2x"
+                />
               </div>
             </div>
           </div>
@@ -51,21 +80,32 @@ export default {
   name: 'Card',
   props: ['store', 'cardInfo', 'addOrRemove', 'iconColor'],
   data: function () {
-    return { 
+    return {
       tooltipShown: false,
       sharedState: this.store.state
     }
   },
+  computed: {
+    icon: function () {
+      return require('../assets/images/cards/' + this.cardInfo.type + '/' + this.cardInfo.Name + '.png')
+    },
+    gameModeAllowChange: function () {
+      // if game mode is godMode, check if user is God to be allowed to remove cards
+      this.sharedState.gameModeAllowChange = !(this.sharedState.gameMode == 'godMode' && !this.sharedState.gameModeIsGod)
+      console.log(this.sharedState.gameMode == 'godMode', !this.sharedState.gameModeIsGod, this.sharedState.gameModeAllowChange)
+      return this.sharedState.gameModeAllowChange
+    }
+  },
   methods: {
-    changeIcon: function(addOrRemove, data) {
+    changeIcon: function (addOrRemove, data) {
       // EventBus.$emit('remove-icon', cardInfo)
       EventBus.$emit(addOrRemove, data)
     },
-    dragstart: function(ev) {
+    dragstart: function (ev) {
       // store the current card dragged
       this.sharedState.cardDragged = this.cardInfo
     },
-    dragend: function(ev) {
+    dragend: function (ev) {
       // reset current dragged card
       this.sharedState.cardDragged = {}
     }
@@ -75,26 +115,15 @@ export default {
     //   ev.preventDefault
     //   return true
     // },
-//     dragenter: function(ev) {
-//       // console.log('dragenter: ', ev)
-// //    this.$el.insertBefore this._placeholder, posElem.nextSibling
-//       ev.preventDefault
-//       return true
-//     },
-//     dragover: function(ev) {
-//       // console.log('dragover: ', ev)
-//     }
-  },
-  computed: {
-    icon: function() {
-      return require('../assets/images/cards/' + this.cardInfo.type + '/' + this.cardInfo.Name + '.png')
-    },
-    gameModeAllowChange: function() {
-      // if game mode is godMode, check if user is God to be allowed to remove cards
-      this.sharedState.gameModeAllowChange = this.sharedState.gameMode == 'godMode' && !this.sharedState.gameModeIsGod ? false : true
-      console.log(this.sharedState.gameMode == 'godMode', !this.sharedState.gameModeIsGod, this.sharedState.gameModeAllowChange )
-      return this.sharedState.gameModeAllowChange
-    }
+    //     dragenter: function(ev) {
+    //       // console.log('dragenter: ', ev)
+    // //    this.$el.insertBefore this._placeholder, posElem.nextSibling
+    //       ev.preventDefault
+    //       return true
+    //     },
+    //     dragover: function(ev) {
+    //       // console.log('dragover: ', ev)
+    //     }
   }
 }
 </script>

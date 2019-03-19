@@ -16,36 +16,42 @@ This component displays the main card of the game
       <vue-flip
         :active-click="true"
         width="100%"
-        height="auto">
+        height="auto"
+      >
         <div slot="front">
           <div class="card main-card shadow">
             <img
               :src="require('@/assets/images/logo.png')"
-              style="max-height:230px;width:100%;">
+              style="max-height:230px;width:100%;"
+            >
           </div>
         </div>
         <div slot="back">
           <div class="card main-card shadow">
             <b-button
               v-b-modal.modalplay
-              variant="primary">
+              variant="primary"
+            >
               Jouer
             </b-button>
             <b-button
+              @click="reset"
               variant="secondary"
-              @click="reset">
+            >
               Réinitialiser
             </b-button>
             <b-button
               v-b-modal.modalrules
-              variant="secondary">
+              variant="secondary"
+            >
               Règles
             </b-button>
             <!-- hide about on tablets -->
             <b-button
               v-b-modal.modalabout
               class="d-md-none d-lg-block"
-              variant="light">
+              variant="light"
+            >
               A propos
             </b-button>
           </div>

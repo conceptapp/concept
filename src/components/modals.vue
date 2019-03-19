@@ -11,81 +11,201 @@ This component contains the modal dialogs and some websocket calls for multiplay
 
 <template>
   <div id="modal-dialogs">
-    <b-modal id="modalplay" title="C'est parti !"
-      ok-title="Ok, c'est parti" cancel-title="Une autre carte"
-      @cancel="shuffleWords">
-      <section v-if="words.danger.length > 0 && words.warning.length > 0 && words.success.length > 0" v-for="(wordtype, variant, index) in words" :key="index">
-        <section v-for="(definition, key, index) in wordtype[0].fields" :key="index">
-          <b-alert :variant="variant" show>{{definition}}</b-alert>
+    <b-modal
+      id="modalplay"
+      @cancel="shuffleWords"
+      title="C'est parti !"
+      ok-title="Ok, c'est parti"
+      cancel-title="Une autre carte"
+    >
+      <section
+        v-if="words.danger.length > 0 && words.warning.length > 0 && words.success.length > 0"
+        v-for="(wordtype, variant, index) in words"
+        :key="index"
+      >
+        <section
+          v-for="(definition, key, index) in wordtype[0].fields"
+          :key="index"
+        >
+          <b-alert
+            :variant="variant"
+            show
+          >
+            {{ definition }}
+          </b-alert>
         </section>
       </section>
-      <p class="text-right"><a href="https://jrmie818423.typeform.com/to/Kf9Ux6" class="text-secondary" target="_blank">>> Proposer des mots ou expressions</a></p>
+      <p class="text-right">
+        <a
+          href="https://jrmie818423.typeform.com/to/Kf9Ux6"
+          class="text-secondary"
+          target="_blank"
+        >>> Proposer des mots ou expressions</a>
+      </p>
       <!-- TODO see https://admin.typeform.com/form/Kf9Ux6/share#/embed to try to embed -->
     </b-modal>
-    <b-modal ok-only ok-title="Merci" id="modalrules" title="Règles du jeu">
-      <p class="text-left">Un premier joueur ouvre le jeu sur son téléphone (ou tous les autres joueurs quittent leurs yeux de l'écran). Ce joueur clique sur le bouton "Jouer" caché derrière la carte "Concept".</p>
-      <p class="text-left">Sur la carte, il choisit le mot ou l'expression qu'il veut faire deviner.</p>
-      <p class="text-left">Pour faire deviner le mot, il dispose de l'ensemble des <i>concepts</i> disponibles sur le plateau de jeu. Le premier concept étatn le concept principal, les autres lignes des concepts secondaires.</p>
-      <p class="text-left">Pour ajouter un <i>concept</i> à un concept principal ou secondaire, le joueur clique sur la ligne du concept puis clique sur l'icône du concept qu'il veut ajouter et clique sur le <font-awesome-icon icon="plus-circle" />. Pour supprimer un <i>concept</i>, il clique sur l'icône du concept qu'il a ajouté et clique sur la <font-awesome-icon icon="trash" />.</p>
-      <p class="text-left">Lorsque l'un des autres joueurs trouve le mot ou l'expression qu'il fallait deviner, le joueur qui faisait deviner peut réinitialiser le plateau en cliquant sur la carte "Concept" et le bouton "Réinitialiser".</p>
+    <b-modal
+      id="modalrules"
+      ok-only
+      ok-title="Merci"
+      title="Règles du jeu"
+    >
+      <p class="text-left">
+        Un premier joueur ouvre le jeu sur son téléphone (ou tous les autres joueurs quittent leurs yeux de l'écran). Ce joueur clique sur le bouton "Jouer" caché derrière la carte "Concept".
+      </p>
+      <p class="text-left">
+        Sur la carte, il choisit le mot ou l'expression qu'il veut faire deviner.
+      </p>
+      <p class="text-left">
+        Pour faire deviner le mot, il dispose de l'ensemble des <i>concepts</i> disponibles sur le plateau de jeu. Le premier concept étatn le concept principal, les autres lignes des concepts secondaires.
+      </p>
+      <p class="text-left">
+        Pour ajouter un <i>concept</i> à un concept principal ou secondaire, le joueur clique sur la ligne du concept puis clique sur l'icône du concept qu'il veut ajouter et clique sur le <font-awesome-icon icon="plus-circle" />. Pour supprimer un <i>concept</i>, il clique sur l'icône du concept qu'il a ajouté et clique sur la <font-awesome-icon icon="trash" />.
+      </p>
+      <p class="text-left">
+        Lorsque l'un des autres joueurs trouve le mot ou l'expression qu'il fallait deviner, le joueur qui faisait deviner peut réinitialiser le plateau en cliquant sur la carte "Concept" et le bouton "Réinitialiser".
+      </p>
     </b-modal>
-    <b-modal :hide-footer="true" id="modalmultiplayers" title="Mode multijoueurs" ref="modalmultiplayers">
+    <b-modal
+      id="modalmultiplayers"
+      ref="modalmultiplayers"
+      :hide-footer="true"
+      title="Mode multijoueurs"
+    >
       <div class="container-fluid">
-        <div class="row text-left align-items-center" v-if="sharedState.currentGameRoom!=''">
-            <div class="col"><h5 class="card-title text-left">Partie en cours : <i>{{ sharedState.currentGameRoom }}</i></h5></div>
-        </div>
-        <div class="row text-right align-items-center" v-if="sharedState.isMultiPlayer">
-          <div class="ml-auto col-auto">
-            <b-button @click="hideModal" variant="primary">Jouer maintenant</b-button>
-            <b-button @click="leave_game()">Quitter la partie</b-button>
+        <div
+          v-if="sharedState.currentGameRoom!=''"
+          class="row text-left align-items-center"
+        >
+          <div class="col">
+            <h5 class="card-title text-left">
+              Partie en cours : <i>{{ sharedState.currentGameRoom }}</i>
+            </h5>
           </div>
         </div>
-        <div class="row text-left" v-if="!sharedState.isMultiPlayer">
+        <div
+          v-if="sharedState.isMultiPlayer"
+          class="row text-right align-items-center"
+        >
+          <div class="ml-auto col-auto">
+            <b-button
+              @click="hideModal"
+              variant="primary"
+            >
+              Jouer maintenant
+            </b-button>
+            <b-button @click="leave_game()">
+              Quitter la partie
+            </b-button>
+          </div>
+        </div>
+        <div
+          v-if="!sharedState.isMultiPlayer"
+          class="row text-left"
+        >
           <div class="col">
-            <h5 class="card-title text-left">Créer une nouvelle partie</h5>
-            <b-form > <!-- inline -->
-              <b-form-group 
+            <h5 class="card-title text-left">
+              Créer une nouvelle partie
+            </h5>
+            <b-form>
+              <!-- inline -->
+              <b-form-group
                 id="gameTypeForm"
-                label= "Type de partie :"
+                label="Type de partie :"
                 label-cols-xl="4"
                 label-cols-lg="3"
                 label-for="game_type_select"
               >
-              <b-form-select v-model="sharedState.gameMode" id="game_type_select">
-                <option value="" selected disabled="">Sélectionnez un type de jeu</option>
-                <option value="godMode">Vous seul pouvez ajouter des cartes</option>
-                <option value="allPlayersMode">Tous les joueurs peuvent proposer des cartes</option>
-                <option value="asyncMode" disabled>Proposer un plateau que d'autres joueurs doivent deviner</option>
-              </b-form-select>
+                <b-form-select
+                  id="game_type_select"
+                  v-model="sharedState.gameMode"
+                >
+                  <option
+                    value=""
+                    selected
+                    disabled=""
+                  >
+                    Sélectionnez un type de jeu
+                  </option>
+                  <option value="godMode">
+                    Vous seul pouvez ajouter des cartes
+                  </option>
+                  <option value="allPlayersMode">
+                    Tous les joueurs peuvent proposer des cartes
+                  </option>
+                  <option
+                    value="asyncMode"
+                    disabled
+                  >
+                    Proposer un plateau que d'autres joueurs doivent deviner
+                  </option>
+                </b-form-select>
               </b-form-group>
-              <b-form-group 
+              <b-form-group
                 id="gameTypeForm"
-                label= "Nom du jeu :"
+                label="Nom du jeu :"
                 label-cols-xl="4"
                 label-cols-lg="3"
                 label-for="create_game_room"
               >
                 <b-form-input
                   id="create_game_room"
+                  v-model.trim="newGame"
                   type="text"
                   class=""
-                  v-model.trim="newGame"
                   maxlength="30"
-                  placeholder="La partie de Max" />
+                  placeholder="La partie de Max"
+                />
               </b-form-group>
               <div class="text-right">
-                <b-button variant="light" v-if="newGame in this.sharedState.gameRooms" @click="join_game(newGame)">Rejoindre</b-button>
-                <b-button variant="primary" v-else @click="create_game(newGame)">Créer</b-button>
+                <b-button
+                  v-if="newGame in this.sharedState.gameRooms"
+                  @click="join_game(newGame)"
+                  variant="light"
+                >
+                  Rejoindre
+                </b-button>
+                <b-button
+                  v-else
+                  @click="create_game(newGame)"
+                  variant="primary"
+                >
+                  Créer
+                </b-button>
               </div>
             </b-form>
             <div v-if="Object.keys(multiplayersGameModes).length">
-              <hr />
-              <h5 class="card-title text-left">Rejoindre une partie</h5>
+              <hr>
+              <h5 class="card-title text-left">
+                Rejoindre une partie
+              </h5>
               <div class="container-fluid">
-                <div class="row text-left align-items-center my-2" v-for="(game_room, key, index) in multiplayersGameModes" :key="index">
-                  <div class="col-lg-1 d-none d-lg-block p-0"><img style="max-height:20px;" :src="require('@/assets/images/bullet-puzzle.png')" /></div>
-                  <div class="col-8 p-0" style="line-height: initial;">{{ key }}<br /><small><i>{{ game_room.mode == 'godMode' ? "Jeu géré par l'organisateur" : "Jeu ouvert à tous les participants"}}</i></small></div>
-                  <div class="col-3 p-0"><b-button @click="join_game(key)" type="submit" variant="light">Rejoindre</b-button></div>
+                <div
+                  v-for="(game_room, key, index) in multiplayersGameModes"
+                  :key="index"
+                  class="row text-left align-items-center my-2"
+                >
+                  <div class="col-lg-1 d-none d-lg-block p-0">
+                    <img
+                      :src="require('@/assets/images/bullet-puzzle.png')"
+                      style="max-height:20px;"
+                    >
+                  </div>
+                  <div
+                    class="col-8 p-0"
+                    style="line-height: initial;"
+                  >
+                    {{ key }}<br><small><i>{{ game_room.mode == 'godMode' ? "Jeu géré par l'organisateur" : "Jeu ouvert à tous les participants" }}</i></small>
+                  </div>
+                  <div class="col-3 p-0">
+                    <b-button
+                      @click="join_game(key)"
+                      type="submit"
+                      variant="light"
+                    >
+                      Rejoindre
+                    </b-button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -93,9 +213,18 @@ This component contains the modal dialogs and some websocket calls for multiplay
         </div>
       </div>
     </b-modal>
-    <b-modal ok-only ok-title="D'accord" id="modalabout" title="A propos">
-      <p class="text-left">Ce jeu s'appuie librement sur le jeu de société <b>Concept</b> que nous vous conseillons.</p>
-      <p class="text-left">Il n'est absolument pas cautionné par les auteurs originaux du jeu, il s'agit d'un hommage (et d'un petit test aussi). A la moindre demande, l'accès à ce prototype sera retiré.</p>
+    <b-modal
+      id="modalabout"
+      ok-only
+      ok-title="D'accord"
+      title="A propos"
+    >
+      <p class="text-left">
+        Ce jeu s'appuie librement sur le jeu de société <b>Concept</b> que nous vous conseillons.
+      </p>
+      <p class="text-left">
+        Il n'est absolument pas cautionné par les auteurs originaux du jeu, il s'agit d'un hommage (et d'un petit test aussi). A la moindre demande, l'accès à ce prototype sera retiré.
+      </p>
     </b-modal>
   </div>
 </template>

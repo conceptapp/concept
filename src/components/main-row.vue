@@ -10,51 +10,65 @@ This component displays the main header row
 */
 
 <template>
-	<div id="main-row">
+  <div id="main-row">
     <menuBar
       v-bind:store="store"
-    > </menuBar>
+    />
     <div class="container-body">
-      <div id="header-row" class="row">
+      <div
+        id="header-row"
+        class="row"
+      >
         <!-- hide on screens smaller than lg / md / sm -->
         <div class="col-2 d-none d-sm-block">
-          <conceptCard></conceptCard>
+          <conceptCard />
         </div>
         <!-- show only on mobile -->
-        <div class="col-1 d-sm-none"></div>
+        <div class="col-1 d-sm-none" />
         <div class="col-10">
           <!-- show all the concept by row, one color each -->
           <div
             v-for="(color, index) in sharedState.colors"
             :id="color"
-            class="row align-items-center rounded shadow-sm guess-row"
             v-bind:class="{ 'active': color == sharedState.selectedColor }"
             v-on:click="sharedState.selectedColor = color"
             :droppable="sharedState.gameModeAllowChange"
             v-on:dragover="dragover"
             v-on:dragenter="dragenter"
             v-on:drop="drop"
+            class="row align-items-center rounded shadow-sm guess-row"
           >
             <div class="col-auto guess-icon">
-              <font-awesome-icon v-bind:icon="index == 0 ? 'question-circle' : 'exclamation-circle'" size="2x" :color="color" />
+              <font-awesome-icon
+                v-bind:icon="index == 0 ? 'question-circle' : 'exclamation-circle'"
+                :color="color"
+                size="2x"
+              />
             </div>
-            <transition-group name="fade" class="guess-cards">
-              <div v-for="(card, index) in sharedState.guessCards[color]" :key="index" class="card">
+            <transition-group
+              name="fade"
+              class="guess-cards"
+            >
+              <div
+                v-for="(card, index) in sharedState.guessCards[color]"
+                :key="index"
+                class="card"
+              >
                 <card
-                	v-bind:store="store"
+                  v-bind:store="store"
                   v-bind:cardInfo="card"
                   v-bind:iconColor="color"
-                  addOrRemove="remove"
-                ></card>
+                  add-or-remove="remove"
+                />
               </div>
             </transition-group>
           </div>
         </div>
       </div>
     </div>
-    <modals 
+    <modals
       v-bind:store="store"
-    ></modals>
+    />
   </div>
 </template>
 
@@ -65,15 +79,22 @@ import menuBar from '@/components/menu-bar'
 import card from '@/components/card'
 import modals from '@/components/modals'
 
-
 export default {
-  name: 'mainRow',
+  name: 'MainRow',
   components: { Card, ConceptCard, Modals, MenuBar },
   props: ['store', 'type'],
   data: function () {
-    return { 
+    return {
       sharedState: this.store.state
     }
+  },
+  created () {
+    // initialize the Guess Cards arrays
+    this.sharedState.guessCards = this.initGuessCards()
+    // listen to events
+    EventBus.$on('add-icon', data => this.addIcon(data))
+    EventBus.$on('remove-icon', data => this.removeIcon(data))
+    EventBus.$on('update-cards', data => this.pushWebsocket())
   },
   methods: {
     addIcon: function (data) {
@@ -85,44 +106,44 @@ export default {
       this.sharedState.guessCards[this.sharedState.selectedColor].push(data)
       this.pushWebsocket()
     },
-    removeIcon: function(data) {
+    removeIcon: function (data) {
       // remove clicked icon from current active color
-      this.sharedState.guessCards[this.sharedState.selectedColor] = this.sharedState.guessCards[this.sharedState.selectedColor].filter( 
-        function(obj) {
+      this.sharedState.guessCards[this.sharedState.selectedColor] = this.sharedState.guessCards[this.sharedState.selectedColor].filter(
+        function (obj) {
           return !(obj.Name == data.Name)
-      })
+        })
       this.pushWebsocket()
     },
     // initialize an empty array to be pushed for every color
-		initGuessCards: function() {
+    initGuessCards: function () {
 		  var obj = {}
 		  for (var i = 0; i < this.sharedState.colors.length; i++) {
 		    obj[this.sharedState.colors[i]] = []
 		  }
 		  return obj
-		},
-    pushWebsocket: function() {
+    },
+    pushWebsocket: function () {
       // if playing in multiplayer mode, push the info to the websocket server
-      if ( this.sharedState.isMultiPlayer ) {
+      if (this.sharedState.isMultiPlayer) {
         // console.log("updated info on the websocket server: ", this.sharedState.guessCards)
-        this.$socket.emit('update_cards_from_client', { 
+        this.$socket.emit('update_cards_from_client', {
           'currentGameRoom': this.sharedState.currentGameRoom,
           'guessCards': this.sharedState.guessCards
         })
       }
     },
-    dragenter: function(ev) {
+    dragenter: function (ev) {
       ev.preventDefault()
     },
-    dragover: function(ev) {
+    dragover: function (ev) {
       // set current color as the div being dragged over to set active class
       this.sharedState.selectedColor = ev.target.id
       ev.preventDefault()
     },
-    drop: function(ev) {
+    drop: function (ev) {
       // if user is allowed to change state, add icon nto current color row
-      if (this.sharedState.gameModeAllowChange) { 
-        this.addIcon(this.sharedState.cardDragged) 
+      if (this.sharedState.gameModeAllowChange) {
+        this.addIcon(this.sharedState.cardDragged)
       } else {
         alert("Dans ce mode de jeu, vous n'êtes pas autorisé à changer les cartes, désolé.")
       }
@@ -142,17 +163,9 @@ export default {
       }
     },
     update_game_rooms (data) {
-      console.log("updating game rooms: ", data)
+      console.log('updating game rooms: ', data)
       this.sharedState.gameRooms = data
     }
-  },
-  created () {
-    // initialize the Guess Cards arrays
-    this.sharedState.guessCards = this.initGuessCards()
-    // listen to events
-    EventBus.$on('add-icon', data => this.addIcon(data))
-    EventBus.$on('remove-icon', data => this.removeIcon(data))
-    EventBus.$on('update-cards', data => this.pushWebsocket())
   }
 }
 </script>
@@ -172,7 +185,7 @@ export default {
 }
 .active {
   background-color: #e9ecef;
-} 
+}
 .fade-enter-active, .fade-leave-active {
   transition: opacity .5s;
 }

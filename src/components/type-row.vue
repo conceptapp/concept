@@ -16,20 +16,24 @@ On click, display tooltip next to the icon
 
 <template>
   <section>
-    <div class="row"> 
-      <span class="font-weight-bold">{{type.fields.Title_fr}}</span>
+    <div class="row">
+      <span class="font-weight-bold">{{ type.fields.Title_fr }}</span>
     </div>
     <div class="row">
       <!-- for each type, display the concept icons -->
-<!--           <transition-group name="list-complete" tag="p"> -->
-       <div class="card" v-for="card in currentCards" :key="card.id">
-          <card 
-            v-bind:store="store"
-            v-bind:cardInfo="card.fields"
-            addOrRemove="add"
-          ></card>
-        </div>
-<!--           </transition-group> -->
+      <!--           <transition-group name="list-complete" tag="p"> -->
+      <div
+        v-for="card in currentCards"
+        :key="card.id"
+        class="card"
+      >
+        <card
+          v-bind:store="store"
+          v-bind:cardInfo="card.fields"
+          add-or-remove="add"
+        />
+      </div>
+      <!--           </transition-group> -->
     </div>
   </section>
 </template>
@@ -39,18 +43,16 @@ import { EventBus } from '@/event-bus.js'
 import card from '@/components/card'
 
 export default {
-  name: 'typeRow',
+  name: 'TypeRow',
   components: { Card },
   props: ['store', 'type'],
-  methods: {
-  },
   data: function () {
-    return { 
+    return {
       sharedState: this.store.state
     }
   },
   computed: {
-    currentCards: function() {
+    currentCards: function () {
       var t = this.type
       var a = this.sharedState.cards.filter(function (el) {
         return el.fields.Type[0] == t.id
@@ -62,6 +64,8 @@ export default {
       }, this)
       return a
     }
+  },
+  methods: {
   }
 }
 </script>

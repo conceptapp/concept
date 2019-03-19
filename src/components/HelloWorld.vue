@@ -4,18 +4,18 @@
 
 ## Props ##
 
-
 ## Behavior ##
-
 
 */
 
 <template>
   <section class="container">
     <div class="card">
-      <div class="card-header">Concept</div>
+      <div class="card-header">
+        Concept
+      </div>
       <div class="card-body">
-        Lorem 
+        Lorem
       </div>
     </div>
   </section>
@@ -23,13 +23,13 @@
 
 <script>
 export default {
-  name: 'card',
+  name: 'Card',
   props: [''],
-  methods: {
-  },
   data: function () {
     return {
     }
+  },
+  methods: {
   }
 }
 </script>
