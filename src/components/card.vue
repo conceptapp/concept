@@ -138,21 +138,6 @@ export default {
       // reset current dragged card
       this.sharedState.cardDragged = {}
     }
-    // drop: function(ev) {
-    //   console.log('drop: ', ev)
-    //   console.log(this.sharedState.cardDragged)
-    //   ev.preventDefault
-    //   return true
-    // },
-    //     dragenter: function(ev) {
-    //       // console.log('dragenter: ', ev)
-    // //    this.$el.insertBefore this._placeholder, posElem.nextSibling
-    //       ev.preventDefault
-    //       return true
-    //     },
-    //     dragover: function(ev) {
-    //       // console.log('dragover: ', ev)
-    //     }
   }
 }
 </script>
