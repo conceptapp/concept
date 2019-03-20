@@ -4,6 +4,8 @@ import Vue from 'vue'
 import App from './App'
 // import router from './router'
 
+import Vuelidate from 'vuelidate'
+
 // import Bootstrap vue component and css
 import BootstrapVue from 'bootstrap-vue'
 
@@ -18,9 +20,11 @@ import { faPlus, faPlusCircle, faMinusCircle, faQuestionCircle, faExclamationCir
 
 // import and connect to the concept server-side with websocket thanks to Vue Socket IO
 import VueSocketIO from 'vue-socket.io'
+
+Vue.use(Vuelidate)
+Vue.use(BootstrapVue)
 Vue.use(VueSocketIO, process.env.SOCKET_IO_URL)
 
-Vue.use(BootstrapVue)
 
 library.add(faPlus, faPlusCircle, faMinusCircle, faQuestionCircle, faExclamationCircle, faTrash, faPlayCircle, faTrashRestore, faBookOpen, faPlusSquare,
   faUsers, faBars, faMale)
