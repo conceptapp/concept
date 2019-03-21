@@ -1,5 +1,8 @@
 <template>
   <div id="app">
+<!--     <div id="box" 
+      v-on:touchmove="touchmove"
+      v-on:touchend="touchend"></div> -->
     <div class="container">
       <mainRow
         :store="store"
