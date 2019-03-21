@@ -15,21 +15,13 @@ TODO add rollover to display tooltip
 <template>
   <section>
     <div class="row no-gutters">
-              <!-- @click="test" -->
       <div
         @click="tooltipShown = !tooltipShown"
         :draggable="this.sharedState.gameModeAllowChange"
+        v-on:dragstart="dragstart"
         v-on:dragend="dragend"
-        v-on:touchend="touchend"
-        v-on:touchmove="touchmove"
         class="col-auto concept-icon"
       >
-<!--         v-on:dragstart="dragstart"
- -->
-        <!-- v-on:touchstart="dragstart" -->
-
-        <!-- v-on:dragover="dragover"
-        v-on:dragenter="dragenter" -->
         <img
           :src="icon"
           :alt="cardInfo.Tooltip_fr"
@@ -131,7 +123,6 @@ export default {
       EventBus.$emit(addOrRemove, data)
     },
     dragstart: function (ev) {
-      console.log('getting dragged')
       // store the current card dragged
       this.sharedState.cardDragged = this.cardInfo
       // add current icon color (if empty, card comes from type rows, if color is set, card comes from guess row)
@@ -144,75 +135,8 @@ export default {
       }
       // reset current dragged card
       this.sharedState.cardDragged = {}
-    },
-    touchmove: function(e) {
-      console.log("touchmove: ", e)
-      /* listen to the touchMove event,
-      every time it fires, grab the location
-      of touch and assign it to box */
-      
-      // grab the location of touch
-      var touchLocation = e.targetTouches[0]
-      
-      // assign box new coordinates based on the touch.
-      e.target.style.left = touchLocation.pageX + 'px'
-      e.target.style.top = touchLocation.pageY + 'px'
-      e.target.style.position = "absolute"
-    },
-    // test: function(e) {
-    //   console.log('test')
-    //   e.target.style.left = '40px'
-    //   e.target.style.top = '250px'
-    //   console.log(e.target)
-    // },
-    touchend: function(e) {
-     /* record the position of the touch
-      when released using touchend event.
-      This will be the drop position. */
-      
-      // current box position.
-      var x = parseInt(e.target.style.left)
-      var y = parseInt(e.target.style.top)
-      e.target.style.position = "relative"
     }
-    // touchmove: function(event) {
-    //   console.log('getting moved')
-    //   var touch = event.targetTouches[0];
-    //   // Place element where the finger is
-    //   event.target.style.left = touch.pageX + 'px'
-    //   event.target.style.top = touch.pageY + 'px'
-    //   event.preventDefault()
-    // },
-    // touchHandler: function(event) {
-    //   console.log('touchHandler called')
-    //   var touches = event.changedTouches,
-    //       first = touches[0],
-    //       type = "";
-    //        switch(event.type)
-    //   {
-    //       case "touchstart": type = "mousedown"; break;
-    //       case "touchmove":  type="mousemove"; break;        
-    //       case "touchend":   type="mouseup"; break;
-    //       default: return;
-    //   }
-   
-    //   var simulatedEvent = document.createEvent("MouseEvent");
-    //   simulatedEvent.initMouseEvent(type, true, true, window, 1, 
-    //                             first.screenX, first.screenY, 
-    //                             first.clientX, first.clientY, false, 
-    //                             false, false, false, 0/*left*/, null);
-    //   first.target.dispatchEvent(simulatedEvent);
-    //   event.preventDefault();
-    // }
   }
-  // ,
-  // created () {
-  //   document.addEventListener("touchstart", this.touchHandler, true);
-  //   document.addEventListener("touchmove", this.touchHandler, true);
-  //   document.addEventListener("touchend", this.touchHandler, true);
-  //   document.addEventListener("touchcancel", this.touchHandler, true);
-  //   document.addEventListener("touchmove", function(e){}, {passive:false});
-  // }
 }
 </script>
 
@@ -235,11 +159,5 @@ export default {
 }
 .tooltip-row {
   height: 100%;
-}
-#box {
-  position: absolute;
-  width: 100px;
-  height: 100px;
-  background-color: #ccc;
 }
 </style>
