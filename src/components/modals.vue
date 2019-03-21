@@ -73,6 +73,35 @@ This component contains the modal dialogs and some websocket calls for multiplay
       title="Mode multijoueurs"
     >
       <div class="container-fluid">
+        <div class="row text-left">
+          <div v-if="!playerNameValid" class="col">
+            <h5 class="card-title text-left">Quel est votre nom ?</h5>
+            <!-- label="Nom du joueur :"
+              label-cols-xl="4"
+              label-cols-lg="3"
+              label-for="get_player_name" -->
+            <b-form-group id="playerNameForm">
+              <b-form-input
+                id="get_player_name"
+                v-model.trim="playerName"
+                type="text"
+                class=""
+                maxlength="30"
+                placeholder="John Doe"
+                :state="playerNameValid"
+              />
+                              <!-- v-on:blur="validate_player_form()" -->
+              <b-form-invalid-feedback>
+                On y est presque...<br>Pouvez-vous me donner un petit nom d'au moins 2 caractères&nbsp;?
+              </b-form-invalid-feedback>
+            </b-form-group>
+            <div class="text-right">
+              <b-button @click="validate_player_form()" variant="primary">
+                  Valider
+              </b-button>
+            </div>
+          </div>
+        </div>
         <div v-if="sharedState.currentGameRoom!=''" class="row text-left align-items-center">
           <div class="col">
             <h5 class="card-title text-left">
@@ -86,31 +115,10 @@ This component contains the modal dialogs and some websocket calls for multiplay
             <b-button @click="leave_game()">Quitter la partie</b-button>
           </div>
         </div>
-        <div v-if="!sharedState.isMultiPlayer" class="row text-left">
+        <div v-if="!sharedState.isMultiPlayer && playerNameValid" class="row text-left">
           <div class="col">
             <h5 class="card-title text-left">Créer une nouvelle partie</h5>
             <b-form>
-              <b-form-group
-                id="gameTypeForm"
-                label="Type de partie :"
-                label-cols-xl="4"
-                label-cols-lg="3"
-                label-for="game_type_select"
-              >
-                <b-form-select id="game_type_select" 
-                  v-model="sharedState.gameMode" 
-                  :state="gameModeValid"
-                  @input="validate()"
-                >
-                  <option value="" selected disabled="">Sélectionnez un type de jeu</option>
-                  <option value="godMode">Vous seul pouvez ajouter des cartes</option>
-                  <option value="allPlayersMode">Tous les joueurs peuvent proposer des cartes</option>
-                  <option value="asyncMode" disabled>Proposer un plateau que d'autres joueurs doivent deviner</option>
-                </b-form-select>
-                <b-form-invalid-feedback>
-                  Juste... pouvez-vous choisir le type de partie que vous voulez jouer&nbsp;? S'il vous plaît&nbsp;?
-                </b-form-invalid-feedback>
-              </b-form-group>
               <b-form-group
                 id="gameTypeForm"
                 label="Nom du jeu :"
@@ -130,6 +138,27 @@ This component contains the modal dialogs and some websocket calls for multiplay
                 />
                 <b-form-invalid-feedback>
                   Une petite seconde...<br>Pouvez-vous donner un petit nom à votre partie&nbsp;?
+                </b-form-invalid-feedback>
+              </b-form-group>
+              <b-form-group
+                id="gameTypeForm"
+                label="Type de partie :"
+                label-cols-xl="4"
+                label-cols-lg="3"
+                label-for="game_type_select"
+              >
+                <b-form-select id="game_type_select" 
+                  v-model="sharedState.gameMode" 
+                  :state="gameModeValid"
+                  @input="validate()"
+                >
+                  <option value="" selected disabled="">Sélectionnez un type de jeu</option>
+                  <option value="godMode">Vous seul pouvez ajouter des cartes</option>
+                  <option value="allPlayersMode">Tous les joueurs peuvent proposer des cartes</option>
+                  <option value="asyncMode" disabled>Proposer un plateau que d'autres joueurs doivent deviner</option>
+                </b-form-select>
+                <b-form-invalid-feedback>
+                  Juste... pouvez-vous choisir le type de partie que vous voulez jouer&nbsp;? S'il vous plaît&nbsp;?
                 </b-form-invalid-feedback>
               </b-form-group>
               <div class="text-right">
@@ -211,9 +240,11 @@ export default {
       sharedState: this.store.state,
       words: { success: [], warning: [], danger: [] },
       newGame: '',
+      playerName: '',
       submitStatus: null,
       newGameValid: null,
-      gameModeValid: null
+      gameModeValid: null,
+      playerNameValid: null
     }
   },
   computed: {
@@ -291,6 +322,10 @@ export default {
         this.$forceUpdate()
       }
     },
+    validate_player_form: function() {
+      this.playerNameValid = this.playerName.length > 1
+      this.sharedState.playerName = this.playerName
+    },
     validate: function() {
       // validate form
       this.newGameValid = !(this.newGame.length === 0)
@@ -313,10 +348,12 @@ export default {
       // game creator is God by default
       this.sharedState.gameModeIsGod = true
       // create a new game server-side
+      console.log('emit create_game')
       this.$socket.emit('create_game', {
         'currentGameRoom': this.newGame,
         'guessCards': this.sharedState.guessCards,
-        'gameMode': this.sharedState.gameMode
+        'gameMode': this.sharedState.gameMode,
+        'player': this.playerName
       })
       // push current guess cards to the server
       EventBus.$emit('update-cards')
@@ -333,10 +370,18 @@ export default {
       console.log('current game: ', this.sharedState.gameRooms[game])
       this.sharedState.gameMode = this.sharedState.gameRooms[game]['mode']
       // join the game server side
-      this.$socket.emit('join_game', game)
+      this.$socket.emit('join_game', {
+        'game': game,
+        'player': this.playerName
+      })
     },
     leave_game: function () {
       console.log('leaving game: ', this.sharedState.currentGameRoom)
+      // tell the server we're leaving the game
+      this.$socket.emit('leave_game', {
+        'game': this.sharedState.currentGameRoom,
+        'player': this.playerName
+      })
       // reset current game room
       this.sharedState.currentGameRoom = ''
       // deactivate multiplayer mode
@@ -345,8 +390,6 @@ export default {
       this.sharedState.gameMode = ''
       // reset god credentials
       this.sharedState.gameModeIsGod = false
-      // tell the server we're leaving the game
-      this.$socket.emit('leave_game', this.sharedState.currentGameRoom)
     },
     hideModal: function () {
       this.$refs.modalmultiplayers.hide()

@@ -75,6 +75,7 @@ var store = {
     colors: colors,
     selectedColor: colors[0], // select a default color
     isMultiPlayer: false,
+    playerName: '',
     currentGameRoom: '',
     gameRooms: [],
     gameMode: '',

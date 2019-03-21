@@ -48,10 +48,13 @@ This component displays the main menu bar
           class="ml-auto"
         >
           <b-nav-item v-b-modal.modalmultiplayers>
-            {{ sharedState.currentGameRoom }} <small
-              v-if="sharedState.gameRooms[sharedState.currentGameRoom]"
-              class="text-muted"
-            >(<font-awesome-icon icon="male" /> x {{ sharedState.gameRooms[sharedState.currentGameRoom]['count'] }})</small>
+            {{sharedState.playerName}} 
+            <span v-if="sharedState.gameRooms[sharedState.currentGameRoom]">
+              @ {{ sharedState.currentGameRoom }} 
+              <small v-if="sharedState.gameRooms[sharedState.currentGameRoom]" class="text-muted">
+                (<font-awesome-icon icon="male" /> x {{ sharedState.gameRooms[sharedState.currentGameRoom]['count'] }})
+              </small>
+            </span>
           </b-nav-item>
         </b-navbar-nav>
       </b-navbar-nav>

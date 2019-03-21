@@ -11,6 +11,7 @@ This component displays the main header row
 
 <template>
   <div id="main-row">
+    <Toasts></Toasts>
     <MenuBar
       :store="store"
     />
@@ -205,7 +206,16 @@ export default {
     },
     update_game_rooms (data) {
       console.log('updating game rooms: ', data)
-      this.sharedState.gameRooms = data
+      this.sharedState.gameRooms = data.game_rooms
+      // toast message when player joined or left the game
+      if (data.game === this.sharedState.currentGameRoom) {
+        if (data.playerJoined !== undefined) {
+          this.$toast.info(data.playerJoined + ' a rejoint la partie')
+        }
+        if (data.playerLeft !== undefined) {
+          this.$toast.info(data.playerLeft + ' a quitté la partie')
+        }
+      }
     }
   }
 }

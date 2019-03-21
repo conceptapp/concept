@@ -4,6 +4,9 @@ import Vue from 'vue'
 import App from './App'
 // import router from './router'
 
+// import and connect to the concept server-side with websocket thanks to Vue Socket IO
+import VueSocketIO from 'vue-socket.io'
+
 // import Vuelidate from 'vuelidate'
 
 // import Bootstrap vue component and css
@@ -12,19 +15,19 @@ import BootstrapVue from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 
+import VueBootstrapToasts from "vue-bootstrap-toasts"
+
 // import FontAwesome components
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon, FontAwesomeLayers, FontAwesomeLayersText } from '@fortawesome/vue-fontawesome'
 import { faPlus, faPlusCircle, faMinusCircle, faQuestionCircle, faExclamationCircle, faTrash, faPlayCircle, faTrashRestore, faBookOpen, faPlusSquare,
   faUsers, faBars, faMale } from '@fortawesome/free-solid-svg-icons'
 
-// import and connect to the concept server-side with websocket thanks to Vue Socket IO
-import VueSocketIO from 'vue-socket.io'
-
+// Vue.use(VueSocketIO, process.env.SOCKET_IO_URL)
+Vue.use(VueSocketIO, "http://localhost:5000")
 // Vue.use(Vuelidate)
 Vue.use(BootstrapVue)
-Vue.use(VueSocketIO, process.env.SOCKET_IO_URL)
-
+Vue.use(VueBootstrapToasts)
 
 library.add(faPlus, faPlusCircle, faMinusCircle, faQuestionCircle, faExclamationCircle, faTrash, faPlayCircle, faTrashRestore, faBookOpen, faPlusSquare,
   faUsers, faBars, faMale)
