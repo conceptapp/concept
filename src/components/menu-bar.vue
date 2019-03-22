@@ -126,9 +126,10 @@ export default {
   },
   methods: {
     reset: function () {
-      this.sharedState.guessCards = this.initGuessCards()
+      // this.sharedState.guessCards = this.initGuessCards()
+      // this.pushWebsocket()
+      EventBus.$emit('init-guess-cards')
       this.sharedState.selectedColor = this.sharedState.colors[0] // select the default color
-      this.pushWebsocket()
     }
   }
 }

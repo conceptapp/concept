@@ -120,11 +120,12 @@ export default {
   },
   created () {
     // initialize the Guess Cards arrays
-    this.sharedState.guessCards = this.initGuessCards()
+    this.initGuessCards()
     // listen to events
     EventBus.$on('add-icon', data => this.addIcon(data))
     EventBus.$on('remove-icon', data => this.removeIcon(data))
     EventBus.$on('update-cards', data => this.pushWebsocket())
+    EventBus.$on('init-guess-cards', data => this.initGuessCards())
   },
   methods: {
     addIcon: function (data) {
@@ -157,7 +158,8 @@ export default {
       for (var i = 0; i < this.sharedState.colors.length; i++) {
         obj[this.sharedState.colors[i]] = []
       }
-      return obj
+      this.sharedState.guessCards = obj
+      this.pushWebsocket()
     },
     pushWebsocket: function () {
       // if playing in multiplayer mode, push the info to the websocket server
