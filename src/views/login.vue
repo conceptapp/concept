@@ -1,0 +1,161 @@
+/*
+
+### Component ###
+This component displays the main header row
+
+## Props ##
+
+## Behavior ##
+
+*/
+
+<template>
+  <div id="main-row">
+    <MenuBar
+      :store="store"
+    />
+    <div class="container-body">
+      <div class="row">
+        <div class="col text-center">
+          <h5 class="card-title text-left">Merci de vous authentifier pour lancer le mode multi-joueurs</h5>
+          <input type="text" v-model="email" placeholder="Email"><br>
+          <input type="password" v-model="password" placeholder="Password"><br>
+          <button @click="login">Connection</button>
+          <p>You don't have an account ? You can <router-link to="/sign-up">create one</router-link></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import { EventBus } from '@/event-bus.js'
+import MenuBar from '@/components/menu-bar'
+
+export default {
+  name: 'Login',
+  components: { MenuBar },
+  props: {
+    store: {
+      type: Object,
+      default: function () {
+        return {}
+      }
+    }
+  },
+  data: function () {
+    return {
+      sharedState: this.store.state,
+      dismissSecs: 5,
+      dismissCountDown: 0,
+      showDismissibleAlert: false
+    }
+  },
+  created () {
+    // initialize the Guess Cards arrays
+    this.initGuessCards()
+    // listen to events
+    EventBus.$on('add-icon', data => this.addIcon(data))
+    EventBus.$on('remove-icon', data => this.removeIcon(data))
+    EventBus.$on('update-cards', data => this.pushWebsocket())
+    EventBus.$on('init-guess-cards', data => this.initGuessCards())
+  },
+  methods: {
+    addIcon: function (data) {
+      // Name, Tooltip_fr
+      // check if user is allowed to change guess cards
+      if (!this.sharedState.gameModeAllowChange) { return false }
+      // first time a color is called, need to create the empty array
+      if (this.sharedState.guessCards[this.sharedState.selectedColor] == null) {
+        this.sharedState.guessCards[this.sharedState.selectedColor] = []
+      }
+      this.sharedState.guessCards[this.sharedState.selectedColor].push(data)
+      this.pushWebsocket()
+    },
+    removeIcon: function (data) {
+      // check if user is allowed to change guess cards
+      if (!this.sharedState.gameModeAllowChange) { return false }
+      // remove clicked icon 
+      // color row depends from the call 
+      // if dragged, use color from data, else, use active color
+      var cardColor = Object.keys(this.sharedState.cardDragged).length > 0 ? data.color : this.sharedState.selectedColor
+      this.sharedState.guessCards[cardColor] = this.sharedState.guessCards[cardColor].filter(
+        function (obj) {
+          return !(obj.Name === data.Name)
+        })
+      this.pushWebsocket()
+    },
+    // initialize an empty array to be pushed for every color
+    initGuessCards: function () {
+      var obj = {}
+      for (var i = 0; i < this.sharedState.colors.length; i++) {
+        obj[this.sharedState.colors[i]] = []
+      }
+      this.sharedState.guessCards = obj
+      this.pushWebsocket()
+    },
+    pushWebsocket: function () {
+      // if playing in multiplayer mode, push the info to the websocket server
+      if (this.sharedState.isMultiPlayer) {
+        // console.log("updated info on the websocket server: ", this.sharedState.guessCards)
+        this.$socket.emit('update_cards_from_client', {
+          'currentGameRoom': this.sharedState.currentGameRoom,
+          'guessCards': this.sharedState.guessCards
+        })
+      }
+    },
+    dragenter: function (ev) {
+      ev.preventDefault()
+    },
+    dragover: function (ev) {
+      // set current color as the div being dragged over to set active class
+      this.sharedState.selectedColor = ev.target.id
+      ev.preventDefault()
+    },
+    drop: function (ev) {
+      // if user is allowed to change state, add icon nto current color row
+      if (this.sharedState.gameModeAllowChange) {
+        this.addIcon(this.sharedState.cardDragged)
+      } else {
+        // display error message, user is not allowed to change cards
+        this.dismissCountDown = this.dismissSecs
+        // alert("Dans ce mode de jeu, vous n'êtes pas autorisé à changer les cartes, désolé.")
+      }
+      ev.preventDefault()
+      // return true
+    },
+    countDownChanged: function(dismissCountDown) {
+      this.dismissCountDown = dismissCountDown
+    }
+  },
+  sockets: {
+    connect () {
+      // console.log('connected to main server')
+    },
+    update_cards_from_server (data) {
+      console.log('server asked to update cards: ', data)
+      // if this is current game, then update the cards
+      if (data.currentGameRoom === this.sharedState.currentGameRoom) {
+        this.sharedState.guessCards = data.guessCards
+      }
+    },
+    update_game_rooms (data) {
+      console.log('updating game rooms: ', data)
+      this.sharedState.gameRooms = data.game_rooms
+      // toast message when player joined or left the game
+      if (data.game === this.sharedState.currentGameRoom) {
+        if (data.playerJoined !== undefined) {
+          this.$toast.info(data.playerJoined + ' a rejoint la partie')
+        }
+        if (data.playerLeft !== undefined) {
+          this.$toast.info(data.playerLeft + ' a quitté la partie')
+        }
+      }
+    }
+  }
+}
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped>
+</style>
