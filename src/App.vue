@@ -31,9 +31,9 @@
 import axios from 'axios'
 // import { EventBus } from '@/event-bus.js'
 // import { setupCache } from 'axios-cache-adapter'
-import mainRow from '@/components/main-row'
-import typeRow from '@/components/type-row'
-import websocket from '@/components/websocket'
+import MainRow from '@/components/main-row'
+import TypeRow from '@/components/type-row'
+import Websocket from '@/components/websocket'
 
 import typesjson from '../data/types.json'
 import cards1json from '../data/cards-1.json'
@@ -94,7 +94,7 @@ var store = {
 
 export default {
   name: 'App',
-  components: { mainRow, typeRow, websocket },
+  components: { MainRow, TypeRow, Websocket },
   methods: {
     retrieveRecords: function (recordType, offset) {
       // query all the data from airtable or local JSON stored in /data
