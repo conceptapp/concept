@@ -18,13 +18,9 @@ This component contains only the modal dialog and some websocket calls for multi
     title="Mode multijoueurs"
   >
     <div class="container-fluid">
-      <div class="row text-left">
+<!--       <div class="row text-left">
         <div v-if="!playerNameValid" class="col">
           <h5 class="card-title text-left">Quel est votre nom ?</h5>
-          <!-- label="Nom du joueur :"
-            label-cols-xl="4"
-            label-cols-lg="3"
-            label-for="get_player_name" -->
           <b-form-group id="playerNameForm">
             <b-form-input
               id="get_player_name"
@@ -45,7 +41,7 @@ This component contains only the modal dialog and some websocket calls for multi
             </b-button>
           </div>
         </div>
-      </div>
+      </div> -->
       <div v-if="sharedState.currentGameRoom!=''" class="row text-left align-items-center">
         <div class="col">
           <h5 class="card-title text-left">
@@ -59,7 +55,7 @@ This component contains only the modal dialog and some websocket calls for multi
           <b-button @click="leave_game()">Quitter la partie</b-button>
         </div>
       </div>
-      <div v-if="!sharedState.isMultiPlayer && playerNameValid" class="row text-left">
+      <div v-if="!sharedState.isMultiPlayer" class="row text-left">
         <div class="col">
           <h5 class="card-title text-left">Créer une nouvelle partie</h5>
           <b-form>
@@ -164,11 +160,11 @@ export default {
     return {
       sharedState: this.store.state,
       newGame: '',
-      playerName: '',
+      // playerName: '',
       submitStatus: null,
       newGameValid: null,
-      gameModeValid: null,
-      playerNameValid: null
+      gameModeValid: null
+      // playerNameValid: null
     }
   },
   computed: {
@@ -183,10 +179,10 @@ export default {
     }
   },
   methods: {
-    validate_player_form: function() {
-      this.playerNameValid = this.playerName.length > 1
-      this.sharedState.playerName = this.playerName
-    },
+    // validate_player_form: function() {
+    //   this.playerNameValid = this.playerName.length > 1
+    //   this.sharedState.playerName = this.playerName
+    // },
     validate: function() {
       // validate form
       this.newGameValid = !(this.newGame.length === 0)

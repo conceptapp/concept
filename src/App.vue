@@ -1,6 +1,13 @@
 <template>
   <div id="app">
     <div class="container">
+      <Toasts></Toasts>
+      <MenuBar
+        :store="store"
+      />
+      <Modals
+        :store="store"
+      />
       <mainRow
         :store="store"
       />
@@ -28,9 +35,12 @@
 </template>
 
 <script>
+import firebase from 'firebase'
 import axios from 'axios'
 // import { EventBus } from '@/event-bus.js'
 // import { setupCache } from 'axios-cache-adapter'
+import MenuBar from '@/components/menu-bar'
+import Modals from '@/components/modals'
 import MainRow from '@/components/main-row'
 import TypeRow from '@/components/type-row'
 import Websocket from '@/components/websocket'
@@ -74,6 +84,7 @@ var store = {
     cardDragged: {},
     colors: colors,
     selectedColor: colors[0], // select a default color
+    currentUser: '',
     isMultiPlayer: false,
     playerName: '',
     currentGameRoom: '',
@@ -94,7 +105,7 @@ var store = {
 
 export default {
   name: 'App',
-  components: { MainRow, TypeRow, Websocket },
+  components: { Modals, MenuBar, MainRow, TypeRow, Websocket },
   methods: {
     retrieveRecords: function (recordType, offset) {
       // query all the data from airtable or local JSON stored in /data
@@ -134,6 +145,12 @@ export default {
     this.retrieveRecords('Types')
     // retrieve all the cards from airtable (100 records max per request)
     this.retrieveRecords('Cards')
+    // store current user if already logged-in 
+    var user = firebase.auth().currentUser
+    if (user) {
+      this.sharedState.currentUser = user
+      this.sharedState.playerName = user.dispayName
+    }
   },
   data: function () {
     return {

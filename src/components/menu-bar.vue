@@ -23,6 +23,9 @@ This component displays the main menu bar
         <b-nav-item v-b-modal.modalmultiplayers>
           Multijoueurs
         </b-nav-item>
+<!--         <b-nav-item v-b-modal.modallogin>
+          S'identifier
+        </b-nav-item> -->
         <b-nav-item @click="reset">
           Réinitialiser le jeu
         </b-nav-item>
@@ -43,11 +46,21 @@ This component displays the main menu bar
           A propos
         </b-nav-item>
         <!-- right aligned items -->
+        <!-- user not authenticated yet -->
         <b-navbar-nav
-          v-if="sharedState.currentGameRoom!=''"
+          v-show="sharedState.currentUser==''"
           class="ml-auto"
         >
-          <b-nav-item v-b-modal.modalmultiplayers>
+          <b-nav-item v-b-modal.modallogin>
+            <font-awesome-icon icon="user-circle" size="lg" />
+          </b-nav-item>
+        </b-navbar-nav>
+        <!-- user is authenticated -->
+        <b-navbar-nav
+          v-show="sharedState.currentUser!==''"
+          class="ml-auto"
+        >
+          <b-nav-item v-b-modal.modallogin>
             {{sharedState.playerName}} 
             <span v-if="sharedState.gameRooms[sharedState.currentGameRoom]">
               @ {{ sharedState.currentGameRoom }} 
@@ -130,6 +143,11 @@ export default {
       // this.pushWebsocket()
       EventBus.$emit('init-guess-cards')
       this.sharedState.selectedColor = this.sharedState.colors[0] // select the default color
+    },
+    logout: function() {
+      firebase.auth().signOut().then(() => {
+        this.sharedState.currentUser = ''
+      })
     }
   }
 }

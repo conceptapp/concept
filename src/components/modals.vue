@@ -17,18 +17,21 @@ This component contains the modal dialogs
     <ModalRules :store="store" />
     <!-- Modal dialog pour afficher le mode de jeu multijoueurs -->
     <ModalMultiplayers :store="store" />
+    <!-- Modal dialog pour l'identification -->
+    <ModalLogin :store="store" />
   </div>
 </template>
 
 <script>
 // import { EventBus } from '@/event-bus.js'
-import ModalMultiplayers from '@/components/modal-multiplayers'
 import ModalWords from '@/components/modal-words'
 import ModalRules from '@/components/modal-rules'
+import ModalMultiplayers from '@/components/modal-multiplayers'
+import ModalLogin from '@/components/modal-login'
 
 export default {
   name: 'Modals',
-  components: { ModalMultiplayers, ModalWords, ModalRules },
+  components: { ModalMultiplayers, ModalWords, ModalRules, ModalLogin },
   props: {
     store: {
       type: Object,

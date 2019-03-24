@@ -11,10 +11,6 @@ This component displays the main header row
 
 <template>
   <div id="main-row">
-    <Toasts></Toasts>
-    <MenuBar
-      :store="store"
-    />
     <div class="container-body">
       <div id="alert-messages" class="row">
         <div class="col-12">
@@ -80,22 +76,17 @@ This component displays the main header row
         </div>
       </div>
     </div>
-    <Modals
-      :store="store"
-    />
   </div>
 </template>
 
 <script>
 import { EventBus } from '@/event-bus.js'
 import ConceptCard from '@/components/concept-card'
-import MenuBar from '@/components/menu-bar'
 import Card from '@/components/card'
-import Modals from '@/components/modals'
 
 export default {
   name: 'MainRow',
-  components: { Card, ConceptCard, Modals, MenuBar },
+  components: { Card, ConceptCard },
   props: {
     store: {
       type: Object,
