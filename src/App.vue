@@ -8,7 +8,10 @@
       <Modals
         :store="store"
       />
-      <mainRow
+      <Alerts
+        :store="store"
+      />
+      <MainRow
         :store="store"
       />
       <div class="container-body">
@@ -35,12 +38,14 @@
 </template>
 
 <script>
-import firebase from 'firebase'
+import firebase from 'firebase/app'
+import "firebase/auth"
 import axios from 'axios'
 // import { EventBus } from '@/event-bus.js'
 // import { setupCache } from 'axios-cache-adapter'
 import MenuBar from '@/components/menu-bar'
 import Modals from '@/components/modals'
+import Alerts from '@/components/alerts'
 import MainRow from '@/components/main-row'
 import TypeRow from '@/components/type-row'
 import Websocket from '@/components/websocket'
@@ -91,7 +96,8 @@ var store = {
     gameRooms: [],
     gameMode: '',
     gameModeIsGod: false,
-    gameModeAllowChange: true
+    gameModeAllowChange: true,
+    alerts: []
   },
   setMessageAction (newValue) {
     if (this.debug) console.log('setMessageAction triggered with', newValue)
@@ -105,7 +111,7 @@ var store = {
 
 export default {
   name: 'App',
-  components: { Modals, MenuBar, MainRow, TypeRow, Websocket },
+  components: { Modals, MenuBar, Alerts, MainRow, TypeRow, Websocket },
   methods: {
     retrieveRecords: function (recordType, offset) {
       // query all the data from airtable or local JSON stored in /data

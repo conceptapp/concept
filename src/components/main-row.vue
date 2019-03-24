@@ -12,7 +12,7 @@ This component displays the main header row
 <template>
   <div id="main-row">
     <div class="container-body">
-      <div id="alert-messages" class="row">
+<!--       <div id="alert-messages" class="row">
         <div class="col-12">
           <b-alert
             :show="dismissCountDown"
@@ -25,7 +25,7 @@ This component displays the main header row
             Désolé, seul l'organisateur de la partie peut modifier les cartes
           </b-alert>
         </div>
-      </div>
+      </div> -->
       <div id="header-row" class="row">
         <!-- hide on screens smaller than lg / md / sm -->
         <div class="col-2 d-none d-sm-block">
@@ -176,14 +176,16 @@ export default {
         this.addIcon(this.sharedState.cardDragged)
       } else {
         // display error message, user is not allowed to change cards
-        this.dismissCountDown = this.dismissSecs
+        // this.dismissCountDown = this.dismissSecs
+        this.sharedState.alerts.push({
+          msg: "Désolé, seul l'organisateur de la partie peut modifier les cartes",
+          dismissCountDown: 5,
+          variant: 'danger'
+        })
         // alert("Dans ce mode de jeu, vous n'êtes pas autorisé à changer les cartes, désolé.")
       }
       ev.preventDefault()
       // return true
-    },
-    countDownChanged: function(dismissCountDown) {
-      this.dismissCountDown = dismissCountDown
     }
   },
   sockets: {

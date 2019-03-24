@@ -111,7 +111,9 @@ This component displays the login elements
 
 <script>
 import { EventBus } from '@/event-bus.js'
-import firebase from 'firebase'
+import firebase from 'firebase/app'
+import "firebase/auth"
+
 
 export default {
   name: 'ModalLogin',
@@ -146,14 +148,24 @@ export default {
         (result) => {
           // alert('Yeah, you are connected')
           // var currentUser = firebase.auth().currentUser
-          console.log('user logged in: ', result)
+          // console.log('user logged in: ', result)
           // store current user and display name
           this.sharedState.currentUser = result.user
           this.sharedState.playerName = result.user.displayName
           this.hideModal()
+          this.sharedState.alerts.push({
+            msg: 'Connexion réussie, vous êtes désormais connecté. Bienvenue ' + result.user.displayName + '.',
+            dismissCountDown: 5,
+            variant: 'info'
+          })
         },
         (err) => {
-          alert('Oops. ' + err.message)
+          // alert('Oops. ' + err.message)
+          this.sharedState.alerts.push({
+            msg: 'La connexion a échouée. Le message remonté est : ' + err.message,
+            dismissCountDown: 15,
+            variant: 'danger'
+          })
         }
       )
     },
@@ -166,9 +178,19 @@ export default {
         // store current user and display name
         this.sharedState.currentUser = result.user
         this.sharedState.playerName = result.user.displayName
-        this.hideModal()      
+        this.hideModal()
+        this.sharedState.alerts.push({
+          msg: 'Connexion réussie, vous êtes désormais connecté. Bienvenue ' + result.user.displayName + '.',
+          dismissCountDown: 5,
+          variant: 'info'
+        })  
       }).catch((err) => {
-        alert('Oops. ' + err.message)
+        // alert('Oops. ' + err.message)
+        this.sharedState.alerts.push({
+          msg: 'La connexion a échouée. Le message remonté est : ' + err.message,
+          dismissCountDown: 15,
+          variant: 'danger'
+        })
       });
     },
     signUp: function() {
@@ -196,9 +218,14 @@ export default {
     },
     logout: function() {
       firebase.auth().signOut().then(() => {
-        alert('you have been signed out')
+        // alert('you have been signed out')
         this.sharedState.currentUser = ''
         this.sharedState.playerName = ''
+        this.sharedState.alerts.push({
+          msg: 'Vous avez été déconnecté.',
+          dismissCountDown: 5,
+          variant: 'info'
+        })
       })
     },
     hideModal() {
