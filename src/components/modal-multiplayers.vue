@@ -95,7 +95,7 @@ This component contains only the modal dialog and some websocket calls for multi
                 <option value="" selected disabled="">Sélectionnez un type de jeu</option>
                 <option value="godMode">Vous seul pouvez ajouter des cartes</option>
                 <option value="allPlayersMode">Tous les joueurs peuvent proposer des cartes</option>
-                <option value="asyncMode" disabled>Proposer un plateau que d'autres joueurs doivent deviner</option>
+                <!-- <option value="asyncMode" disabled>Proposer un plateau que d'autres joueurs doivent deviner</option> -->
               </b-form-select>
               <b-form-invalid-feedback>
                 Juste... pouvez-vous choisir le type de partie que vous voulez jouer&nbsp;? S'il vous plaît&nbsp;?

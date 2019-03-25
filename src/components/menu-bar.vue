@@ -17,14 +17,17 @@ This component displays the main menu bar
         <b-navbar-brand class="navbar-brand">
           Concept
         </b-navbar-brand>
+        <b-nav-item v-b-modal.modalwords>
+          Afficher des mots
+        </b-nav-item>
         <b-nav-item v-b-modal.modalplay>
-          Jouer
+          Jouer à plusieurs
         </b-nav-item>
-        <b-nav-item v-b-modal.modalmultiplayers>
+<!--         <b-nav-item v-b-modal.modalmultiplayers>
           Multijoueurs
-        </b-nav-item>
+        </b-nav-item> -->
         <b-nav-item @click="reset">
-          Réinitialiser le jeu
+          Réinitialiser le plateau
         </b-nav-item>
         <b-nav-item href="https://jrmie818423.typeform.com/to/Kf9Ux6" target="_blank">
           Contribuer

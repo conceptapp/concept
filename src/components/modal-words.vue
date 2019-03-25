@@ -10,36 +10,34 @@ This component contains the modal dialog for generating words to guess
 */
 
 <template>
-  <div id="modal-dialogs">
-    <!-- Modal dialog pour afficher les mots -->
-    <b-modal
-      id="modalplay"
-      @cancel="shuffleWords"
-      title="C'est parti !"
-      ok-title="Ok, c'est parti"
-      cancel-title="Une autre carte"
+  <!-- Modal dialog pour afficher les mots -->
+  <b-modal
+    id="modalwords"
+    @cancel="shuffleWords"
+    title="C'est parti !"
+    ok-title="Ok, c'est parti"
+    cancel-title="Une autre carte"
+  >
+    <section
+      v-if="words.danger.length > 0 && words.warning.length > 0 && words.success.length > 0"
+      v-for="(wordtype, variant, index) in words"
+      :key="index"
     >
-      <section
-        v-if="words.danger.length > 0 && words.warning.length > 0 && words.success.length > 0"
-        v-for="(wordtype, variant, index) in words"
-        :key="index"
-      >
-        <section v-for="(definition, key, index_w) in wordtype[0].fields" :key="index_w">
-          <b-alert :variant="variant" show>
-            {{ definition }}
-          </b-alert>
-        </section>
+      <section v-for="(definition, key, index_w) in wordtype[0].fields" :key="index_w">
+        <b-alert :variant="variant" show>
+          {{ definition }}
+        </b-alert>
       </section>
-      <p class="text-right">
-        <a
-          href="https://jrmie818423.typeform.com/to/Kf9Ux6"
-          class="text-secondary"
-          target="_blank"
-        >>> Proposer des mots ou expressions</a>
-      </p>
-      <!-- TODO see https://admin.typeform.com/form/Kf9Ux6/share#/embed to try to embed -->
-    </b-modal>
-  </div>
+    </section>
+    <p class="text-right">
+      <a
+        href="https://jrmie818423.typeform.com/to/Kf9Ux6"
+        class="text-secondary"
+        target="_blank"
+      >>> Proposer des mots ou expressions</a>
+    </p>
+    <!-- TODO see https://admin.typeform.com/form/Kf9Ux6/share#/embed to try to embed -->
+  </b-modal>
 </template>
 
 <script>
