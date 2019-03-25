@@ -20,7 +20,10 @@ This component displays the main menu bar
         <b-nav-item v-b-modal.modalwords>
           Afficher des mots
         </b-nav-item>
-        <b-nav-item v-b-modal.modalplay>
+        <b-nav-item v-show="sharedState.currentUser===''" v-b-modal.modallogin>
+          Jouer à plusieurs
+        </b-nav-item>
+        <b-nav-item v-show="sharedState.currentUser!==''" v-b-modal.modalplay>
           Jouer à plusieurs
         </b-nav-item>
 <!--         <b-nav-item v-b-modal.modalmultiplayers>
