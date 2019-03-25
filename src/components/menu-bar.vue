@@ -51,9 +51,9 @@ This component displays the main menu bar
         </b-navbar-nav>
         <!-- user is authenticated -->
         <b-navbar-nav v-show="sharedState.currentUser!==''" class="ml-auto">
-          <b-nav-item v-b-modal.modallogin>
-            {{sharedState.playerName}} 
-            <span v-if="sharedState.gameRooms[sharedState.currentGameRoom]">
+          <b-nav-item>
+            <span @click="showModalLogin">{{sharedState.playerName}}</span>
+            <span v-if="sharedState.gameRooms[sharedState.currentGameRoom]" @click="showModalMultiplayers">
               @ {{ sharedState.currentGameRoom }} 
               <small v-if="sharedState.gameRooms[sharedState.currentGameRoom]" class="text-muted">
                 (<font-awesome-icon icon="male" /> x {{ sharedState.gameRooms[sharedState.currentGameRoom]['count'] }})
@@ -124,6 +124,12 @@ export default {
       // this.pushWebsocket()
       EventBus.$emit('init-guess-cards')
       this.sharedState.selectedColor = this.sharedState.colors[0] // select the default color
+    },
+    showModalMultiplayers() {
+      this.$root.$emit('bv::show::modal', 'modalmultiplayers')
+    },
+    showModalLogin() {
+      this.$root.$emit('bv::show::modal', 'modallogin')
     }
   }
 }

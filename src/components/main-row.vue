@@ -12,20 +12,6 @@ This component displays the main header row
 <template>
   <div id="main-row">
     <div class="container-body">
-<!--       <div id="alert-messages" class="row">
-        <div class="col-12">
-          <b-alert
-            :show="dismissCountDown"
-            dismissible
-            fade
-            variant="danger"
-            @dismissed="dismissCountDown=0"
-            @dismiss-count-down="countDownChanged"
-          >
-            Désolé, seul l'organisateur de la partie peut modifier les cartes
-          </b-alert>
-        </div>
-      </div> -->
       <div id="header-row" class="row">
         <!-- hide on screens smaller than lg / md / sm -->
         <div class="col-2 d-none d-sm-block">
@@ -37,7 +23,7 @@ This component displays the main header row
           <!-- show all the concept by row, one color each -->
           <!-- eslinnt-disable-next-line vue/use-v-on-style -->
           <div
-            v-for="(color, index) in sharedState.colors"
+            v-for="(color, index) in colors"
             :key="index"
             :id="color"
             :class="{ 'active': color == sharedState.selectedColor }"
@@ -80,6 +66,7 @@ This component displays the main header row
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import { EventBus } from '@/event-bus.js'
 import ConceptCard from '@/components/concept-card'
 import Card from '@/components/card'
@@ -118,6 +105,10 @@ export default {
     EventBus.$on('update-cards', data => this.pushWebsocket())
     EventBus.$on('init-guess-cards', data => this.initGuessCards())
   },
+  computed: mapState ({
+    colors: state => state.colors,
+    cards: state => state.cards
+  }),
   methods: {
     addIcon: function (data) {
       // Name, Tooltip_fr

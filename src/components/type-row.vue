@@ -40,6 +40,7 @@ On click, display tooltip next to the icon
 
 <script>
 // import { EventBus } from '@/event-bus.js'
+import { mapState } from 'vuex'
 import Card from '@/components/card'
 
 export default {
@@ -65,9 +66,12 @@ export default {
     }
   },
   computed: {
+    ...mapState ({
+      cards: state => state.cards.cards
+    }),
     currentCards: function () {
       var t = this.type
-      var a = this.sharedState.cards.filter(function (el) {
+      var a = this.cards.filter(function (el) {
         return el.fields.Type[0] === t.id
       })
       // append the type of the card to the array for use in the child component

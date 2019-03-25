@@ -18,7 +18,7 @@
         <div id="concept-cards">
           <!-- display all the concept types -->
           <section
-            v-for="type in sharedState.types"
+            v-for="type in types"
             :key="type.id"
           >
             <typeRow
@@ -40,9 +40,8 @@
 <script>
 import firebase from 'firebase/app'
 import "firebase/auth"
-import axios from 'axios'
+import { mapState } from 'vuex'
 // import { EventBus } from '@/event-bus.js'
-// import { setupCache } from 'axios-cache-adapter'
 import MenuBar from '@/components/menu-bar'
 import Modals from '@/components/modals'
 import Alerts from '@/components/alerts'
@@ -50,34 +49,12 @@ import MainRow from '@/components/main-row'
 import TypeRow from '@/components/type-row'
 import Websocket from '@/components/websocket'
 
-import typesjson from '../data/types.json'
-import cards1json from '../data/cards-1.json'
-import cards2json from '../data/cards-2.json'
-
 const LOCAL = true
 
-// // Create axios-cache-adapter instance // Cache 15 minutes
-// const cache = setupCache({
-//   maxAxe: 15 * 60 * 1000
-// })
-
-// // Create axios istance passing the newly created cache.adapter
-// const api = axios.create({
-//   adapter: cache.adapter
-// })
-
-/*
-api({
-  url: '',
-  method: 'get'
-}).then( async(response) => {
-  console.log('Request response:', response)
-})
-*/
 
 var appKey = 'keyrkS74q9vL9FBHT'
 var appId = 'appzdYVnVaVLTKUB7'
-const colors = ['#10C177', '#FE4365', '#1693A5', '#420943']
+var colors = ['#10C177', '#FE4365', '#1693A5', '#420943']
 
 // defines a store to be used all over the app according to https://vuejs.org/v2/guide/state-management.html#Simple-State-Management-from-Scratch
 var store = {
@@ -113,44 +90,14 @@ export default {
   name: 'App',
   components: { Modals, MenuBar, Alerts, MainRow, TypeRow, Websocket },
   methods: {
-    retrieveRecords: function (recordType, offset) {
-      // query all the data from airtable or local JSON stored in /data
-      offset = offset !== undefined ? '&offset=' + offset : ''
-      if (!LOCAL) {
-        axios.get(
-          'https://api.airtable.com/v0/' + appId + '/' + recordType + '?sort%5B0%5D%5Bfield%5D=index' + offset,
-          {
-            headers: { Authorization: 'Bearer ' + appKey }
-          }
-        ).then(function (response) {
-          if (recordType === 'Types') {
-            this.sharedState.types = response.data.records
-          } else {
-            // get the cards data
-            if (offset === '') {
-              this.sharedState.cards = response.data.records
-              this.retrieveRecords('Cards', response.data.offset)
-            } else {
-              this.sharedState.cards.concat(response.data.records)
-            }
-          }
-        }.bind(this)).catch(function (error) {
-          console.log(error)
-        })
-      } else {
-        if (recordType === 'Types') {
-          this.sharedState.types = typesjson.records
-        } else {
-          this.sharedState.cards = cards1json.records.concat(cards2json.records)
-        }
-      }
-    }
   },
   created () {
     // retrieve all the main types from Airtable
-    this.retrieveRecords('Types')
+    // this.retrieveRecords('Types')
+    this.$store.dispatch('retrieveRecords', {'recordType': 'Types'})
     // retrieve all the cards from airtable (100 records max per request)
-    this.retrieveRecords('Cards')
+    // this.retrieveRecords('Cards')
+    this.$store.dispatch('retrieveRecords', { 'recordType': 'Cards'})
     // store current user if already logged-in 
     var user = firebase.auth().currentUser
     if (user) {
@@ -158,6 +105,10 @@ export default {
       this.sharedState.playerName = user.dispayName
     }
   },
+  computed: mapState ({
+    types: state => state.cards.types,
+    cards: state => state.cards.cards
+  }),
   data: function () {
     return {
       store: store,

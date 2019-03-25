@@ -1,6 +1,9 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
+import Vuex from 'vuex'
+// create Vuex store
+import store from './store'
 import firebase from 'firebase/app'
 import App from './App'
 // import router from './router'
@@ -24,9 +27,8 @@ import { FontAwesomeIcon, FontAwesomeLayers, FontAwesomeLayersText } from '@fort
 import { faPlus, faPlusCircle, faMinusCircle, faQuestionCircle, faExclamationCircle, faTrash, faPlayCircle, faTrashRestore, faBookOpen, faPlusSquare,
   faUsers, faBars, faMale, faUserCircle, faPuzzlePiece} from '@fortawesome/free-solid-svg-icons'
 
+Vue.use(Vuex)
 Vue.use(VueSocketIO, process.env.SOCKET_IO_URL)
-// Vue.use(VueSocketIO, "http://localhost:5000")
-// Vue.use(Vuelidate)
 Vue.use(BootstrapVue)
 Vue.use(VueBootstrapToasts)
 
@@ -38,6 +40,7 @@ Vue.component('font-awesome-layers-text', FontAwesomeLayersText)
 
 Vue.config.productionTip = false
 
+// firebase configuration
 const config = {
   apiKey: 'AIzaSyCi5GkjKyceprBZjCPxQBuxjlx6Z2CuBcs',
   authDomain: 'concept.firebaseapp.com',
@@ -52,6 +55,7 @@ firebase.initializeApp(config)
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
+  store,
   // router,
   components: { App },
   template: '<App/>'
