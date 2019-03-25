@@ -43,7 +43,7 @@ This component contains the modal dialog for playing
         Piochez un mot et trouvez la meilleure combinaison de cartes pour faire deviner les autres joueurs. <br>
         Et à votre tour, essayez de deviner les mots des plateaux proposés par les autres joueurs.
       </b-card-text>
-      <b-button variant="primary">Lancer le mode plateau</b-button>
+      <b-button variant="primary" @click="launchBoardMode">Lancer le mode plateau</b-button>
     </b-card>
   </b-modal>
 </template>
@@ -72,6 +72,14 @@ export default {
   methods: {
     hideModal: function () {
       this.$refs.modalplay.hide()
+    },
+    launchBoardMode: function() {
+      this.hideModal()
+      this.sharedState.alerts.push({
+        msg: "Désolé, le mode plateau n'est pas encore disponible",
+        dismissCountDown: 5,
+        variant: 'warning'
+      })
     }
   }
 }
