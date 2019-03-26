@@ -138,12 +138,8 @@ export default {
     }
   },
   computed: mapState ({
-    // colors: state => state.cards.colors,
-    // selectedColor: state => state.cards.selectedColor,
     currentUser: state => state.game.currentUser,
-    playerName: state => state.game.playerName,
-    // currentGameRoom: state => state.game.currentGameRoom,
-    // gameRooms: state => state.game.gameRooms
+    playerName: state => state.game.playerName
   }),  
   created () {
   },
@@ -159,8 +155,6 @@ export default {
     login: function() {
       firebase.auth().signInWithEmailAndPassword(this.email, this.password).then(
         (result) => {
-          // alert('Yeah, you are connected')
-          // var currentUser = firebase.auth().currentUser
           // console.log('user logged in: ', result)
           // store current user and display name
           this.setCurrentUser(result.user)

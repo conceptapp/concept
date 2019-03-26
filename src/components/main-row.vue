@@ -98,7 +98,6 @@ export default {
   },
   created () {
     // initialize the Guess Cards arrays
-    // this.initGuessCards()
     this.$store.dispatch('initGuessCards')
     // listen to events
     EventBus.$on('add-icon', data => this.addIcon(data))
@@ -128,12 +127,6 @@ export default {
       // Name, Tooltip_fr
       // check if user is allowed to change guess cards
       if (!this.gameModeAllowChange) { return false }
-      // first time a color is called, need to create the empty array
-      // if (this.sharedState.guessCards[this.sharedState.selectedColor] == null) {
-      //   this.sharedState.guessCards[this.sharedState.selectedColor] = []
-      // }
-      // this.sharedState.guessCards[this.sharedState.selectedColor].push(data)
-      // this.pushWebsocket()
       this.pushGuessCards({ 'color': this.selectedColor, 'cards': data })
     },
     removeIcon: function (data) {
@@ -143,11 +136,6 @@ export default {
       // color row depends from the call 
       // if dragged, use color from data, else, use active color
       var cardColor = Object.keys(this.cardDragged).length > 0 ? data.color : this.selectedColor
-      // this.sharedState.guessCards[cardColor] = this.sharedState.guessCards[cardColor].filter(
-      //   function (obj) {
-      //     return !(obj.Name === data.Name)
-      //   })
-      // this.pushWebsocket()
       this.removeGuessCards({ 'color': cardColor, 'cards': data })
     },
     dragenter: function (ev) {
@@ -192,7 +180,6 @@ export default {
     update_game_rooms (data) {
       console.log('updating game rooms: ', data)
       this.setGameRooms(data.game_rooms)
-      // this.sharedState.gameRooms = data.game_rooms
       // toast message when player joined or left the game
       if (data.game === this.currentGameRoom) {
         if (data.playerJoined !== undefined) {

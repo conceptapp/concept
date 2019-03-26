@@ -162,12 +162,10 @@ export default {
     return {
       sharedState: this.store.state,
       newGame: '',
-      // playerName: '',
       submitStatus: null,
       newGameValid: null,
       gameModeForm: '',
       gameModeValid: null
-      // playerNameValid: null
     }
   },
   computed: {

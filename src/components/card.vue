@@ -119,9 +119,6 @@ export default {
     icon: function () {
       return require('../assets/images/cards/' + this.cardInfo.type + '/' + this.cardInfo.Name + '.png')
     }
-    // gameMode: function() {
-    //   return this.sharedState.gameMode
-    // }
   },
   watch: {
     //TODO check if can be removed since Vuex
@@ -139,10 +136,9 @@ export default {
       EventBus.$emit(addOrRemove, data)
     },
     dragstart: function (ev) {
-      // store the current card dragged
-      // this.sharedState.cardDragged = this.cardInfo
       // add current icon color (if empty, card comes from type rows, if color is set, card comes from guess row)
       this.cardInfo['color'] = this.iconColor
+      // store the current card dragged
       this.setCardDragged(this.cardInfo)
     },
     dragend: function (ev) {
@@ -151,7 +147,6 @@ export default {
         EventBus.$emit('remove-icon', this.cardInfo)
       }
       // reset current dragged card
-      // this.sharedState.cardDragged = {}
       this.setCardDragged({})
     }
   }
