@@ -50,29 +50,33 @@ This component contains the modal dialog for playing
 </template>
 
 <script>
-// import { EventBus } from '@/event-bus.js'
+import { EventBus } from '@/event-bus.js'
+import { mapState, mapMutations } from 'vuex'
 
 export default {
   name: 'ModalPlay',
   components: { },
   props: { },
-  created () {
-  },
+  computed: mapState ({
+    alerts: state => state.alerts.alerts
+  }),  
   methods: {
+    ...mapMutations([
+      'pushAlert',
+      'setGameMode'
+    ]),
     hideModal: function () {
       this.$refs.modalplay.hide()
     },
     createBoard: function() {
       this.hideModal()
-      this.sharedState.alerts.push({
-        msg: "Désolé, le mode plateau n'est pas encore disponible",
-        dismissCountDown: 5,
-        variant: 'warning'
-      })
+      this.setGameMode('boardCreation')
+      // this.$refs.modalwords.show()
+      EventBus.$emit('show-modal-words', {})
     },
     displayBoardList: function() {
       this.hideModal()
-      this.sharedState.alerts.push({
+      this.pushAlert({
         msg: "Désolé, le mode plateau n'est pas encore disponible",
         dismissCountDown: 5,
         variant: 'warning'

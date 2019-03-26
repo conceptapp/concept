@@ -9,7 +9,8 @@ const state = {
   gameRooms: [],
   gameMode: '',
   gameModeIsGod: false,
-  gameModeAllowChange: true
+  gameModeAllowChange: true,
+  currentBoardWords: []
 }
 
 // getters
@@ -47,6 +48,12 @@ const mutations = {
   },
   setCurrentUser (state, currentUser) {
     state.currentUser = currentUser
+  },
+  pushBoardWord (state, word) {
+    state.currentBoardWords.push(word)
+  },
+  resetBoardWords (state) {
+    state.currentBoardWords = []
   }
 }
 

@@ -13,9 +13,11 @@ This component contains the modal dialog for generating words to guess
   <!-- Modal dialog pour afficher les mots -->
   <b-modal
     id="modalwords"
+    ref="modalwords"
     @cancel="shuffleWords"
+    @ok="createBoard"
     title="C'est parti !"
-    ok-title="Ok, c'est parti"
+    :ok-title="gameMode === 'boardCreation' ? 'Créer le plateau' : 'Ok, c\'est parti' "
     cancel-title="Une autre carte"
   >
     <section
@@ -23,11 +25,11 @@ This component contains the modal dialog for generating words to guess
       v-for="(wordtype, variant, index) in words"
       :key="index"
     >
-      <section v-for="(definition, key, index_w) in wordtype[0].fields" :key="index_w">
-        <b-alert :variant="variant" show>
+      <div v-for="(definition, key, index_w) in wordtype[0].fields" :key="index_w" 
+        class="mb-3" :class="[isActive(definition) ? 'active':'word-card', 'alert-'+variant]"
+        @click="pushWord(definition)">
           {{ definition }}
-        </b-alert>
-      </section>
+      </div>
     </section>
     <p class="text-right">
       <a
@@ -41,8 +43,8 @@ This component contains the modal dialog for generating words to guess
 </template>
 
 <script>
-// import { EventBus } from '@/event-bus.js'
-
+import { mapState, mapMutations } from 'vuex'
+import { EventBus } from '@/event-bus.js'
 import axios from 'axios'
 import easyjson from '../../data/success.json'
 import mediumjson from '../../data/warning.json'
@@ -61,12 +63,26 @@ export default {
       words: { success: [], warning: [], danger: [] }
     }
   },
+  computed: mapState ({
+    gameMode: state => state.game.gameMode,
+    currentBoardWords: state => state.game.currentBoardWords,
+    alerts: state => state.alerts.alerts
+  }), 
   created () {
     for (var key in this.words) {
       this.retrieveRecords(key)
     }
+    // register event to show this modal
+    EventBus.$on('show-modal-words', data => this.$refs.modalwords.show())
+    EventBus.$on('cancelBoardCreation', data => this.resetBoard())
+    EventBus.$on('saveBoard', data => this.saveBoard())
   },
   methods: {
+    ...mapMutations([
+      'pushBoardWord',
+      'resetBoardWords',
+      'pushAlert'
+    ]),
     retrieveRecords: function (recordType, offset) {
       offset = offset !== undefined ? '?offset=' + offset : ''
       if (!LOCAL) {
@@ -124,6 +140,28 @@ export default {
         evt.preventDefault()
         this.$forceUpdate()
       }
+    },
+    isActive: function(definition) {
+      // activate if game mode is board creation && word was clicked
+      return this.currentBoardWords.indexOf(definition) !== -1 && this.gameMode === 'boardCreation'
+    },
+    pushWord: function(word) {
+      // start from scratch
+      if (this.currentBoardWords.length > 0) {
+        this.resetBoardWords()
+      }
+      this.pushBoardWord(word)
+    },
+    createBoard: function() {
+      this.pushAlert({
+        boardCreationMode: true
+        // msg: "Mot à faire deviner : " + this.currentBoardWords[0] + ". " + strSave + " " + strCancel,
+        // dismissCountDown: true,
+        // variant: 'info'
+      })
+    },
+    saveBoard: function() {
+      
     }
   }
 }
@@ -132,5 +170,15 @@ export default {
 <style scoped >
 .alert {
   padding: 0 !important;
+}
+.word-card {
+  transition: box-shadow .3s;
+  cursor: pointer;
+}
+.word-card:hover {
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.175) !important;
+}
+.active, .active:hover {
+  box-shadow: inset 0px 0px 10px #000;
 }
 </style>

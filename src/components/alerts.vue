@@ -16,6 +16,17 @@ This component displays the main header row
         :id="alert"
         class="col-12">
       <b-alert
+        v-if="alert.boardCreationMode"
+        :show="true"
+        dismissible
+        fade
+        variant="info"
+        @dismissed="cancelBoardCreation(index)">
+        Mot à faire deviner : <u>{{ currentBoardWords[0] }}</u> 
+        ~~ <b-link @click="saveBoard(index)" class="alert-link">Enregistrer le plateau</b-link> ~~
+      </b-alert>
+      <b-alert
+        v-else
         :show="alert.dismissCountDown"
         dismissible
         fade
@@ -31,6 +42,7 @@ This component displays the main header row
 
 <script>
 import { mapState, mapMutations } from 'vuex'
+import { EventBus } from '@/event-bus.js'
 
 export default {
   name: 'Alerts',
@@ -41,12 +53,14 @@ export default {
     }
   },
   computed: mapState ({
-    alerts: state => state.alerts.alerts
+    alerts: state => state.alerts.alerts,
+    currentBoardWords: state => state.game.currentBoardWords
   }),
   created () { },
   methods: {
     ...mapMutations([
-      'removeAlert'
+      'removeAlert',
+      'resetBoardWords'
     ]),
     countDownChanged: function(dismissCountDown) {
       // console.log('dismissCountDown', dismissCountDown)
@@ -58,6 +72,15 @@ export default {
       // this.sharedState.alerts.splice(index, 1)
       this.removeAlert(index)
       // console.log('remove alert: ', this.sharedState.alerts, index)
+    },
+    cancelBoardCreation: function(index) {
+      this.removeAlert(index)
+      this.resetBoardWords()    
+    },
+    saveBoard: function(index) {
+      // hide alert
+      this.removeAlert(index)
+      EventBus.$emit('saveBoard', {})      
     }
   }
 }
