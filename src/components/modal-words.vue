@@ -55,17 +55,9 @@ var appId = 'appzdYVnVaVLTKUB7'
 export default {
   name: 'ModalWords',
   components: { },
-  props: {
-    store: {
-      type: Object,
-      default: function () {
-        return {}
-      }
-    },
-  },
+  props: { },
   data: function () {
     return {
-      sharedState: this.store.state,
       words: { success: [], warning: [], danger: [] }
     }
   },

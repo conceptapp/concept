@@ -102,19 +102,7 @@ import { EventBus } from '@/event-bus.js'
 export default {
   name: 'MenuBar',
   components: { },
-  props: {
-    store: {
-      type: Object,
-      default: function () {
-        return {}
-      }
-    }
-  },
-  data: function () {
-    return {
-      sharedState: this.store.state
-    }
-  },
+  props: { },
   computed: mapState ({
     colors: state => state.cards.colors,
     selectedColor: state => state.cards.selectedColor,

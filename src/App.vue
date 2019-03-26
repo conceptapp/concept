@@ -2,18 +2,10 @@
   <div id="app">
     <div class="container">
       <Toasts></Toasts>
-      <MenuBar
-        :store="store"
-      />
-      <Modals
-        :store="store"
-      />
-      <Alerts
-        :store="store"
-      />
-      <MainRow
-        :store="store"
-      />
+      <MenuBar />
+      <Modals />
+      <Alerts />
+      <MainRow />
       <div class="container-body">
         <div id="concept-cards">
           <!-- display all the concept types -->
@@ -21,10 +13,7 @@
             v-for="type in types"
             :key="type.id"
           >
-            <typeRow
-              :store="store"
-              :type="type"
-            />
+            <typeRow :type="type" />
           </section>
         </div>
       </div>
@@ -41,50 +30,12 @@
 import firebase from 'firebase/app'
 import "firebase/auth"
 import { mapState } from 'vuex'
-// import { EventBus } from '@/event-bus.js'
 import MenuBar from '@/components/menu-bar'
 import Modals from '@/components/modals'
 import Alerts from '@/components/alerts'
 import MainRow from '@/components/main-row'
 import TypeRow from '@/components/type-row'
 import Websocket from '@/components/websocket'
-
-const LOCAL = true
-
-
-var appKey = 'keyrkS74q9vL9FBHT'
-var appId = 'appzdYVnVaVLTKUB7'
-var colors = ['#10C177', '#FE4365', '#1693A5', '#420943']
-
-// defines a store to be used all over the app according to https://vuejs.org/v2/guide/state-management.html#Simple-State-Management-from-Scratch
-var store = {
-  // debug: true,
-  // state: {
-  //   types: [],
-  //   cards: [],
-  //   guessCards: {},
-  //   cardDragged: {},
-  //   colors: colors,
-  //   selectedColor: colors[0], // select a default color
-  //   currentUser: '',
-  //   isMultiPlayer: false,
-  //   playerName: '',
-  //   currentGameRoom: '',
-  //   gameRooms: [],
-  //   gameMode: '',
-  //   gameModeIsGod: false,
-  //   gameModeAllowChange: true,
-  //   alerts: []
-  // },
-  // setMessageAction (newValue) {
-  //   if (this.debug) console.log('setMessageAction triggered with', newValue)
-  //   this.state.message = newValue
-  // },
-  // clearMessageAction () {
-  //   if (this.debug) console.log('clearMessageAction triggered')
-  //   this.state.message = ''
-  // }
-}
 
 export default {
   name: 'App',
@@ -101,18 +52,18 @@ export default {
     // store current user if already logged-in 
     var user = firebase.auth().currentUser
     if (user) {
-      this.sharedState.currentUser = user
-      this.sharedState.playerName = user.dispayName
+      this.currentUser = user
+      this.playerName = user.dispayName
     }
   },
   computed: mapState ({
     types: state => state.cards.types,
-    cards: state => state.cards.cards
+    cards: state => state.cards.cards,
+    currentUser: state => state.game.currentUser,
+    playerName: state => state.game.playerName
   }),
   data: function () {
     return {
-      store: store,
-      sharedState: store.state
     }
   }
 }

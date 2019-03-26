@@ -51,7 +51,6 @@ This component displays the main header row
                 class="card"
               >
                 <Card
-                  :store="store"
                   :card-info="card"
                   :icon-color="color"
                   add-or-remove="remove"
@@ -75,12 +74,6 @@ export default {
   name: 'MainRow',
   components: { Card, ConceptCard },
   props: {
-    store: {
-      type: Object,
-      default: function () {
-        return {}
-      }
-    },
     type: {
       type: Object,
       default: function () {
@@ -90,7 +83,6 @@ export default {
   },
   data: function () {
     return {
-      sharedState: this.store.state,
       dismissSecs: 5,
       dismissCountDown: 0,
       showDismissibleAlert: false

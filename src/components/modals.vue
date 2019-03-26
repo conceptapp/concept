@@ -12,15 +12,15 @@ This component contains the modal dialogs
 <template>
   <div id="modal-dialogs">
     <!-- Modal dialog pour l'identification -->
-    <ModalLogin :store="store" />
+    <ModalLogin />
     <!-- Modal dialog pour lancer le jeu  -->
-    <ModalPlay :store="store" />
+    <ModalPlay />
     <!-- Modal dialog pour afficher le mode de jeu multijoueurs -->
-    <ModalMultiplayers :store="store" />
+    <ModalMultiplayers />
     <!-- Modal dialog pour afficher les mots -->
-    <ModalWords :store="store" />
+    <ModalWords />
     <!-- Modal dialog pour afficher les règles du jeu -->
-    <ModalRules :store="store" />
+    <ModalRules />
   </div>
 </template>
 
@@ -35,21 +35,8 @@ import ModalRules from '@/components/modal-rules'
 export default {
   name: 'Modals',
   components: { ModalLogin, ModalPlay, ModalMultiplayers, ModalWords, ModalRules },
-  props: {
-    store: {
-      type: Object,
-      default: function () {
-        return {}
-      }
-    },
-  },
-  data: function () {
-    return {
-      sharedState: this.store.state,
-    }
-  },
-  methods: {
-  }
+  props: { },
+  methods: { }
 }
 </script>
 

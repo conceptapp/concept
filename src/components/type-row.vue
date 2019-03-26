@@ -28,7 +28,6 @@ On click, display tooltip next to the icon
         class="card"
       >
         <Card
-          :store="store"
           :card-info="card.fields"
           add-or-remove="add"
         />
@@ -47,22 +46,11 @@ export default {
   name: 'TypeRow',
   components: { Card },
   props: {
-    store: {
-      type: Object,
-      default: function () {
-        return {}
-      }
-    },
     type: {
       type: Object,
       default: function () {
         return {}
       }
-    }
-  },
-  data: function () {
-    return {
-      sharedState: this.store.state
     }
   },
   computed: {

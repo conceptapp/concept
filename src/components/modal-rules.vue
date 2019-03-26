@@ -50,19 +50,7 @@ This component contains the modal dialogs
 export default {
   name: 'ModalRules',
   components: { },
-  props: {
-    store: {
-      type: Object,
-      default: function () {
-        return {}
-      }
-    },
-  },
-  data: function () {
-    return {
-      sharedState: this.store.state,
-    }
-  },
+  props: { },
   methods: {
   }
 }

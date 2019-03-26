@@ -35,20 +35,9 @@ import { mapState, mapMutations } from 'vuex'
 export default {
   name: 'Alerts',
   components: { },
-  props: {
-    store: {
-      type: Object,
-      default: function () {
-        return {}
-      }
-    }
-  },
+  props: { },
   data: function () {
     return {
-      sharedState: this.store.state
-      // dismissSecs: 5,
-      // dismissCountDown: 0,
-      // showDismissibleAlert: false
     }
   },
   computed: mapState ({

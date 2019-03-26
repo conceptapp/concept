@@ -55,19 +55,7 @@ This component contains the modal dialog for playing
 export default {
   name: 'ModalPlay',
   components: { },
-  props: {
-    store: {
-      type: Object,
-      default: function () {
-        return {}
-      }
-    },
-  },
-  data: function () {
-    return {
-      sharedState: this.store.state
-    }
-  },
+  props: { },
   created () {
   },
   methods: {

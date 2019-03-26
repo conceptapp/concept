@@ -119,17 +119,9 @@ import "firebase/auth"
 export default {
   name: 'ModalLogin',
   components: { },
-  props: {
-    store: {
-      type: Object,
-      default: function () {
-        return {}
-      }
-    }
-  },
+  props: { },
   data: function () {
     return {
-      sharedState: this.store.state,
       signup: false,
       playerNameForm: '',
       playerNameValid: null,

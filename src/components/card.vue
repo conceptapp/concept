@@ -78,12 +78,6 @@ import { EventBus } from '@/event-bus.js'
 export default {
   name: 'Card',
   props: {
-    store: {
-      type: Object,
-      default: function () {
-        return {}
-      }
-    },
     cardInfo: {
       type: Object,
       default: function () {
@@ -101,8 +95,7 @@ export default {
   },
   data: function () {
     return {
-      tooltipShown: false,
-      sharedState: this.store.state
+      tooltipShown: false
     }
   },
   computed: {
@@ -120,12 +113,12 @@ export default {
       return require('../assets/images/cards/' + this.cardInfo.type + '/' + this.cardInfo.Name + '.png')
     }
   },
-  watch: {
-    //TODO check if can be removed since Vuex
-    gameMode: function (oldValue, newValue) {
-      this.setGameModeAllowChange(!(this.gameMode === 'godMode' && !this.gameModeIsGod))
-    }
-  },
+  // watch: {
+  //   //TODO check if can be removed since Vuex
+  //   gameMode: function (oldValue, newValue) {
+  //     this.setGameModeAllowChange(!(this.gameMode === 'godMode' && !this.gameModeIsGod))
+  //   }
+  // },
   methods: {
     ...mapMutations([
       'setCardDragged',

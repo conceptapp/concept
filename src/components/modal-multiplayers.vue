@@ -150,17 +150,9 @@ import { mapState, mapMutations } from 'vuex'
 export default {
   name: 'ModalMultiplayers',
   components: { },
-  props: {
-    store: {
-      type: Object,
-      default: function () {
-        return {}
-      }
-    },
-  },
+  props: { },
   data: function () {
     return {
-      sharedState: this.store.state,
       newGame: '',
       submitStatus: null,
       newGameValid: null,
