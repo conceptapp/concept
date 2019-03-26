@@ -97,7 +97,7 @@ const mutations = {
     if (updateServer) this.dispatch('pushWebsocket')
   },
   pushGuessCards (state, { 'color': color, 'cards': cards }) {
-    console.log('pushGuessCards', state, color, cards)
+    // console.log('pushGuessCards', state, color, cards)
     state.guessCards[color].push(cards)
     this.dispatch('pushWebsocket')
   },

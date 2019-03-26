@@ -29,7 +29,7 @@ This component contains the modal dialog for playing
         Jouez en temps réel sur le même ordinateur / téléphone / tablette ou chacun le vôtre. <br>
         Piochez un mot et faites-le deviner aux autres grâce aux images <i>Concept</i>.
       </b-card-text>
-      <b-button v-b-modal.modalmultiplayers @click="hideModal" variant="primary">Lancer le jeu temps réel</b-button>
+      <b-button v-b-modal.modalmultiplayers @click="hideModal" variant="primary">Lancer le jeu temps réel <font-awesome-icon icon="clock" /></b-button>
     </b-card>
     <b-card
       title="Jeu individuel en mode plateau"
@@ -43,7 +43,8 @@ This component contains the modal dialog for playing
         Piochez un mot et trouvez la meilleure combinaison de cartes pour faire deviner les autres joueurs. <br>
         Et à votre tour, essayez de deviner les mots des plateaux proposés par les autres joueurs.
       </b-card-text>
-      <b-button variant="primary" @click="launchBoardMode">Lancer le mode plateau</b-button>
+      <b-button variant="primary" @click="createBoard">Créer un plateau <font-awesome-icon icon="chess-board" /></b-button>
+      <b-button variant="primary" @click="displayBoardList">Deviner des plateaux <font-awesome-icon icon="question" /></b-button>
     </b-card>
   </b-modal>
 </template>
@@ -73,7 +74,15 @@ export default {
     hideModal: function () {
       this.$refs.modalplay.hide()
     },
-    launchBoardMode: function() {
+    createBoard: function() {
+      this.hideModal()
+      this.sharedState.alerts.push({
+        msg: "Désolé, le mode plateau n'est pas encore disponible",
+        dismissCountDown: 5,
+        variant: 'warning'
+      })
+    },
+    displayBoardList: function() {
       this.hideModal()
       this.sharedState.alerts.push({
         msg: "Désolé, le mode plateau n'est pas encore disponible",

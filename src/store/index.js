@@ -13,14 +13,10 @@ Vue.use(Vuex)
 // root state object.
 // each Vuex instance is just a single state tree.
 const state = {
-  // types: [],
-  // cards: [],
-  // guessCards: {},
-  // cardDragged: {},
   currentUser: '',
-  isMultiPlayer: true,
+  isMultiPlayer: false,
   playerName: '',
-  currentGameRoom: 'La partie de Max',
+  currentGameRoom: '',
   gameRooms: [],
   gameMode: '',
   gameModeIsGod: false,

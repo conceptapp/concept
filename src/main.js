@@ -22,7 +22,7 @@ import VueBootstrapToasts from "vue-bootstrap-toasts"
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon, FontAwesomeLayers, FontAwesomeLayersText } from '@fortawesome/vue-fontawesome'
 import { faPlus, faPlusCircle, faMinusCircle, faQuestionCircle, faExclamationCircle, faTrash, faPlayCircle, faTrashRestore, faBookOpen, faPlusSquare,
-  faUsers, faBars, faMale, faUserCircle, faPuzzlePiece} from '@fortawesome/free-solid-svg-icons'
+  faUsers, faBars, faMale, faUserCircle, faPuzzlePiece, faQuestion, faChessBoard, faClock} from '@fortawesome/free-solid-svg-icons'
 
 // import and connect to the concept server-side with websocket thanks to Vue Socket IO
 // import VueSocketIO from 'vue-socket.io'
@@ -46,7 +46,7 @@ Vue.use(BootstrapVue)
 Vue.use(VueBootstrapToasts)
 
 library.add(faPlus, faPlusCircle, faMinusCircle, faQuestionCircle, faExclamationCircle, faTrash, faPlayCircle, faTrashRestore, faBookOpen, faPlusSquare,
-  faUsers, faBars, faMale, faUserCircle, faPuzzlePiece)
+  faUsers, faBars, faMale, faUserCircle, faPuzzlePiece, faQuestion, faChessBoard, faClock)
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 Vue.component('font-awesome-layers', FontAwesomeLayers)
 Vue.component('font-awesome-layers-text', FontAwesomeLayersText)
