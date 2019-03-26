@@ -8,9 +8,6 @@ import firebase from 'firebase/app'
 import App from './App'
 // import router from './router'
 
-// import and connect to the concept server-side with websocket thanks to Vue Socket IO
-import VueSocketIO from 'vue-socket.io'
-
 // import Vuelidate from 'vuelidate'
 
 // import Bootstrap vue component and css
@@ -27,8 +24,24 @@ import { FontAwesomeIcon, FontAwesomeLayers, FontAwesomeLayersText } from '@fort
 import { faPlus, faPlusCircle, faMinusCircle, faQuestionCircle, faExclamationCircle, faTrash, faPlayCircle, faTrashRestore, faBookOpen, faPlusSquare,
   faUsers, faBars, faMale, faUserCircle, faPuzzlePiece} from '@fortawesome/free-solid-svg-icons'
 
+// import and connect to the concept server-side with websocket thanks to Vue Socket IO
+// import VueSocketIO from 'vue-socket.io'
+import VueSocketio from 'vue-socket.io-extended'
+import $socket from './websocket-instance'
+
+Vue.use(VueSocketio, $socket);
+
+// Vue.use(VueSocketIO, {
+// 	connection: process.env.SOCKET_IO_URL,
+// 	vuex: { 
+// 		store,
+// 		actionPrefix: 'SOCKET_',
+// 		mutationPrefix: 'SOCKET_'
+// 	}
+// })
+
 Vue.use(Vuex)
-Vue.use(VueSocketIO, process.env.SOCKET_IO_URL)
+
 Vue.use(BootstrapVue)
 Vue.use(VueBootstrapToasts)
 

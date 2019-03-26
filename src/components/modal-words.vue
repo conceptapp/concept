@@ -48,7 +48,7 @@ import easyjson from '../../data/success.json'
 import mediumjson from '../../data/warning.json'
 import hardjson from '../../data/danger.json'
 
-const LOCAL = false
+const LOCAL = true
 var appKey = 'keyrkS74q9vL9FBHT'
 var appId = 'appzdYVnVaVLTKUB7'
 

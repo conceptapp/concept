@@ -26,9 +26,9 @@ This component displays the main header row
             v-for="(color, index) in colors"
             :key="index"
             :id="color"
-            :class="{ 'active': color == sharedState.selectedColor }"
-            @:click="sharedState.selectedColor = color"
-            :droppable="sharedState.gameModeAllowChange"
+            :class="{ 'active': color == selectedColor }"
+            @:click="this.setCurrentColor(color)"
+            :droppable="gameModeAllowChange"
             v-on:dragover="dragover"
             v-on:dragenter="dragenter"
             v-on:drop="drop"
@@ -46,7 +46,7 @@ This component displays the main header row
               class="guess-cards"
             >
               <div
-                v-for="(card, index) in sharedState.guessCards[color]"
+                v-for="(card, index) in guessCards[color]"
                 :key="index + 1"
                 class="card"
               >
@@ -66,7 +66,7 @@ This component displays the main header row
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapMutations } from 'vuex'
 import { EventBus } from '@/event-bus.js'
 import ConceptCard from '@/components/concept-card'
 import Card from '@/components/card'
@@ -98,73 +98,71 @@ export default {
   },
   created () {
     // initialize the Guess Cards arrays
-    this.initGuessCards()
+    // this.initGuessCards()
+    this.$store.dispatch('initGuessCards')
     // listen to events
     EventBus.$on('add-icon', data => this.addIcon(data))
     EventBus.$on('remove-icon', data => this.removeIcon(data))
-    EventBus.$on('update-cards', data => this.pushWebsocket())
-    EventBus.$on('init-guess-cards', data => this.initGuessCards())
+    // EventBus.$on('update-cards', data => this.pushWebsocket())
+    // EventBus.$on('init-guess-cards', data => this.initGuessCards())
+    EventBus.$on('init-guess-cards', data => this.$store.dispatch('initGuessCards'))
   },
   computed: mapState ({
-    colors: state => state.colors,
-    cards: state => state.cards
+    colors: state => state.cards.colors,
+    selectedColor: state => state.cards.selectedColor,
+    cards: state => state.cards.cards,
+    guessCards: state => state.cards.guessCards,
+    cardDragged: state => state.cards.cardDragged,
+    gameModeAllowChange: state => state.game.gameModeAllowChange,
+    currentGameRoom: state => state.game.currentGameRoom
   }),
   methods: {
+    ...mapMutations([
+      'pushGuessCards',
+      'setGuessCards',
+      'removeGuessCards',
+      'setCurrentColor',
+      'setGameRooms'
+    ]),
     addIcon: function (data) {
       // Name, Tooltip_fr
       // check if user is allowed to change guess cards
-      if (!this.sharedState.gameModeAllowChange) { return false }
+      if (!this.gameModeAllowChange) { return false }
       // first time a color is called, need to create the empty array
-      if (this.sharedState.guessCards[this.sharedState.selectedColor] == null) {
-        this.sharedState.guessCards[this.sharedState.selectedColor] = []
-      }
-      this.sharedState.guessCards[this.sharedState.selectedColor].push(data)
-      this.pushWebsocket()
+      // if (this.sharedState.guessCards[this.sharedState.selectedColor] == null) {
+      //   this.sharedState.guessCards[this.sharedState.selectedColor] = []
+      // }
+      // this.sharedState.guessCards[this.sharedState.selectedColor].push(data)
+      // this.pushWebsocket()
+      this.pushGuessCards({ 'color': this.selectedColor, 'cards': data })
     },
     removeIcon: function (data) {
       // check if user is allowed to change guess cards
-      if (!this.sharedState.gameModeAllowChange) { return false }
+      if (!this.gameModeAllowChange) { return false }
       // remove clicked icon 
       // color row depends from the call 
       // if dragged, use color from data, else, use active color
-      var cardColor = Object.keys(this.sharedState.cardDragged).length > 0 ? data.color : this.sharedState.selectedColor
-      this.sharedState.guessCards[cardColor] = this.sharedState.guessCards[cardColor].filter(
-        function (obj) {
-          return !(obj.Name === data.Name)
-        })
-      this.pushWebsocket()
-    },
-    // initialize an empty array to be pushed for every color
-    initGuessCards: function () {
-      var obj = {}
-      for (var i = 0; i < this.sharedState.colors.length; i++) {
-        obj[this.sharedState.colors[i]] = []
-      }
-      this.sharedState.guessCards = obj
-      this.pushWebsocket()
-    },
-    pushWebsocket: function () {
-      // if playing in multiplayer mode, push the info to the websocket server
-      if (this.sharedState.isMultiPlayer) {
-        // console.log("updated info on the websocket server: ", this.sharedState.guessCards)
-        this.$socket.emit('update_cards_from_client', {
-          'currentGameRoom': this.sharedState.currentGameRoom,
-          'guessCards': this.sharedState.guessCards
-        })
-      }
+      var cardColor = Object.keys(this.cardDragged).length > 0 ? data.color : this.selectedColor
+      // this.sharedState.guessCards[cardColor] = this.sharedState.guessCards[cardColor].filter(
+      //   function (obj) {
+      //     return !(obj.Name === data.Name)
+      //   })
+      // this.pushWebsocket()
+      this.removeGuessCards({ 'color': cardColor, 'cards': data })
     },
     dragenter: function (ev) {
       ev.preventDefault()
     },
     dragover: function (ev) {
       // set current color as the div being dragged over to set active class
-      this.sharedState.selectedColor = ev.target.id
+      // selectedColor = ev.target.id
+      this.setCurrentColor(ev.target.id)
       ev.preventDefault()
     },
     drop: function (ev) {
       // if user is allowed to change state, add icon nto current color row
-      if (this.sharedState.gameModeAllowChange) {
-        this.addIcon(this.sharedState.cardDragged)
+      if (this.gameModeAllowChange) {
+        this.addIcon(this.cardDragged)
       } else {
         // display error message, user is not allowed to change cards
         // this.dismissCountDown = this.dismissSecs
@@ -185,16 +183,18 @@ export default {
     },
     update_cards_from_server (data) {
       console.log('server asked to update cards: ', data)
-      // if this is current game, then update the cards
-      if (data.currentGameRoom === this.sharedState.currentGameRoom) {
-        this.sharedState.guessCards = data.guessCards
+      // if this is current game, then update the cards but don't update server to avoid infinite loop
+      if (data.currentGameRoom === this.currentGameRoom) {
+        // this.sharedState.guessCards = data.guessCards
+        this.setGuessCards({ 'guessCards': data.guessCards, 'updateServer': false })
       }
     },
     update_game_rooms (data) {
       console.log('updating game rooms: ', data)
-      this.sharedState.gameRooms = data.game_rooms
+      this.setGameRooms(data.game_rooms)
+      // this.sharedState.gameRooms = data.game_rooms
       // toast message when player joined or left the game
-      if (data.game === this.sharedState.currentGameRoom) {
+      if (data.game === this.currentGameRoom) {
         if (data.playerJoined !== undefined) {
           this.$toast.info(data.playerJoined + ' a rejoint la partie')
         }

@@ -17,7 +17,7 @@ TODO add rollover to display tooltip
     <div class="row no-gutters">
       <div
         @click="tooltipShown = !tooltipShown"
-        :draggable="this.sharedState.gameModeAllowChange"
+        :draggable="this.gameModeAllowChange"
         v-on:dragstart="dragstart"
         v-on:dragend="dragend"
         class="col-auto concept-icon"
@@ -42,18 +42,18 @@ TODO add rollover to display tooltip
                 />
               </div>
               <div
-                v-if="addOrRemove == 'add' && this.sharedState.gameModeAllowChange"
+                v-if="addOrRemove == 'add' && this.gameModeAllowChange"
                 @click="tooltipShown = !tooltipShown;changeIcon('add-icon', cardInfo)"
                 class="col-auto px-1 px-sm-2 icon-pointer"
               >
                 <font-awesome-icon
-                  :color="sharedState.selectedColor"
+                  :color="selectedColor"
                   icon="plus-circle"
                   size="2x"
                 />
               </div>
               <div
-                v-if="addOrRemove == 'remove' && this.sharedState.gameModeAllowChange"
+                v-if="addOrRemove == 'remove' && this.gameModeAllowChange"
                 @click="tooltipShown = !tooltipShown;changeIcon('remove-icon', cardInfo)"
                 class="col-auto px-1 px-sm-2 icon-pointer"
               >
@@ -72,6 +72,7 @@ TODO add rollover to display tooltip
 </template>
 
 <script>
+import { mapState, mapMutations } from 'vuex'
 import { EventBus } from '@/event-bus.js'
 
 export default {
@@ -105,36 +106,53 @@ export default {
     }
   },
   computed: {
+    ...mapState ({
+      // colors: state => state.colors,
+      selectedColor: state => state.cards.selectedColor,
+      // cards: state => state.cards.cards,
+      // guessCards: state => state.cards.guessCards,
+      cardDragged: state => state.cards.cardDragged,
+      gameMode: state => state.game.gameMode,
+      gameModeAllowChange: state => state.game.gameModeAllowChange,
+      gameModeIsGod: state => state.game.gameModeIsGod
+    }),
     icon: function () {
       return require('../assets/images/cards/' + this.cardInfo.type + '/' + this.cardInfo.Name + '.png')
-    },
-    gameMode: function() {
-      return this.sharedState.gameMode
     }
+    // gameMode: function() {
+    //   return this.sharedState.gameMode
+    // }
   },
   watch: {
+    //TODO check if can be removed since Vuex
     gameMode: function (oldValue, newValue) {
-      this.sharedState.gameModeAllowChange = !(this.sharedState.gameMode === 'godMode' && !this.sharedState.gameModeIsGod)
+      this.setGameModeAllowChange(!(this.gameMode === 'godMode' && !this.gameModeIsGod))
     }
   },
   methods: {
+    ...mapMutations([
+      'setCardDragged',
+      'setGameModeAllowChange'
+    ]),
     changeIcon: function (addOrRemove, data) {
       // EventBus.$emit('remove-icon', cardInfo)
       EventBus.$emit(addOrRemove, data)
     },
     dragstart: function (ev) {
       // store the current card dragged
-      this.sharedState.cardDragged = this.cardInfo
+      // this.sharedState.cardDragged = this.cardInfo
       // add current icon color (if empty, card comes from type rows, if color is set, card comes from guess row)
-      this.sharedState.cardDragged['color'] = this.iconColor
+      this.cardInfo['color'] = this.iconColor
+      this.setCardDragged(this.cardInfo)
     },
     dragend: function (ev) {
       // if card is dragged from guess row, remove card
-      if (this.sharedState.cardDragged['color'] !== '') {
+      if (this.cardDragged['color'] !== '') {
         EventBus.$emit('remove-icon', this.cardInfo)
       }
       // reset current dragged card
-      this.sharedState.cardDragged = {}
+      // this.sharedState.cardDragged = {}
+      this.setCardDragged({})
     }
   }
 }

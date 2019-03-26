@@ -42,20 +42,20 @@ This component contains only the modal dialog and some websocket calls for multi
           </div>
         </div>
       </div> -->
-      <div v-if="sharedState.currentGameRoom!=''" class="row text-left align-items-center">
+      <div v-if="currentGameRoom!=''" class="row text-left align-items-center">
         <div class="col">
           <h5 class="card-title text-left">
-            Partie en cours : <i>{{ sharedState.currentGameRoom }}</i>
+            Partie en cours : <i>{{ currentGameRoom }}</i>
           </h5>
         </div>
       </div>
-      <div v-if="sharedState.isMultiPlayer" class="row text-right align-items-center">
+      <div v-if="isMultiPlayer" class="row text-right align-items-center">
         <div class="ml-auto col-auto">
           <b-button @click="hideModal" variant="primary">Jouer maintenant</b-button>
           <b-button @click="leave_game()">Quitter la partie</b-button>
         </div>
       </div>
-      <div v-if="!sharedState.isMultiPlayer" class="row text-left">
+      <div v-if="!isMultiPlayer" class="row text-left">
         <div class="col">
           <h5 class="card-title text-left">Créer une nouvelle partie</h5>
           <b-form>
@@ -88,7 +88,7 @@ This component contains only the modal dialog and some websocket calls for multi
               label-for="game_type_select"
             >
               <b-form-select id="game_type_select" 
-                v-model="sharedState.gameMode" 
+                v-model="gameModeForm" 
                 :state="gameModeValid"
                 @input="validate()"
               >
@@ -102,7 +102,7 @@ This component contains only the modal dialog and some websocket calls for multi
               </b-form-invalid-feedback>
             </b-form-group>
             <div class="text-right">
-              <b-button v-if="newGame in this.sharedState.gameRooms" @click="join_game(newGame)" variant="light">
+              <b-button v-if="newGame in gameRooms" @click="join_game(newGame)" variant="light">
                 Rejoindre
               </b-button>
               <b-button v-else @click="create_game(newGame)" variant="primary">
@@ -144,6 +144,8 @@ This component contains only the modal dialog and some websocket calls for multi
 
 <script>
 import { EventBus } from '@/event-bus.js'
+import $socket from '@/websocket-instance.js'
+import { mapState, mapMutations } from 'vuex'
 
 export default {
   name: 'ModalMultiplayers',
@@ -163,22 +165,40 @@ export default {
       // playerName: '',
       submitStatus: null,
       newGameValid: null,
+      gameModeForm: '',
       gameModeValid: null
       // playerNameValid: null
     }
   },
   computed: {
+    ...mapState ({
+      guessCards: state => state.cards.guessCards,
+      // gameRooms: state => state.cards.gameRooms,
+      playerName: state => state.game.playerName,
+      isMultiPlayer: state => state.game.isMultiPlayer,
+      currentGameRoom: state => state.game.currentGameRoom,
+      gameMode: state => state.game.gameMode,
+      gameRooms: state => state.game.gameRooms,
+      gameModeIsGod: state => state.game.gameModeIsGod
+    }),
     multiplayersGameModes: function () {
       var filteredGames = {}
-      for (var el in this.sharedState.gameRooms) {
-        if (this.sharedState.gameRooms[el].mode !== 'asyncMode') {
-          filteredGames[el] = this.sharedState.gameRooms[el]
+      for (var el in this.gameRooms) {
+        if (this.gameRooms[el].mode !== 'asyncMode') {
+          filteredGames[el] = this.gameRooms[el]
         }
       }
       return filteredGames
     }
   },
   methods: {
+    ...mapMutations([
+      // 'pushGuessCards',
+      'setGameMode',
+      'setIsMultiPlayer',
+      'setCurrentGameRoom',
+      'setGameModeIsGod'
+    ]),
     // validate_player_form: function() {
     //   this.playerNameValid = this.playerName.length > 1
     //   this.sharedState.playerName = this.playerName
@@ -186,7 +206,7 @@ export default {
     validate: function() {
       // validate form
       this.newGameValid = !(this.newGame.length === 0)
-      this.gameModeValid = !(this.sharedState.gameMode === '')
+      this.gameModeValid = !(this.gameModeForm === '')
     },
     create_game: function (newGame) {
       console.log('creating game: ', newGame)
@@ -199,54 +219,55 @@ export default {
       this.newGameValid = null
       this.gameModeValid = null
       // register this new game as the current game room
-      this.sharedState.currentGameRoom = newGame
+      this.setCurrentGameRoom(newGame)
       // set god mode by default if nothing selected
-      if (this.sharedState.gameMode === '') { this.sharedState.gameMode = 'godMode' }
+      this.gameModeForm = this.gameModeForm === '' ? this.setGameMode('godMode') : this.gameModeForm
+      this.setGameMode(this.gameModeForm)
       // game creator is God by default
-      this.sharedState.gameModeIsGod = true
+      this.setGameModeIsGod(true)
       // create a new game server-side
       console.log('emit create_game')
-      this.$socket.emit('create_game', {
+      $socket.emit('create_game', {
         'currentGameRoom': this.newGame,
-        'guessCards': this.sharedState.guessCards,
-        'gameMode': this.sharedState.gameMode,
+        'guessCards': this.guessCards,
+        'gameMode': this.gameMode,
         'player': this.playerName
       })
       // push current guess cards to the server
       EventBus.$emit('update-cards')
       // activate multiplayer mode
-      this.sharedState.isMultiPlayer = true
+      this.setIsMultiPlayer(true)
     },
     join_game: function (game) {
       console.log('joining game: ', game)
       // register this game as the current game room
-      this.sharedState.currentGameRoom = game
+      this.setCurrentGameRoom(game)
       // activate multiplayer mode
-      this.sharedState.isMultiPlayer = true
+      this.setIsMultiPlayer(true)
       // set current gameMode
-      console.log('current game: ', this.sharedState.gameRooms[game])
-      this.sharedState.gameMode = this.sharedState.gameRooms[game]['mode']
+      console.log('current game: ', this.gameRooms[game])
+      this.setGameMode(this.gameRooms[game]['mode'])
       // join the game server side
-      this.$socket.emit('join_game', {
+      $socket.emit('join_game', {
         'game': game,
         'player': this.playerName
       })
     },
     leave_game: function () {
-      console.log('leaving game: ', this.sharedState.currentGameRoom)
+      console.log('leaving game: ', this.currentGameRoom)
       // tell the server we're leaving the game
-      this.$socket.emit('leave_game', {
-        'game': this.sharedState.currentGameRoom,
+      $socket.emit('leave_game', {
+        'game': this.currentGameRoom,
         'player': this.playerName
       })
       // reset current game room
-      this.sharedState.currentGameRoom = ''
+      this.setCurrentGameRoom('')
       // deactivate multiplayer mode
-      this.sharedState.isMultiPlayer = false
+      this.setIsMultiPlayer(false)
       // reset current gameMode
-      this.sharedState.gameMode = ''
+      this.setGameMode('')
       // reset god credentials
-      this.sharedState.gameModeIsGod = false
+      this.setGameModeIsGod(false)
     },
     hideModal: function () {
       this.$refs.modalmultiplayers.hide()

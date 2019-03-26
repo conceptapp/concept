@@ -18,7 +18,7 @@ This component displays the login elements
     title="Identification"
   >
     <div class="row text-left">
-      <div v-if="sharedState.currentUser===''" class="col">
+      <div v-if="currentUser===''" class="col">
         <h6 class="card-title text-left">Merci de vous authentifier pour lancer le mode multi-joueurs</h6>
         <b-form-group id="emailForm"
             label="Email :"
@@ -68,7 +68,7 @@ This component displays the login elements
             label-for="get_player_name">
             <b-form-input
               id="get_player_name"
-              v-model.trim="playerName"
+              v-model.trim="playerNameForm"
               type="text"
               class=""
               maxlength="30"
@@ -110,6 +110,7 @@ This component displays the login elements
 </template>
 
 <script>
+import { mapState, mapMutations } from 'vuex'
 import { EventBus } from '@/event-bus.js'
 import firebase from 'firebase/app'
 import "firebase/auth"
@@ -130,18 +131,30 @@ export default {
     return {
       sharedState: this.store.state,
       signup: false,
-      playerName: '',
+      playerNameForm: '',
       playerNameValid: null,
       email: '',
       password: ''
     }
   },
+  computed: mapState ({
+    // colors: state => state.cards.colors,
+    // selectedColor: state => state.cards.selectedColor,
+    currentUser: state => state.game.currentUser,
+    playerName: state => state.game.playerName,
+    // currentGameRoom: state => state.game.currentGameRoom,
+    // gameRooms: state => state.game.gameRooms
+  }),  
   created () {
   },
   methods: {
+    ...mapMutations([
+      'setPlayerName',
+      'setCurrentUser'
+    ]),
     validate_player_form: function() {
       this.playerNameValid = this.playerName.length > 1
-      this.sharedState.playerName = this.playerName
+      this.setPlayerName(this.playerNameForm)
     },
     login: function() {
       firebase.auth().signInWithEmailAndPassword(this.email, this.password).then(
@@ -150,8 +163,8 @@ export default {
           // var currentUser = firebase.auth().currentUser
           // console.log('user logged in: ', result)
           // store current user and display name
-          this.sharedState.currentUser = result.user
-          this.sharedState.playerName = result.user.displayName
+          this.setCurrentUser(result.user)
+          this.setPlayerName(result.user.displayName)
           this.hideModal()
           this.sharedState.alerts.push({
             msg: 'Connexion réussie, vous êtes désormais connecté. Bienvenue ' + result.user.displayName + '.',
@@ -176,8 +189,8 @@ export default {
         // var currentUser = firebase.auth().currentUser
         console.log('user logged in: ', result)
         // store current user and display name
-        this.sharedState.currentUser = result.user
-        this.sharedState.playerName = result.user.displayName
+        this.setCurrentUser(result.user)
+        this.setPlayerName(result.user.displayName)
         this.hideModal()
         this.sharedState.alerts.push({
           msg: 'Connexion réussie, vous êtes désormais connecté. Bienvenue ' + result.user.displayName + '.',
@@ -197,14 +210,14 @@ export default {
       firebase.auth().createUserWithEmailAndPassword(this.email, this.password).then(
         (user) => {
           // store current user and display name
-          this.sharedState.currentUser = user
+          this.setCurrentUser(user)
           // update player name
           var logged_user = firebase.auth().currentUser;
           logged_user.updateProfile({
-              displayName: this.playerName
+              displayName: this.playerNameForm
           }).then(function() {
               // Update successful
-              this.sharedState.playerName = this.playerName
+              this.setPlayerName(this.playerNameForm)
               this.hideModal()
           }.bind(this), function(error) {
               // An error happened.
@@ -219,8 +232,8 @@ export default {
     logout: function() {
       firebase.auth().signOut().then(() => {
         // alert('you have been signed out')
-        this.sharedState.currentUser = ''
-        this.sharedState.playerName = ''
+        this.setCurrentUser('')
+        this.setPlayerName('')
         this.sharedState.alerts.push({
           msg: 'Vous avez été déconnecté.',
           dismissCountDown: 5,
@@ -238,28 +251,6 @@ export default {
     }
   }
 }
-
- // .login {
-  //   margin-top: 40px;
-  // }
-  // input {
-  //   margin: 10px 0;
-  //   width: 20%;
-  //   padding: 15px;
-  // }
-  // button {
-  //   margin-top: 20px;
-  //   width: 10%;
-  //   cursor: pointer;
-  // }
-  // p {
-  //   margin-top: 40px;
-  //   font-size: 13px;
-  // }
-  // p a {
-  //   text-decoration: underline;
-  //   cursor: pointer;
-  // }
 </script>
 
 

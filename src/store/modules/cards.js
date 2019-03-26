@@ -3,8 +3,12 @@ import typesjson from '../../../data/types.json'
 import cards1json from '../../../data/cards-1.json'
 import cards2json from '../../../data/cards-2.json'
 
+import $socket from '@/websocket-instance'
+
 // initial state
 const state = {
+  colors: ['#10C177', '#FE4365', '#1693A5', '#420943'],
+  selectedColor: '#10C177', // select a default color
   types: [],
   cards: [],
   guessCards: {},
@@ -56,6 +60,26 @@ const actions = {
         commit('setCards', cards1json.records.concat(cards2json.records))
       }
     }
+  },
+  initGuessCards ({ commit, state, rootState }) {
+    // console.log('initGuessCards: ', commit, state, rootState)
+    var obj = {}
+    for (var i = 0; i < state.colors.length; i++) {
+      obj[state.colors[i]] = []
+    }
+    commit('setGuessCards', { 'guessCards': obj, 'updateServer': true })
+    // state.guessCards = obj
+    // this.pushWebsocket()
+  },
+  pushWebsocket ({ commit, state, rootState }) {
+    if (rootState.isMultiPlayer) {
+      console.log("updated info on the websocket server: ", state.guessCards)
+      // if playing in multiplayer mode, push the info to the websocket server
+      $socket.emit('update_cards_from_client', {
+        'currentGameRoom': rootState.currentGameRoom,
+        'guessCards': state.guessCards
+      })
+    }
   }
 }
 
@@ -66,6 +90,29 @@ const mutations = {
   },
   setCards (state, cards) {
     state.cards = cards
+  },
+  setGuessCards (state, { 'guessCards': guessCards, 'updateServer': updateServer }) {
+    console.log('setGuessCards: ', state, guessCards, updateServer)
+    state.guessCards = guessCards
+    if (updateServer) this.dispatch('pushWebsocket')
+  },
+  pushGuessCards (state, { 'color': color, 'cards': cards }) {
+    console.log('pushGuessCards', state, color, cards)
+    state.guessCards[color].push(cards)
+    this.dispatch('pushWebsocket')
+  },
+  removeGuessCards (state, { 'color': color, 'cards': cards }) {
+    state.guessCards[color] = state.guessCards[color].filter(
+      function (obj) {
+        return !(obj.Name === cards.Name)
+      })
+    this.dispatch('pushWebsocket')
+  },
+  setCurrentColor (state, color) {
+    state.selectedColor = color
+  },
+  setCardDragged (state, card) {
+    state.cardDragged = card
   }
 }
 

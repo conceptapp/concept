@@ -20,10 +20,10 @@ This component displays the main menu bar
         <b-nav-item v-b-modal.modalwords>
           Afficher des mots
         </b-nav-item>
-        <b-nav-item v-show="sharedState.currentUser===''" v-b-modal.modallogin>
+        <b-nav-item v-show="currentUser===''" v-b-modal.modallogin>
           Jouer à plusieurs
         </b-nav-item>
-        <b-nav-item v-show="sharedState.currentUser!==''" v-b-modal.modalplay>
+        <b-nav-item v-show="currentUser!==''" v-b-modal.modalplay>
           Jouer à plusieurs
         </b-nav-item>
 <!--         <b-nav-item v-b-modal.modalmultiplayers>
@@ -44,19 +44,19 @@ This component displays the main menu bar
         </b-nav-item>
         <!-- right aligned items -->
         <!-- user not authenticated yet -->
-        <b-navbar-nav v-show="sharedState.currentUser==''" class="ml-auto">
+        <b-navbar-nav v-show="currentUser==''" class="ml-auto">
           <b-nav-item v-b-modal.modallogin>
             <font-awesome-icon icon="user-circle" size="lg" />
           </b-nav-item>
         </b-navbar-nav>
         <!-- user is authenticated -->
-        <b-navbar-nav v-show="sharedState.currentUser!==''" class="ml-auto">
+        <b-navbar-nav v-show="currentUser!==''" class="ml-auto">
           <b-nav-item>
-            <span @click="showModalLogin">{{sharedState.playerName}}</span>
-            <span v-if="sharedState.gameRooms[sharedState.currentGameRoom]" @click="showModalMultiplayers">
-              @ {{ sharedState.currentGameRoom }} 
-              <small v-if="sharedState.gameRooms[sharedState.currentGameRoom]" class="text-muted">
-                (<font-awesome-icon icon="male" /> x {{ sharedState.gameRooms[sharedState.currentGameRoom]['count'] }})
+            <span @click="showModalLogin">{{playerName}}</span>
+            <span v-if="gameRooms[currentGameRoom]" @click="showModalMultiplayers">
+              @ {{ currentGameRoom }} 
+              <small v-if="gameRooms[currentGameRoom]" class="text-muted">
+                (<font-awesome-icon icon="male" /> x {{ gameRooms[currentGameRoom]['count'] }})
               </small>
             </span>
           </b-nav-item>
@@ -96,6 +96,7 @@ This component displays the main menu bar
 </template>
 
 <script>
+import { mapState, mapMutations } from 'vuex'
 import { EventBus } from '@/event-bus.js'
 
 export default {
@@ -114,16 +115,27 @@ export default {
       sharedState: this.store.state
     }
   },
+  computed: mapState ({
+    colors: state => state.cards.colors,
+    selectedColor: state => state.cards.selectedColor,
+    currentUser: state => state.game.currentUser,
+    playerName: state => state.game.playerName,
+    currentGameRoom: state => state.game.currentGameRoom,
+    gameRooms: state => state.game.gameRooms
+  }),
   created () {
     // listen to events
     EventBus.$on('reset', args => this.reset(args))
   },
   methods: {
+    ...mapMutations([
+      'setCurrentColor'
+    ]),
     reset: function () {
       // this.sharedState.guessCards = this.initGuessCards()
       // this.pushWebsocket()
       EventBus.$emit('init-guess-cards')
-      this.sharedState.selectedColor = this.sharedState.colors[0] // select the default color
+      this.setCurrentColor(this.colors[0]) // select the default color
     },
     showModalMultiplayers() {
       this.$root.$emit('bv::show::modal', 'modalmultiplayers')

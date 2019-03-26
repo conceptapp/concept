@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import cards from './modules/cards'
+import game from './modules/game'
+
 
 // import cart from './modules/cart'
 // import products from './modules/products'
@@ -15,12 +17,10 @@ const state = {
   // cards: [],
   // guessCards: {},
   // cardDragged: {},
-  colors: ['#10C177', '#FE4365', '#1693A5', '#420943'],
-  selectedColor: '#10C177', // select a default color
   currentUser: '',
-  isMultiPlayer: false,
+  isMultiPlayer: true,
   playerName: '',
-  currentGameRoom: '',
+  currentGameRoom: 'La partie de Max',
   gameRooms: [],
   gameMode: '',
   gameModeIsGod: false,
@@ -71,7 +71,8 @@ const getters = {
 // and getters.
 export default new Vuex.Store({
   modules: {
-    cards
+    cards,
+    game
   },
   state,
   getters,
