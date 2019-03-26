@@ -58,32 +58,32 @@ var colors = ['#10C177', '#FE4365', '#1693A5', '#420943']
 
 // defines a store to be used all over the app according to https://vuejs.org/v2/guide/state-management.html#Simple-State-Management-from-Scratch
 var store = {
-  debug: true,
-  state: {
-    types: [],
-    cards: [],
-    guessCards: {},
-    cardDragged: {},
-    colors: colors,
-    selectedColor: colors[0], // select a default color
-    currentUser: '',
-    isMultiPlayer: false,
-    playerName: '',
-    currentGameRoom: '',
-    gameRooms: [],
-    gameMode: '',
-    gameModeIsGod: false,
-    gameModeAllowChange: true,
-    alerts: []
-  },
-  setMessageAction (newValue) {
-    if (this.debug) console.log('setMessageAction triggered with', newValue)
-    this.state.message = newValue
-  },
-  clearMessageAction () {
-    if (this.debug) console.log('clearMessageAction triggered')
-    this.state.message = ''
-  }
+  // debug: true,
+  // state: {
+  //   types: [],
+  //   cards: [],
+  //   guessCards: {},
+  //   cardDragged: {},
+  //   colors: colors,
+  //   selectedColor: colors[0], // select a default color
+  //   currentUser: '',
+  //   isMultiPlayer: false,
+  //   playerName: '',
+  //   currentGameRoom: '',
+  //   gameRooms: [],
+  //   gameMode: '',
+  //   gameModeIsGod: false,
+  //   gameModeAllowChange: true,
+  //   alerts: []
+  // },
+  // setMessageAction (newValue) {
+  //   if (this.debug) console.log('setMessageAction triggered with', newValue)
+  //   this.state.message = newValue
+  // },
+  // clearMessageAction () {
+  //   if (this.debug) console.log('clearMessageAction triggered')
+  //   this.state.message = ''
+  // }
 }
 
 export default {

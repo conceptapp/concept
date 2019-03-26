@@ -139,14 +139,16 @@ export default {
   },
   computed: mapState ({
     currentUser: state => state.game.currentUser,
-    playerName: state => state.game.playerName
+    playerName: state => state.game.playerName,
+    alerts: state => state.alerts.alerts
   }),  
   created () {
   },
   methods: {
     ...mapMutations([
       'setPlayerName',
-      'setCurrentUser'
+      'setCurrentUser',
+      'pushAlert'
     ]),
     validate_player_form: function() {
       this.playerNameValid = this.playerName.length > 1
@@ -160,7 +162,7 @@ export default {
           this.setCurrentUser(result.user)
           this.setPlayerName(result.user.displayName)
           this.hideModal()
-          this.sharedState.alerts.push({
+          this.pushAlert({
             msg: 'Connexion réussie, vous êtes désormais connecté. Bienvenue ' + result.user.displayName + '.',
             dismissCountDown: 5,
             variant: 'info'
@@ -168,7 +170,7 @@ export default {
         },
         (err) => {
           // alert('Oops. ' + err.message)
-          this.sharedState.alerts.push({
+          this.pushAlert({
             msg: 'La connexion a échouée. Le message remonté est : ' + err.message,
             dismissCountDown: 15,
             variant: 'danger'
@@ -186,14 +188,14 @@ export default {
         this.setCurrentUser(result.user)
         this.setPlayerName(result.user.displayName)
         this.hideModal()
-        this.sharedState.alerts.push({
+        this.pushAlert({
           msg: 'Connexion réussie, vous êtes désormais connecté. Bienvenue ' + result.user.displayName + '.',
           dismissCountDown: 5,
           variant: 'info'
         })  
       }).catch((err) => {
         // alert('Oops. ' + err.message)
-        this.sharedState.alerts.push({
+        this.pushAlert({
           msg: 'La connexion a échouée. Le message remonté est : ' + err.message,
           dismissCountDown: 15,
           variant: 'danger'
@@ -228,7 +230,7 @@ export default {
         // alert('you have been signed out')
         this.setCurrentUser('')
         this.setPlayerName('')
-        this.sharedState.alerts.push({
+        this.pushAlert({
           msg: 'Vous avez été déconnecté.',
           dismissCountDown: 5,
           variant: 'info'

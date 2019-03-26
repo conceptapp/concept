@@ -113,7 +113,8 @@ export default {
     guessCards: state => state.cards.guessCards,
     cardDragged: state => state.cards.cardDragged,
     gameModeAllowChange: state => state.game.gameModeAllowChange,
-    currentGameRoom: state => state.game.currentGameRoom
+    currentGameRoom: state => state.game.currentGameRoom,
+    alerts: state => state.alerts.alerts
   }),
   methods: {
     ...mapMutations([
@@ -121,7 +122,8 @@ export default {
       'setGuessCards',
       'removeGuessCards',
       'setCurrentColor',
-      'setGameRooms'
+      'setGameRooms',
+      'pushAlert'
     ]),
     addIcon: function (data) {
       // Name, Tooltip_fr
@@ -154,7 +156,7 @@ export default {
       } else {
         // display error message, user is not allowed to change cards
         // this.dismissCountDown = this.dismissSecs
-        this.sharedState.alerts.push({
+        this.pushAlert({
           msg: "Désolé, seul l'organisateur de la partie peut modifier les cartes",
           dismissCountDown: 5,
           variant: 'danger'

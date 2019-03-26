@@ -11,7 +11,7 @@ This component displays the main header row
 
 <template>
   <div id="alert-messages" class="row">
-    <div v-for="(alert, index) in sharedState.alerts"
+    <div v-for="(alert, index) in alerts"
         :key="index"
         :id="alert"
         class="col-12">
@@ -20,7 +20,7 @@ This component displays the main header row
         dismissible
         fade
         :variant="alert.variant"
-        @dismissed="removeAlert(index)"
+        @dismissed="removeCurrentAlert(index)"
         @dismiss-count-down="countDownChanged()"
       >
         {{alert.msg}}
@@ -30,6 +30,7 @@ This component displays the main header row
 </template>
 
 <script>
+import { mapState, mapMutations } from 'vuex'
 
 export default {
   name: 'Alerts',
@@ -50,23 +51,24 @@ export default {
       // showDismissibleAlert: false
     }
   },
-  created () {
-    // this.sharedState.alerts.push({
-    //   msg: "Test 2 Désolé, seul l'organisateur de la partie peut modifier les cartes",
-    //   dismissCountDown: 5,
-    //   variant: 'info'
-    // })
-  },
+  computed: mapState ({
+    alerts: state => state.alerts.alerts
+  }),
+  created () { },
   methods: {
+    ...mapMutations([
+      'removeAlert'
+    ]),
     countDownChanged: function(dismissCountDown) {
       // console.log('dismissCountDown', dismissCountDown)
       // this.sharedState.alerts[index].dismissCountDown = dismissCountDown
       // this.dismissCountDown = dismissCountDown
     },
-    removeAlert: function(index) {
+    removeCurrentAlert: function(index) {
       // clean up the alert array
-      this.sharedState.alerts.splice(index, 1)
-      console.log('remove alert: ', this.sharedState.alerts, index)
+      // this.sharedState.alerts.splice(index, 1)
+      this.removeAlert(index)
+      // console.log('remove alert: ', this.sharedState.alerts, index)
     }
   }
 }
