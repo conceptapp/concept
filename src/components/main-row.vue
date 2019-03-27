@@ -27,7 +27,7 @@ This component displays the main header row
             :key="index"
             :id="color"
             :class="{ 'active': color == selectedColor }"
-            @:click="this.setCurrentColor(color)"
+            @click="setCurrentColor(color)"
             :droppable="gameModeAllowChange"
             v-on:dragover="dragover"
             v-on:dragenter="dragenter"

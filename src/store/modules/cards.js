@@ -109,6 +109,7 @@ const mutations = {
     this.dispatch('pushWebsocket')
   },
   setCurrentColor (state, color) {
+    // console.log('setCurrentColor', state, color)
     state.selectedColor = color
   },
   setCardDragged (state, card) {
