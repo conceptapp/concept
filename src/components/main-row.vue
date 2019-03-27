@@ -65,7 +65,7 @@ This component displays the main header row
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex'
+import { mapState, mapMutations, mapGetters } from 'vuex'
 import { EventBus } from '@/event-bus.js'
 import ConceptCard from '@/components/concept-card'
 import Card from '@/components/card'
@@ -98,16 +98,21 @@ export default {
     // EventBus.$on('init-guess-cards', data => this.initGuessCards())
     EventBus.$on('init-guess-cards', data => this.$store.dispatch('initGuessCards'))
   },
-  computed: mapState ({
-    colors: state => state.cards.colors,
-    selectedColor: state => state.cards.selectedColor,
-    cards: state => state.cards.cards,
-    guessCards: state => state.cards.guessCards,
-    cardDragged: state => state.cards.cardDragged,
-    gameModeAllowChange: state => state.game.gameModeAllowChange,
-    currentGameRoom: state => state.game.currentGameRoom,
-    alerts: state => state.alerts.alerts
-  }),
+  computed: {
+    ...mapState ({
+      colors: state => state.cards.colors,
+      selectedColor: state => state.cards.selectedColor,
+      cards: state => state.cards.cards,
+      guessCards: state => state.cards.guessCards,
+      cardDragged: state => state.cards.cardDragged,
+      // gameModeAllowChange: state => state.game.gameModeAllowChange,
+      currentGameRoom: state => state.game.currentGameRoom,
+      alerts: state => state.alerts.alerts
+    }),
+    ...mapGetters([
+      'gameModeAllowChange'
+    ])
+  },
   methods: {
     ...mapMutations([
       'pushGuessCards',

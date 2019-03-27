@@ -72,7 +72,7 @@ TODO add rollover to display tooltip
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex'
+import { mapState, mapMutations, mapGetters } from 'vuex'
 import { EventBus } from '@/event-bus.js'
 
 export default {
@@ -106,23 +106,19 @@ export default {
       // guessCards: state => state.cards.guessCards,
       cardDragged: state => state.cards.cardDragged,
       gameMode: state => state.game.gameMode,
-      gameModeAllowChange: state => state.game.gameModeAllowChange,
+      // gameModeAllowChange: state => state.game.gameModeAllowChange,
       gameModeIsGod: state => state.game.gameModeIsGod
     }),
+    ...mapGetters([
+      'gameModeAllowChange'
+    ]),
     icon: function () {
       return require('../assets/images/cards/' + this.cardInfo.type + '/' + this.cardInfo.Name + '.png')
     }
   },
-  // watch: {
-  //   //TODO check if can be removed since Vuex
-  //   gameMode: function (oldValue, newValue) {
-  //     this.setGameModeAllowChange(!(this.gameMode === 'godMode' && !this.gameModeIsGod))
-  //   }
-  // },
   methods: {
     ...mapMutations([
-      'setCardDragged',
-      'setGameModeAllowChange'
+      'setCardDragged'
     ]),
     changeIcon: function (addOrRemove, data) {
       // EventBus.$emit('remove-icon', cardInfo)

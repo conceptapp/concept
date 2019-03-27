@@ -14,7 +14,12 @@ const state = {
 }
 
 // getters
-const getters = {}
+const getters = {
+  gameModeAllowChange: state => {
+    // is true except when game mode is godMode and player is not God (== admin)
+    return !(state.gameMode === 'godMode' && !state.gameModeIsGod)
+  }
+}
 
 // actions
 const actions = {
@@ -36,9 +41,6 @@ const mutations = {
   },
   setGameModeIsGod (state, isGod) {
     state.gameModeIsGod = isGod
-  },
-  setGameModeAllowChange (state, allowChange) {
-    state.gameModeAllowChange = allowChange
   },
   setIsMultiPlayer (state, isMultiPlayer) {
     state.isMultiPlayer = isMultiPlayer

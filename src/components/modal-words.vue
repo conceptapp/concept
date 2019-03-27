@@ -153,15 +153,17 @@ export default {
       this.pushBoardWord(word)
     },
     createBoard: function() {
-      this.pushAlert({
-        boardCreationMode: true
-        // msg: "Mot à faire deviner : " + this.currentBoardWords[0] + ". " + strSave + " " + strCancel,
-        // dismissCountDown: true,
-        // variant: 'info'
-      })
+      if (this.gameMode === 'boardCreation') {
+        this.pushAlert({
+          boardCreationMode: true
+          // msg: "Mot à faire deviner : " + this.currentBoardWords[0] + ". " + strSave + " " + strCancel,
+          // dismissCountDown: true,
+          // variant: 'info'
+        })
+      }
     },
     saveBoard: function() {
-      
+
     }
   }
 }
