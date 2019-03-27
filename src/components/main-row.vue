@@ -125,41 +125,45 @@ export default {
     addIcon: function (data) {
       // Name, Tooltip_fr
       // check if user is allowed to change guess cards
-      if (!this.gameModeAllowChange) { return false }
-      this.pushGuessCards({ 'color': this.selectedColor, 'cards': data })
+      if (!this.gameModeAllowChange) { 
+        // display error message, user is not allowed to change cards
+        this.pushAlert({
+          msg: "Désolé, seul l'organisateur de la partie peut modifier les cartes",
+          dismissCountDown: 5,
+          variant: 'danger'
+        })
+      } else {
+        this.pushGuessCards({ 'color': this.selectedColor, 'cards': data })
+      }
     },
     removeIcon: function (data) {
       // check if user is allowed to change guess cards
-      if (!this.gameModeAllowChange) { return false }
-      // remove clicked icon 
-      // color row depends from the call 
-      // if dragged, use color from data, else, use active color
-      var cardColor = Object.keys(this.cardDragged).length > 0 ? data.color : this.selectedColor
-      this.removeGuessCards({ 'color': cardColor, 'cards': data })
+      if (!this.gameModeAllowChange) {
+        // display error message, user is not allowed to change cards
+        this.pushAlert({
+          msg: "Désolé, seul l'organisateur de la partie peut modifier les cartes",
+          dismissCountDown: 5,
+          variant: 'danger'
+        })
+      } else {
+        // remove clicked icon 
+        // color row depends from the call 
+        // if dragged, use color from data, else, use active color
+        var cardColor = Object.keys(this.cardDragged).length > 0 ? data.color : this.selectedColor
+        this.removeGuessCards({ 'color': cardColor, 'cards': data })
+      }
     },
     dragenter: function (ev) {
       ev.preventDefault()
     },
     dragover: function (ev) {
       // set current color as the div being dragged over to set active class
-      // selectedColor = ev.target.id
       this.setCurrentColor(ev.target.id)
       ev.preventDefault()
     },
     drop: function (ev) {
-      // if user is allowed to change state, add icon nto current color row
-      if (this.gameModeAllowChange) {
-        this.addIcon(this.cardDragged)
-      } else {
-        // display error message, user is not allowed to change cards
-        // this.dismissCountDown = this.dismissSecs
-        this.pushAlert({
-          msg: "Désolé, seul l'organisateur de la partie peut modifier les cartes",
-          dismissCountDown: 5,
-          variant: 'danger'
-        })
-        // alert("Dans ce mode de jeu, vous n'êtes pas autorisé à changer les cartes, désolé.")
-      }
+      // try to add icon into current color row
+      this.addIcon(this.cardDragged)
       ev.preventDefault()
       // return true
     }
