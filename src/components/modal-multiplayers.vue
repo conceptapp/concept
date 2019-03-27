@@ -18,30 +18,6 @@ This component contains only the modal dialog and some websocket calls for multi
     title="Mode multijoueurs"
   >
     <div class="container-fluid">
-<!--       <div class="row text-left">
-        <div v-if="!playerNameValid" class="col">
-          <h5 class="card-title text-left">Quel est votre nom ?</h5>
-          <b-form-group id="playerNameForm">
-            <b-form-input
-              id="get_player_name"
-              v-model.trim="playerName"
-              type="text"
-              class=""
-              maxlength="30"
-              placeholder="John Doe"
-              :state="playerNameValid"
-            />
-            <b-form-invalid-feedback>
-              On y est presque...<br>Pouvez-vous me donner un petit nom d'au moins 2 caractères&nbsp;?
-            </b-form-invalid-feedback>
-          </b-form-group>
-          <div class="text-right">
-            <b-button @click="validate_player_form()" variant="primary">
-                Valider
-            </b-button>
-          </div>
-        </div>
-      </div> -->
       <div v-if="currentGameRoom!=''" class="row text-left align-items-center">
         <div class="col">
           <h5 class="card-title text-left">
@@ -189,10 +165,6 @@ export default {
       'setCurrentGameRoom',
       'setGameModeIsGod'
     ]),
-    // validate_player_form: function() {
-    //   this.playerNameValid = this.playerName.length > 1
-    //   this.sharedState.playerName = this.playerName
-    // },
     validate: function() {
       // validate form
       this.newGameValid = !(this.newGame.length === 0)

@@ -93,7 +93,7 @@ const mutations = {
     state.cards = cards
   },
   setGuessCards (state, { 'guessCards': guessCards, 'updateServer': updateServer }) {
-    console.log('setGuessCards: ', state, guessCards, updateServer)
+    // console.log('setGuessCards: ', state, guessCards, updateServer)
     state.guessCards = guessCards
     if (updateServer) this.dispatch('pushWebsocket')
   },

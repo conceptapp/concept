@@ -27,7 +27,7 @@ This component contains the modal dialog for generating words to guess
     >
       <div v-for="(definition, key, index_w) in wordtype[0].fields" :key="index_w" 
         class="mb-3" :class="[isActive(definition) ? 'active':'word-card', 'alert-'+variant]"
-        @click="pushWord(definition)">
+        @click="pushWord(definition, variant)">
           {{ definition }}
       </div>
     </section>
@@ -45,6 +45,7 @@ This component contains the modal dialog for generating words to guess
 <script>
 import { mapState, mapMutations } from 'vuex'
 import { EventBus } from '@/event-bus.js'
+import $socket from '@/websocket-instance.js'
 import axios from 'axios'
 import easyjson from '../../data/success.json'
 import mediumjson from '../../data/warning.json'
@@ -64,8 +65,11 @@ export default {
     }
   },
   computed: mapState ({
+    playerName: state => state.game.playerName,
     gameMode: state => state.game.gameMode,
     currentBoardWords: state => state.game.currentBoardWords,
+    currentBoardVariant: state => state.game.currentBoardVariant,
+    guessCards: state => state.cards.guessCards,
     alerts: state => state.alerts.alerts
   }), 
   created () {
@@ -81,7 +85,8 @@ export default {
     ...mapMutations([
       'pushBoardWord',
       'resetBoardWords',
-      'pushAlert'
+      'pushAlert',
+      'setBoardVariant'
     ]),
     retrieveRecords: function (recordType, offset) {
       offset = offset !== undefined ? '?offset=' + offset : ''
@@ -145,12 +150,13 @@ export default {
       // activate if game mode is board creation && word was clicked
       return this.currentBoardWords.indexOf(definition) !== -1 && this.gameMode === 'boardCreation'
     },
-    pushWord: function(word) {
+    pushWord: function(word, variant) {
       // start from scratch
       if (this.currentBoardWords.length > 0) {
         this.resetBoardWords()
       }
       this.pushBoardWord(word)
+      this.setBoardVariant(String(variant))
     },
     createBoard: function() {
       if (this.gameMode === 'boardCreation') {
@@ -163,7 +169,19 @@ export default {
       }
     },
     saveBoard: function() {
-
+      // console.log('saveBoard', this.playerName, this.currentBoardWords, this.guessCards)
+      $socket.emit('upsert_board', {
+        'creator': this.playerName,
+        'word': this.currentBoardWords[0],
+        'word_variants': this.currentBoardWords,
+        'guess_cards': this.guessCards,
+        'difficulty': this.currentBoardVariant
+      })
+      this.pushAlert({
+        msg: 'Le plateau de jeu a été enregistré.',
+        dismissCountDown: 5,
+        variant: 'info'
+      })
     }
   }
 }

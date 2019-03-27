@@ -6,7 +6,7 @@ import Vuex from 'vuex'
 import store from './store'
 import firebase from 'firebase/app'
 import App from './App'
-// import router from './router'
+import router from './router'
 
 // import Vuelidate from 'vuelidate'
 
@@ -25,26 +25,17 @@ import { faPlus, faPlusCircle, faMinusCircle, faQuestionCircle, faExclamationCir
   faUsers, faBars, faMale, faUserCircle, faPuzzlePiece, faQuestion, faChessBoard, faClock} from '@fortawesome/free-solid-svg-icons'
 
 // import and connect to the concept server-side with websocket thanks to Vue Socket IO
-// import VueSocketIO from 'vue-socket.io'
 import VueSocketio from 'vue-socket.io-extended'
 import $socket from './websocket-instance'
 
 Vue.use(VueSocketio, $socket);
-
-// Vue.use(VueSocketIO, {
-// 	connection: process.env.SOCKET_IO_URL,
-// 	vuex: { 
-// 		store,
-// 		actionPrefix: 'SOCKET_',
-// 		mutationPrefix: 'SOCKET_'
-// 	}
-// })
 
 Vue.use(Vuex)
 
 Vue.use(BootstrapVue)
 Vue.use(VueBootstrapToasts)
 
+// font-awsome need to add each icon to the library
 library.add(faPlus, faPlusCircle, faMinusCircle, faQuestionCircle, faExclamationCircle, faTrash, faPlayCircle, faTrashRestore, faBookOpen, faPlusSquare,
   faUsers, faBars, faMale, faUserCircle, faPuzzlePiece, faQuestion, faChessBoard, faClock)
 Vue.component('font-awesome-icon', FontAwesomeIcon)
@@ -69,7 +60,7 @@ firebase.initializeApp(config)
 new Vue({
   el: '#app',
   store,
-  // router,
+  router,
   components: { App },
   template: '<App/>'
 })

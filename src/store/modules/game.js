@@ -10,7 +10,8 @@ const state = {
   gameMode: '',
   gameModeIsGod: false,
   gameModeAllowChange: true,
-  currentBoardWords: []
+  currentBoardWords: [],
+  currentBoardVariant: ''
 }
 
 // getters
@@ -56,6 +57,9 @@ const mutations = {
   },
   resetBoardWords (state) {
     state.currentBoardWords = []
+  },
+  setBoardVariant (state, variant) {
+    state.currentBoardVariant = variant
   }
 }
 
