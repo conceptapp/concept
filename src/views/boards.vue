@@ -55,7 +55,7 @@ This component displays the main header row
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 import { EventBus } from '@/event-bus.js'
 
 export default {
@@ -106,9 +106,7 @@ export default {
     }
   },
   computed: {
-    ...mapState ({
-      playerName: state => state.game.playerName
-    })
+    ...mapGetters(['user']),
   },
   methods: {
     filter_board: function (boards) {
@@ -138,7 +136,7 @@ export default {
     display_words: function (el) {
       // allow words display if current player is creator
       console.log(el)
-      return el.item.creator === this.playerName
+      return el.item.creator === this.user.displayName
     }
   },
   sockets: {

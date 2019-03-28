@@ -43,7 +43,7 @@ This component contains the modal dialog for generating words to guess
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex'
+import { mapState, mapMutations, mapGetters } from 'vuex'
 import { EventBus } from '@/event-bus.js'
 import $socket from '@/websocket-instance.js'
 import axios from 'axios'
@@ -64,14 +64,16 @@ export default {
       words: { success: [], warning: [], danger: [] }
     }
   },
-  computed: mapState ({
-    playerName: state => state.game.playerName,
-    gameMode: state => state.game.gameMode,
-    currentBoardWords: state => state.game.currentBoardWords,
-    currentBoardVariant: state => state.game.currentBoardVariant,
-    guessCards: state => state.cards.guessCards,
-    alerts: state => state.alerts.alerts
-  }), 
+  computed: {
+    ...mapState ({
+      gameMode: state => state.game.gameMode,
+      currentBoardWords: state => state.game.currentBoardWords,
+      currentBoardVariant: state => state.game.currentBoardVariant,
+      guessCards: state => state.cards.guessCards,
+      alerts: state => state.alerts.alerts
+    }),
+    ...mapGetters(['user']),
+  }, 
   created () {
     for (var key in this.words) {
       this.retrieveRecords(key)
@@ -169,9 +171,9 @@ export default {
       }
     },
     saveBoard: function() {
-      // console.log('saveBoard', this.playerName, this.currentBoardWords, this.guessCards)
+      // console.log('saveBoard', this.user.displayName , this.currentBoardWords, this.guessCards)
       $socket.emit('upsert_board', {
-        'creator': this.playerName,
+        'creator': this.user.displayName,
         'word': this.currentBoardWords[0],
         'word_variants': this.currentBoardWords,
         'guess_cards': this.guessCards,

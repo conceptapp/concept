@@ -33,26 +33,23 @@ export default {
   computed: {
     ...mapState ({
       // user: state => state.user.user,
-      colors: state => state.cards.colors,
-      // currentUser: state => state.game.currentUser,
-      playerName: state => state.game.playerName
+      colors: state => state.cards.colors
     }),
     ...mapGetters(['user']) 
   },
   methods: {
     ...mapMutations([
       // 'setCurrentUser',
-      'setPlayerName'
     ])
   },
   created () {
     // store current user if already logged-in 
     // var user = firebase.auth().currentUser
-    if (this.user) {
-      // this.setCurrentUser(user)
-      console.log('playerName', this.user.displayName)
-      this.setPlayerName(this.user.displayName)
-    }
+    // if (this.user) {
+    //   // this.setCurrentUser(user)
+    //   console.log('playerName', this.user.displayName)
+    //   this.setPlayerName(this.user.displayName)
+    // }
   }
 }
 </script>

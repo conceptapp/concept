@@ -1,7 +1,7 @@
 /*
 
 ### User auth plugin ###
-This component displays the main header row
+This plugin handles authentication functions
 
 ## Props ##
 
@@ -57,12 +57,9 @@ export default {
       login_social: async() => {
         const provider = new Firebase.auth.GoogleAuthProvider()
         firebase.auth().signInWithPopup(provider).then((result) => {
-          // alert('Yeah, you are connected')
-          // var currentUser = firebase.auth().currentUser
-          console.log('user logged in: ', result)
+          // console.log('user logged in: ', result)
           // store current user and display name
-          store.commit('updateUser',result.user)          
-          // this.setPlayerName(result.user.displayName)
+          store.commit('updateUser',result.user)
           store.commit('pushAlert', {
             msg: 'Connexion réussie, vous êtes désormais connecté. Bienvenue ' + result.user.displayName + '.',
             dismissCountDown: 5,
@@ -87,8 +84,6 @@ export default {
               displayName: displayName
             }).then(function() {
                 // Update successful
-                // this.setPlayerName(this.playerNameForm)
-                // this.hideModal()
             }, function(error) {
                 // An error happened.
                 console.log('playerName not updated sorry')

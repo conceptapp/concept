@@ -108,11 +108,8 @@ export default {
   props: { },
   computed: {
     ...mapState ({
-      // user: state => state.user.user,
       colors: state => state.cards.colors,
       selectedColor: state => state.cards.selectedColor,
-      // currentUser: state => state.game.currentUser,
-      // playerName: state => state.game.playerName,
       currentGameRoom: state => state.game.currentGameRoom,
       gameRooms: state => state.game.gameRooms
     }),
