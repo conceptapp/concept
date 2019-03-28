@@ -20,10 +20,10 @@ This component displays the main menu bar
         <b-nav-item v-b-modal.modalwords>
           Afficher des mots
         </b-nav-item>
-        <b-nav-item v-show="currentUser===''" v-b-modal.modallogin>
+        <b-nav-item v-show="!user" v-b-modal.modallogin>
           Jouer à plusieurs
         </b-nav-item>
-        <b-nav-item v-show="currentUser!==''" v-b-modal.modalplay>
+        <b-nav-item v-show="!!user" v-b-modal.modalplay>
           Jouer à plusieurs
         </b-nav-item>
 <!--         <b-nav-item v-b-modal.modalmultiplayers>
@@ -44,13 +44,13 @@ This component displays the main menu bar
         </b-nav-item>
         <!-- right aligned items -->
         <!-- user not authenticated yet -->
-        <b-navbar-nav v-show="currentUser==''" class="ml-auto">
+        <b-navbar-nav v-if="!user" class="ml-auto">
           <b-nav-item v-b-modal.modallogin>
             <font-awesome-icon icon="user-circle" size="lg" />
           </b-nav-item>
         </b-navbar-nav>
         <!-- user is authenticated -->
-        <b-navbar-nav v-show="currentUser!==''" class="ml-auto">
+        <b-navbar-nav v-else class="ml-auto">
           <b-nav-item>
             <span @click="showModalLogin">{{playerName}}</span>
             <span v-if="gameRooms[currentGameRoom]" @click="showModalMultiplayers">
@@ -77,7 +77,10 @@ This component displays the main menu bar
           <b-nav-item v-b-modal.modalplay>
             <font-awesome-icon icon="play-circle" /><br>Jouer
           </b-nav-item>
-          <b-nav-item v-b-modal.modalmultiplayers>
+          <b-nav-item v-show="!user" v-b-modal.modallogin>
+            <font-awesome-icon icon="users" /><br>Multijoueurs
+          </b-nav-item>
+          <b-nav-item v-show="!!user" v-b-modal.modalplay>
             <font-awesome-icon icon="users" /><br>Multijoueurs
           </b-nav-item>
           <b-nav-item @click="reset">
@@ -96,21 +99,28 @@ This component displays the main menu bar
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex'
+import { mapState, mapMutations, mapGetters } from 'vuex'
 import { EventBus } from '@/event-bus.js'
 
 export default {
   name: 'MenuBar',
   components: { },
   props: { },
-  computed: mapState ({
-    colors: state => state.cards.colors,
-    selectedColor: state => state.cards.selectedColor,
-    currentUser: state => state.game.currentUser,
-    playerName: state => state.game.playerName,
-    currentGameRoom: state => state.game.currentGameRoom,
-    gameRooms: state => state.game.gameRooms
-  }),
+  computed: {
+    ...mapState ({
+      // user: state => state.user.user,
+      colors: state => state.cards.colors,
+      selectedColor: state => state.cards.selectedColor,
+      // currentUser: state => state.game.currentUser,
+      // playerName: state => state.game.playerName,
+      currentGameRoom: state => state.game.currentGameRoom,
+      gameRooms: state => state.game.gameRooms
+    }),
+    ...mapGetters(['user']),
+    playerName: function () {
+      return this.user ? this.user.displayName : ''
+    }
+  },
   created () {
     // listen to events
     EventBus.$on('reset', args => this.reset(args))
@@ -121,7 +131,6 @@ export default {
     ]),
     reset: function () {
       // this.sharedState.guessCards = this.initGuessCards()
-      // this.pushWebsocket()
       EventBus.$emit('init-guess-cards')
       this.setCurrentColor(this.colors[0]) // select the default color
     },

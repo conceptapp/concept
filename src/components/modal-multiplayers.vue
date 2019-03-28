@@ -121,7 +121,7 @@ This component contains only the modal dialog and some websocket calls for multi
 <script>
 import { EventBus } from '@/event-bus.js'
 import $socket from '@/websocket-instance.js'
-import { mapState, mapMutations } from 'vuex'
+import { mapState, mapMutations, mapGetters } from 'vuex'
 
 export default {
   name: 'ModalMultiplayers',
@@ -139,14 +139,14 @@ export default {
   computed: {
     ...mapState ({
       guessCards: state => state.cards.guessCards,
-      // gameRooms: state => state.cards.gameRooms,
-      playerName: state => state.game.playerName,
+      // playerName: state => state.game.playerName,
       isMultiPlayer: state => state.game.isMultiPlayer,
       currentGameRoom: state => state.game.currentGameRoom,
       gameMode: state => state.game.gameMode,
       gameRooms: state => state.game.gameRooms,
       gameModeIsGod: state => state.game.gameModeIsGod
     }),
+    ...mapGetters(['user']),
     multiplayersGameModes: function () {
       var filteredGames = {}
       for (var el in this.gameRooms) {
@@ -193,7 +193,7 @@ export default {
         'currentGameRoom': this.newGame,
         'guessCards': this.guessCards,
         'gameMode': this.gameMode,
-        'player': this.playerName
+        'player': this.user.displayName
       })
       // push current guess cards to the server
       EventBus.$emit('update-cards')
@@ -212,7 +212,7 @@ export default {
       // join the game server side
       $socket.emit('join_game', {
         'game': game,
-        'player': this.playerName
+        'player': this.user.displayName
       })
     },
     leave_game: function () {
@@ -220,7 +220,7 @@ export default {
       // tell the server we're leaving the game
       $socket.emit('leave_game', {
         'game': this.currentGameRoom,
-        'player': this.playerName
+        'player': this.user.displayName
       })
       // reset current game room
       this.setCurrentGameRoom('')

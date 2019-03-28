@@ -4,9 +4,11 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 // create Vuex store
 import store from './store'
-import firebase from 'firebase/app'
+// import firebase from 'firebase/app'
+import FirebaseAuthPlugin from './FirebaseAuthPlugin'
 import App from './App'
 import router from './router'
+import 'babel-polyfill'
 
 // import Vuelidate from 'vuelidate'
 
@@ -35,6 +37,8 @@ Vue.use(Vuex)
 Vue.use(BootstrapVue)
 Vue.use(VueBootstrapToasts)
 
+Vue.use(FirebaseAuthPlugin)
+
 // font-awsome need to add each icon to the library
 library.add(faPlus, faPlusCircle, faMinusCircle, faQuestionCircle, faExclamationCircle, faTrash, faPlayCircle, faTrashRestore, faBookOpen, faPlusSquare,
   faUsers, faBars, faMale, faUserCircle, faPuzzlePiece, faQuestion, faChessBoard, faClock)
@@ -45,16 +49,16 @@ Vue.component('font-awesome-layers-text', FontAwesomeLayersText)
 Vue.config.productionTip = false
 
 // firebase configuration
-const config = {
-  apiKey: 'AIzaSyCi5GkjKyceprBZjCPxQBuxjlx6Z2CuBcs',
-  authDomain: 'concept.firebaseapp.com',
-  databaseURL: 'https://YOUR_PROJECT_ID.firebaseio.com',
-  projectId: 'concept-35ade',
-  storageBucket: 'YOUR_PROJECT_ID.appspot.com',
-  messagingSenderId: 'YOUR_MESSAGING_SEND_ID'
-}
+// const config = {
+//   apiKey: 'AIzaSyCi5GkjKyceprBZjCPxQBuxjlx6Z2CuBcs',
+//   authDomain: 'http://concept-35ade.firebaseapp.com',
+//   databaseURL: 'https://concept-35ade.firebaseio.com',
+//   projectId: 'concept-35ade',
+//   storageBucket: 'concept-35ade.appspot.com',
+//   messagingSenderId: '342176989553'
+// }
 
-firebase.initializeApp(config)
+// firebase.initializeApp(config)
 
 /* eslint-disable no-new */
 new Vue({

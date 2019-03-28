@@ -94,8 +94,6 @@ export default {
     // listen to events
     EventBus.$on('add-icon', data => this.addIcon(data))
     EventBus.$on('remove-icon', data => this.removeIcon(data))
-    // EventBus.$on('update-cards', data => this.pushWebsocket())
-    // EventBus.$on('init-guess-cards', data => this.initGuessCards())
     EventBus.$on('init-guess-cards', data => this.$store.dispatch('initGuessCards'))
   },
   computed: {

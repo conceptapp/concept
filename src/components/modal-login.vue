@@ -18,7 +18,7 @@ This component displays the login elements
     title="Identification"
   >
     <div class="row text-left">
-      <div v-if="currentUser===''" class="col">
+      <div v-if="!user" class="col">
         <h6 class="card-title text-left">Merci de vous authentifier pour lancer le mode multi-joueurs</h6>
         <b-form-group id="emailForm"
             label="Email :"
@@ -110,7 +110,7 @@ This component displays the login elements
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex'
+import { mapState, mapMutations, mapGetters } from 'vuex'
 import { EventBus } from '@/event-bus.js'
 import firebase from 'firebase/app'
 import "firebase/auth"
@@ -129,105 +129,42 @@ export default {
       password: ''
     }
   },
-  computed: mapState ({
-    currentUser: state => state.game.currentUser,
-    playerName: state => state.game.playerName,
-    alerts: state => state.alerts.alerts
-  }),  
+  computed: {
+    ...mapState ({
+      // currentUser: state => state.game.currentUser,
+      // user: state => state.user.user,
+      // playerName: state => state.game.playerName,
+      alerts: state => state.alerts.alerts
+    }),
+    ...mapGetters(['user'])
+  },
   created () {
   },
   methods: {
     ...mapMutations([
       'setPlayerName',
-      'setCurrentUser',
+      'updateUser',
       'pushAlert'
     ]),
     validate_player_form: function() {
-      this.playerNameValid = this.playerName.length > 1
+      this.playerNameValid = this.playerNameForm.length > 1
       this.setPlayerName(this.playerNameForm)
     },
     login: function() {
-      firebase.auth().signInWithEmailAndPassword(this.email, this.password).then(
-        (result) => {
-          // console.log('user logged in: ', result)
-          // store current user and display name
-          this.setCurrentUser(result.user)
-          this.setPlayerName(result.user.displayName)
-          this.hideModal()
-          this.pushAlert({
-            msg: 'Connexion réussie, vous êtes désormais connecté. Bienvenue ' + result.user.displayName + '.',
-            dismissCountDown: 5,
-            variant: 'info'
-          })
-        },
-        (err) => {
-          // alert('Oops. ' + err.message)
-          this.pushAlert({
-            msg: 'La connexion a échouée. Le message remonté est : ' + err.message,
-            dismissCountDown: 15,
-            variant: 'danger'
-          })
-        }
-      )
+      // all the auth functions are in the Firebase plugin FirebaseAuthPlugin
+      this.$auth.login(this.email, this.password)
+      this.hideModal()
     },
     socialLogin() {
-      const provider = new firebase.auth.GoogleAuthProvider();
-      firebase.auth().signInWithPopup(provider).then((result) => {
-        // alert('Yeah, you are connected')
-        // var currentUser = firebase.auth().currentUser
-        console.log('user logged in: ', result)
-        // store current user and display name
-        this.setCurrentUser(result.user)
-        this.setPlayerName(result.user.displayName)
-        this.hideModal()
-        this.pushAlert({
-          msg: 'Connexion réussie, vous êtes désormais connecté. Bienvenue ' + result.user.displayName + '.',
-          dismissCountDown: 5,
-          variant: 'info'
-        })  
-      }).catch((err) => {
-        // alert('Oops. ' + err.message)
-        this.pushAlert({
-          msg: 'La connexion a échouée. Le message remonté est : ' + err.message,
-          dismissCountDown: 15,
-          variant: 'danger'
-        })
-      });
+      this.$auth.login_social()
+      this.hideModal()
     },
     signUp: function() {
-      firebase.auth().createUserWithEmailAndPassword(this.email, this.password).then(
-        (user) => {
-          // store current user and display name
-          this.setCurrentUser(user)
-          // update player name
-          var logged_user = firebase.auth().currentUser;
-          logged_user.updateProfile({
-              displayName: this.playerNameForm
-          }).then(function() {
-              // Update successful
-              this.setPlayerName(this.playerNameForm)
-              this.hideModal()
-          }.bind(this), function(error) {
-              // An error happened.
-              console.log('playerName not updated sorry')
-          })
-        },
-        (err) => {
-          alert('Oops. ' + err.message)
-        }
-      )
+      this.$auth.signup(this.email, this.password, this.playerNameForm)
+      this.hideModal()
     },
     logout: function() {
-      firebase.auth().signOut().then(() => {
-        // alert('you have been signed out')
-        this.setCurrentUser('')
-        this.setPlayerName('')
-        this.pushAlert({
-          msg: 'Vous avez été déconnecté.',
-          dismissCountDown: 5,
-          variant: 'info'
-        })
-      })
+      this.$auth.logout()
     },
     hideModal() {
       this.$refs.modallogin.hide()

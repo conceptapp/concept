@@ -47,6 +47,7 @@ const mutations = {
     state.isMultiPlayer = isMultiPlayer
   },
   setPlayerName (state, playerName) {
+    console.log('setPlayerName is deprecated, better user user.displayName')
     state.playerName = playerName
   },
   setCurrentUser (state, currentUser) {

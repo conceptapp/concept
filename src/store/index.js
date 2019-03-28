@@ -3,9 +3,8 @@ import Vuex from 'vuex'
 import cards from './modules/cards'
 import game from './modules/game'
 import alerts from './modules/alerts'
+import user from './modules/user'
 
-// import cart from './modules/cart'
-// import products from './modules/products'
 // import createLogger from '../../../src/plugins/logger'
 
 Vue.use(Vuex)
@@ -34,7 +33,8 @@ export default new Vuex.Store({
   modules: {
     cards,
     game,
-    alerts
+    alerts,
+    user
   },
   state,
   getters,
