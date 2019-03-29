@@ -15,7 +15,8 @@ import BootstrapVue from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 
-import VueBootstrapToasts from "vue-bootstrap-toasts"
+// import Bootstrap Toast plugin
+import VueBootstrapToasts from 'vue-bootstrap-toasts'
 
 // import FontAwesome components
 import { library } from '@fortawesome/fontawesome-svg-core'
