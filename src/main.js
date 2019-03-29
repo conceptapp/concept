@@ -28,9 +28,8 @@ import { faPlus, faPlusCircle, faMinusCircle, faQuestionCircle, faExclamationCir
 import VueSocketio from 'vue-socket.io-extended'
 import $socket from './websocket-instance'
 
-Vue.use(VueSocketio, $socket);
-
 Vue.use(Vuex)
+Vue.use(VueSocketio, $socket, { store })
 
 Vue.use(BootstrapVue)
 Vue.use(VueBootstrapToasts)

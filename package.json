@@ -29,6 +29,7 @@
     "nodemon": "^1.18.10",
     "npm": "^6.9.0",
     "postscribe": "^2.0.8",
+    "socket.io-client": "^2.2.0",
     "vue": "^2.6.10",
     "vue-bootstrap-toasts": "^1.0.4",
     "vue-flip": "^0.2.5",

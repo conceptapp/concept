@@ -151,9 +151,6 @@ export default {
       pageOptions: [5, 10, 15],
       filter: null,
       filterPlayerBoards: false,
-      isBusy: true,
-      boards: [],
-      boards_filtered: [],
       totalRows: 0,
       fields: [
         'index',
@@ -205,7 +202,18 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['user']),
+    ...mapState ({
+      boards: state => state.game.boards
+    }),
+    ...mapGetters([
+      'user'
+    ]),
+    isBusy: function() {
+      return this.boards.length === 0
+    },
+    boards_filtered: function() {
+      return this.filter_board(this.boards)
+    }
   },
   methods: {
     filter_board: function (boards) {
@@ -221,10 +229,6 @@ export default {
 
       })
       return boards
-    },
-    filter_display: function(item, filter) {
-      console.log(item)
-      return this.is_player(item) // && filterPlayerBoards
     },
     format_difficulty: function (d) {
       switch (d) {
@@ -250,6 +254,10 @@ export default {
       this.currentPage = 1
     }
   },
+  created: function() {
+    // trigger websocket at the server to get boards
+    this.$root.$socket.emit('get_boards', { })
+  },
   sockets: {
     connect () {
       console.log('connected to server from boards.vue')
@@ -261,14 +269,6 @@ export default {
     },
     disconnect() {
       console.log('disconnected from server from boards.vue')
-    },
-    boards_info (data) {
-      // retrieve boards from server
-      console.log('boards_info', data)
-      this.isBusy = false
-      // this.boards = data
-      // // and clean up data
-      // this.boards_filtered = this.filter_board(data)
     }
   }
 }
