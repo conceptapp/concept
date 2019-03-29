@@ -136,14 +136,7 @@ import { EventBus } from '@/event-bus.js'
 export default {
   name: 'Boards',
   components: {  },
-  props: {
-    store: {
-      type: Object,
-      default: function () {
-        return {}
-      }
-    }
-  },
+  props: { },
   data: function () {
     return {
       currentPage: 1,
