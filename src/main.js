@@ -4,13 +4,10 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 // create Vuex store
 import store from './store'
-// import firebase from 'firebase/app'
 import FirebaseAuthPlugin from './FirebaseAuthPlugin'
 import App from './App'
 import router from './router'
 import 'babel-polyfill'
-
-// import Vuelidate from 'vuelidate'
 
 // import Bootstrap vue component and css
 import BootstrapVue from 'bootstrap-vue'
@@ -47,18 +44,6 @@ Vue.component('font-awesome-layers', FontAwesomeLayers)
 Vue.component('font-awesome-layers-text', FontAwesomeLayersText)
 
 Vue.config.productionTip = false
-
-// firebase configuration
-// const config = {
-//   apiKey: 'AIzaSyCi5GkjKyceprBZjCPxQBuxjlx6Z2CuBcs',
-//   authDomain: 'http://concept-35ade.firebaseapp.com',
-//   databaseURL: 'https://concept-35ade.firebaseio.com',
-//   projectId: 'concept-35ade',
-//   storageBucket: 'concept-35ade.appspot.com',
-//   messagingSenderId: '342176989553'
-// }
-
-// firebase.initializeApp(config)
 
 /* eslint-disable no-new */
 new Vue({

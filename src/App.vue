@@ -17,8 +17,6 @@
 
 <script>
 import { mapState, mapMutations, mapGetters } from 'vuex'
-// import firebase from 'firebase/app'
-// import "firebase/auth"
 import MenuBar from '@/components/menu-bar'
 import Modals from '@/components/modals'
 import Alerts from '@/components/alerts'
@@ -32,24 +30,15 @@ export default {
   },
   computed: {
     ...mapState ({
-      // user: state => state.user.user,
       colors: state => state.cards.colors
     }),
     ...mapGetters(['user']) 
   },
   methods: {
     ...mapMutations([
-      // 'setCurrentUser',
     ])
   },
   created () {
-    // store current user if already logged-in 
-    // var user = firebase.auth().currentUser
-    // if (this.user) {
-    //   // this.setCurrentUser(user)
-    //   console.log('playerName', this.user.displayName)
-    //   this.setPlayerName(this.user.displayName)
-    // }
   }
 }
 </script>
