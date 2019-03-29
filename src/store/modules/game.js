@@ -4,7 +4,6 @@ import $socket from '@/websocket-instance'
 const state = {
   currentUser: '',
   isMultiPlayer: false,
-  playerName: '',
   currentGameRoom: '',
   gameRooms: [],
   gameMode: '',
@@ -45,10 +44,6 @@ const mutations = {
   },
   setIsMultiPlayer (state, isMultiPlayer) {
     state.isMultiPlayer = isMultiPlayer
-  },
-  setPlayerName (state, playerName) {
-    console.log('setPlayerName is deprecated, better user user.displayName')
-    state.playerName = playerName
   },
   setCurrentUser (state, currentUser) {
     state.currentUser = currentUser

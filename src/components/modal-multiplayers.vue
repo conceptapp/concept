@@ -158,7 +158,6 @@ export default {
   },
   methods: {
     ...mapMutations([
-      // 'pushGuessCards',
       'setGameMode',
       'setIsMultiPlayer',
       'setCurrentGameRoom',
