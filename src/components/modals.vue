@@ -1,7 +1,7 @@
 /*
 
 ### Component ###
-This component contains the modal dialogs and some websocket calls for multiplayer games
+This component contains the modal dialogs
 
 ## Props ##
 
@@ -11,395 +11,34 @@ This component contains the modal dialogs and some websocket calls for multiplay
 
 <template>
   <div id="modal-dialogs">
-    <b-modal
-      id="modalplay"
-      @cancel="shuffleWords"
-      title="C'est parti !"
-      ok-title="Ok, c'est parti"
-      cancel-title="Une autre carte"
-    >
-      <section
-        v-if="words.danger.length > 0 && words.warning.length > 0 && words.success.length > 0"
-        v-for="(wordtype, variant, index) in words"
-        :key="index"
-      >
-        <section
-          v-for="(definition, key, index_w) in wordtype[0].fields"
-          :key="index_w"
-        >
-          <b-alert
-            :variant="variant"
-            show
-          >
-            {{ definition }}
-          </b-alert>
-        </section>
-      </section>
-      <p class="text-right">
-        <a
-          href="https://jrmie818423.typeform.com/to/Kf9Ux6"
-          class="text-secondary"
-          target="_blank"
-        >>> Proposer des mots ou expressions</a>
-      </p>
-      <!-- TODO see https://admin.typeform.com/form/Kf9Ux6/share#/embed to try to embed -->
-    </b-modal>
-    <b-modal
-      id="modalrules"
-      ok-only
-      ok-title="Merci"
-      title="Règles du jeu"
-    >
-      <p class="text-left">
-        Un premier joueur ouvre le jeu sur son téléphone (ou tous les autres joueurs quittent leurs yeux de l'écran). Ce joueur clique sur le bouton "Jouer" caché derrière la carte "Concept".
-      </p>
-      <p class="text-left">
-        Sur la carte, il choisit le mot ou l'expression qu'il veut faire deviner.
-      </p>
-      <p class="text-left">
-        Pour faire deviner le mot, il dispose de l'ensemble des <i>concepts</i> disponibles sur le plateau de jeu. Le premier concept étatn le concept principal, les autres lignes des concepts secondaires.
-      </p>
-      <p class="text-left">
-        Pour ajouter un <i>concept</i> à un concept principal ou secondaire, le joueur clique sur la ligne du concept puis clique sur l'icône du concept qu'il veut ajouter et clique sur le <font-awesome-icon icon="plus-circle" />. Pour supprimer un <i>concept</i>, il clique sur l'icône du concept qu'il a ajouté et clique sur la <font-awesome-icon icon="trash" />.
-      </p>
-      <p class="text-left">
-        Lorsque l'un des autres joueurs trouve le mot ou l'expression qu'il fallait deviner, le joueur qui faisait deviner peut réinitialiser le plateau en cliquant sur la carte "Concept" et le bouton "Réinitialiser".
-      </p>
-    </b-modal>
-    <b-modal
-      id="modalmultiplayers"
-      ref="modalmultiplayers"
-      :hide-footer="true"
-      title="Mode multijoueurs"
-    >
-      <div class="container-fluid">
-        <div class="row text-left">
-          <div v-if="!playerNameValid" class="col">
-            <h5 class="card-title text-left">Quel est votre nom ?</h5>
-            <!-- label="Nom du joueur :"
-              label-cols-xl="4"
-              label-cols-lg="3"
-              label-for="get_player_name" -->
-            <b-form-group id="playerNameForm">
-              <b-form-input
-                id="get_player_name"
-                v-model.trim="playerName"
-                type="text"
-                class=""
-                maxlength="30"
-                placeholder="John Doe"
-                :state="playerNameValid"
-              />
-                              <!-- v-on:blur="validate_player_form()" -->
-              <b-form-invalid-feedback>
-                On y est presque...<br>Pouvez-vous me donner un petit nom d'au moins 2 caractères&nbsp;?
-              </b-form-invalid-feedback>
-            </b-form-group>
-            <div class="text-right">
-              <b-button @click="validate_player_form()" variant="primary">
-                  Valider
-              </b-button>
-            </div>
-          </div>
-        </div>
-        <div v-if="sharedState.currentGameRoom!=''" class="row text-left align-items-center">
-          <div class="col">
-            <h5 class="card-title text-left">
-              Partie en cours : <i>{{ sharedState.currentGameRoom }}</i>
-            </h5>
-          </div>
-        </div>
-        <div v-if="sharedState.isMultiPlayer" class="row text-right align-items-center">
-          <div class="ml-auto col-auto">
-            <b-button @click="hideModal" variant="primary">Jouer maintenant</b-button>
-            <b-button @click="leave_game()">Quitter la partie</b-button>
-          </div>
-        </div>
-        <div v-if="!sharedState.isMultiPlayer && playerNameValid" class="row text-left">
-          <div class="col">
-            <h5 class="card-title text-left">Créer une nouvelle partie</h5>
-            <b-form>
-              <b-form-group
-                id="gameTypeForm"
-                label="Nom du jeu :"
-                label-cols-xl="4"
-                label-cols-lg="3"
-                label-for="create_game_room"
-              >
-                <b-form-input
-                  id="create_game_room"
-                  v-model.trim="newGame"
-                  type="text"
-                  class=""
-                  maxlength="30"
-                  placeholder="La partie de Max"
-                  :state="newGameValid"
-                  v-on:blur="validate()"
-                />
-                <b-form-invalid-feedback>
-                  Une petite seconde...<br>Pouvez-vous donner un petit nom à votre partie&nbsp;?
-                </b-form-invalid-feedback>
-              </b-form-group>
-              <b-form-group
-                id="gameTypeForm"
-                label="Type de partie :"
-                label-cols-xl="4"
-                label-cols-lg="3"
-                label-for="game_type_select"
-              >
-                <b-form-select id="game_type_select" 
-                  v-model="sharedState.gameMode" 
-                  :state="gameModeValid"
-                  @input="validate()"
-                >
-                  <option value="" selected disabled="">Sélectionnez un type de jeu</option>
-                  <option value="godMode">Vous seul pouvez ajouter des cartes</option>
-                  <option value="allPlayersMode">Tous les joueurs peuvent proposer des cartes</option>
-                  <option value="asyncMode" disabled>Proposer un plateau que d'autres joueurs doivent deviner</option>
-                </b-form-select>
-                <b-form-invalid-feedback>
-                  Juste... pouvez-vous choisir le type de partie que vous voulez jouer&nbsp;? S'il vous plaît&nbsp;?
-                </b-form-invalid-feedback>
-              </b-form-group>
-              <div class="text-right">
-                <b-button v-if="newGame in this.sharedState.gameRooms" @click="join_game(newGame)" variant="light">
-                  Rejoindre
-                </b-button>
-                <b-button v-else @click="create_game(newGame)" variant="primary">
-                  Créer
-                </b-button>
-              </div>
-            </b-form>
-            <div v-if="Object.keys(multiplayersGameModes).length">
-              <hr>
-              <h5 class="card-title text-left">
-                Rejoindre une partie
-              </h5>
-              <div class="container-fluid">
-                <div
-                  v-for="(game_room, key, index) in multiplayersGameModes"
-                  :key="index"
-                  class="row text-left align-items-center my-2"
-                >
-                  <div class="col-lg-1 d-none d-lg-block p-0">
-                    <img
-                      :src="require('@/assets/images/bullet-puzzle.png')"
-                      style="max-height:20px;"
-                    >
-                  </div>
-                  <div class="col-8 p-0" style="line-height: initial;">
-                    {{ key }}<br><small><i>{{ game_room.mode == 'godMode' ? "Jeu géré par l'organisateur" : "Jeu ouvert à tous les participants" }}</i></small>
-                  </div>
-                  <div class="col-3 p-0">
-                    <b-button @click="join_game(key)" type="submit" variant="light">Rejoindre</b-button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </b-modal>
-    <b-modal id="modalabout" ok-only ok-title="D'accord"title="A propos">
-      <p class="text-left">
-        Ce jeu s'appuie librement sur le jeu de société <b>Concept</b> que nous vous conseillons.
-      </p>
-      <p class="text-left">
-        Il n'est absolument pas cautionné par les auteurs originaux du jeu, il s'agit d'un hommage (et d'un petit test aussi). A la moindre demande, l'accès à ce prototype sera retiré.
-      </p>
-    </b-modal>
+    <!-- Modal dialog pour l'identification -->
+    <ModalLogin />
+    <!-- Modal dialog pour lancer le jeu  -->
+    <ModalPlay />
+    <!-- Modal dialog pour afficher le mode de jeu multijoueurs -->
+    <ModalMultiplayers />
+    <!-- Modal dialog pour afficher les mots -->
+    <ModalWords />
+    <!-- Modal dialog pour afficher les règles du jeu -->
+    <ModalRules />
   </div>
 </template>
 
 <script>
-import { required } from 'vuelidate/lib/validators'
-import { EventBus } from '@/event-bus.js'
-
-import axios from 'axios'
-import easyjson from '../../data/success.json'
-import mediumjson from '../../data/warning.json'
-import hardjson from '../../data/danger.json'
-
-const LOCAL = false
-var appKey = 'keyrkS74q9vL9FBHT'
-var appId = 'appzdYVnVaVLTKUB7'
+// import { EventBus } from '@/event-bus.js'
+import ModalLogin from '@/components/modal-login'
+import ModalPlay from '@/components/modal-play'
+import ModalMultiplayers from '@/components/modal-multiplayers'
+import ModalWords from '@/components/modal-words'
+import ModalRules from '@/components/modal-rules'
 
 export default {
   name: 'Modals',
-  components: { },
-  props: {
-    store: {
-      type: Object,
-      default: function () {
-        return {}
-      }
-    },
-  },
-  data: function () {
-    return {
-      sharedState: this.store.state,
-      words: { success: [], warning: [], danger: [] },
-      newGame: '',
-      playerName: '',
-      submitStatus: null,
-      newGameValid: null,
-      gameModeValid: null,
-      playerNameValid: null
-    }
-  },
-  computed: {
-    multiplayersGameModes: function () {
-      var filteredGames = {}
-      for (var el in this.sharedState.gameRooms) {
-        if (this.sharedState.gameRooms[el].mode !== 'asyncMode') {
-          filteredGames[el] = this.sharedState.gameRooms[el]
-        }
-      }
-      return filteredGames
-    }
-  },
-  created () {
-    for (var key in this.words) {
-      this.retrieveRecords(key)
-    }
-  },
-  methods: {
-    retrieveRecords: function (recordType, offset) {
-      offset = offset !== undefined ? '?offset=' + offset : ''
-      if (!LOCAL) {
-        axios.get(
-          'https://api.airtable.com/v0/' + appId + '/' + recordType + offset,
-          {
-            headers: { Authorization: 'Bearer ' + appKey }
-          }
-        ).then(function (response) {
-          if (offset === '') {
-            this.words[recordType] = response.data.records
-          } else {
-            this.words[recordType].concat(response.data.records)
-          }
-          // it there is some more data to fetch, call again the function
-          if ('offset' in response.data) {
-            this.retrieveRecords(recordType, offset)
-          } else {
-            // append the first row at the end of the array to use the first row as the current guess words
-            this.words[recordType].push(this.words[recordType][0])
-            // choose a first set of words to guess
-            this.shuffleWords(undefined, recordType)
-          }
-        }.bind(this)).catch(function (error) {
-          console.log(error)
-        })
-      } else {
-        switch (recordType) {
-          case 'success':
-            this.words[recordType] = easyjson.records
-            break
-          case 'warning':
-            this.words[recordType] = mediumjson.records
-            break
-          default:
-            this.words[recordType] = hardjson.records
-        }
-        // append the first row at the end of the array to use the first row as the current guess words
-        this.words[recordType].push(this.words[recordType][0])
-        // choose a first set of words to guess
-        this.shuffleWords(undefined, recordType)
-      }
-    },
-    shuffleWords: function (evt, key) {
-      // pick a random index in each word subset and store the random index values at index 0 of the array
-      if (key === undefined) {
-        for (var iKey in this.words) {
-          this.words[iKey][0] = this.words[iKey][Math.floor(Math.random() * this.words[iKey].length)]
-        }
-      } else {
-        this.words[key][0] = this.words[key][Math.floor(Math.random() * this.words[key].length)]
-      }
-      // prevent modal from closing
-      if (!(evt === undefined)) {
-        evt.preventDefault()
-        this.$forceUpdate()
-      }
-    },
-    validate_player_form: function() {
-      this.playerNameValid = this.playerName.length > 1
-      this.sharedState.playerName = this.playerName
-    },
-    validate: function() {
-      // validate form
-      this.newGameValid = !(this.newGame.length === 0)
-      this.gameModeValid = !(this.sharedState.gameMode === '')
-    },
-    create_game: function (newGame) {
-      console.log('creating game: ', newGame)
-      // check if form is valid
-      this.validate()
-      if (!this.newGameValid || !this.gameModeValid) {
-        return false
-      }
-      // reset form validation
-      this.newGameValid = null
-      this.gameModeValid = null
-      // register this new game as the current game room
-      this.sharedState.currentGameRoom = newGame
-      // set god mode by default if nothing selected
-      if (this.sharedState.gameMode === '') { this.sharedState.gameMode = 'godMode' }
-      // game creator is God by default
-      this.sharedState.gameModeIsGod = true
-      // create a new game server-side
-      console.log('emit create_game')
-      this.$socket.emit('create_game', {
-        'currentGameRoom': this.newGame,
-        'guessCards': this.sharedState.guessCards,
-        'gameMode': this.sharedState.gameMode,
-        'player': this.playerName
-      })
-      // push current guess cards to the server
-      EventBus.$emit('update-cards')
-      // activate multiplayer mode
-      this.sharedState.isMultiPlayer = true
-    },
-    join_game: function (game) {
-      console.log('joining game: ', game)
-      // register this game as the current game room
-      this.sharedState.currentGameRoom = game
-      // activate multiplayer mode
-      this.sharedState.isMultiPlayer = true
-      // set current gameMode
-      console.log('current game: ', this.sharedState.gameRooms[game])
-      this.sharedState.gameMode = this.sharedState.gameRooms[game]['mode']
-      // join the game server side
-      this.$socket.emit('join_game', {
-        'game': game,
-        'player': this.playerName
-      })
-    },
-    leave_game: function () {
-      console.log('leaving game: ', this.sharedState.currentGameRoom)
-      // tell the server we're leaving the game
-      this.$socket.emit('leave_game', {
-        'game': this.sharedState.currentGameRoom,
-        'player': this.playerName
-      })
-      // reset current game room
-      this.sharedState.currentGameRoom = ''
-      // deactivate multiplayer mode
-      this.sharedState.isMultiPlayer = false
-      // reset current gameMode
-      this.sharedState.gameMode = ''
-      // reset god credentials
-      this.sharedState.gameModeIsGod = false
-    },
-    hideModal: function () {
-      this.$refs.modalmultiplayers.hide()
-    }
-  }
+  components: { ModalLogin, ModalPlay, ModalMultiplayers, ModalWords, ModalRules },
+  props: { },
+  methods: { }
 }
 </script>
 
 <style scoped >
-.alert {
-  padding: 0 !important;
-}
 </style>

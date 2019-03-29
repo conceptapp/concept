@@ -1,0 +1,8 @@
+{
+	"presets": [
+		"vue",
+		"env",
+		"stage-2"
+	],
+	"plugins": ["transform-regenerator"]
+}
