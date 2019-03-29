@@ -15,7 +15,7 @@ This component displays the main menu bar
     <b-navbar class="navbar navbar-expand-lg navbar-light bg-light d-none d-sm-block">
       <b-navbar-nav>
         <b-navbar-brand class="navbar-brand">
-          Concept
+          <b-link to="/" style="color:black;text-decoration:none;">Concept</b-link>
         </b-navbar-brand>
         <b-nav-item v-b-modal.modalwords>
           Afficher des mots

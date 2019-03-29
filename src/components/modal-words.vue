@@ -15,7 +15,7 @@ This component contains the modal dialog for generating words to guess
     id="modalwords"
     ref="modalwords"
     @cancel="shuffleWords"
-    @ok="createBoard"
+    @ok="playMainboard"
     title="C'est parti !"
     :ok-title="gameMode === 'boardCreation' ? 'Créer le plateau' : 'Ok, c\'est parti' "
     cancel-title="Une autre carte"
@@ -160,13 +160,11 @@ export default {
       this.pushBoardWord(word)
       this.setBoardVariant(String(variant))
     },
-    createBoard: function() {
+    playMainboard: function() {
+      this.$router.push({ name: 'Mainboard' })
       if (this.gameMode === 'boardCreation') {
         this.pushAlert({
           boardCreationMode: true
-          // msg: "Mot à faire deviner : " + this.currentBoardWords[0] + ". " + strSave + " " + strCancel,
-          // dismissCountDown: true,
-          // variant: 'info'
         })
       }
     },

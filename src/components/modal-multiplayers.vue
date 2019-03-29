@@ -27,7 +27,7 @@ This component contains only the modal dialog and some websocket calls for multi
       </div>
       <div v-if="isMultiPlayer" class="row text-right align-items-center">
         <div class="ml-auto col-auto">
-          <b-button @click="hideModal" variant="primary">Jouer maintenant</b-button>
+          <b-button @click="hideModal();$router.push({ name: 'Mainboard' })" variant="primary">Jouer maintenant</b-button>
           <b-button @click="leave_game()">Quitter la partie</b-button>
         </div>
       </div>

@@ -76,11 +76,6 @@ export default {
     displayBoardList: function() {
       this.hideModal()
       this.$router.push({ name: 'BoardsTable' })
-      // this.pushAlert({
-      //   msg: "Désolé, le mode plateau n'est pas encore disponible",
-      //   dismissCountDown: 5,
-      //   variant: 'warning'
-      // })
     }
   }
 }

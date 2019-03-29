@@ -59,7 +59,7 @@ const mutations = {
     state.currentBoardVariant = variant
   },
   SOCKET_BOARDS_INFO (state, data) {
-    console.log('got socket board info', data)
+    // console.log('got socket board info', data)
     // retrieve boards from server websocket call
     state.boards = data
   }

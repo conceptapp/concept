@@ -12,7 +12,7 @@ This component displays the main header row
 <template>
   <b-container fluid>
     <h4 class="card-title text-left mt-2">Mode de jeu : plateaux</h4>
-    <p class="text-left"> préciser les règles du jeu un peu ? </p>
+    <p class="text-left">TODO préciser les règles du jeu un peu ? TODO Et renvoyer vers la création des plateaux </p>
     <h4 class="card-title text-left mt-2">Plateaux disponibles</h4>
     <!-- User Interface controls -->
     <b-row>
@@ -47,13 +47,14 @@ This component displays the main header row
 
     <!-- create a fake index -->
     <b-table 
-      :fields="fields" 
-      :items="boards_filtered" 
+      :fields="fields"
+      :items="boards_filtered"
       :current-page="currentPage"
       :per-page="perPage"
       :filter="filter"
       @filtered="onFiltered"
-      :busy="isBusy" 
+      :busy="isBusy"
+      stacked="md"
       striped>
       <div slot="table-busy" class="text-center text-danger my-2">
         <b-spinner class="align-middle"></b-spinner>
@@ -153,7 +154,11 @@ export default {
       filterPlayerBoards: false,
       totalRows: 0,
       fields: [
-        'index',
+        {
+          key: 'index',
+          label: 'Num',
+          sortable: true
+        },
         {
           key: 'creator',
           label: 'Créé par',
@@ -190,10 +195,10 @@ export default {
           key: 'scores',
           label: 'Meilleurs scores'
         },
-        {
-          key: '_id',
-          label: 'URL du plateau'
-        },
+        // {
+        //   key: '_id',
+        //   label: 'URL du plateau'
+        // },
         {
           key: 'play',
           label: 'Jouer'
