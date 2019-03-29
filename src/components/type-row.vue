@@ -28,7 +28,6 @@ On click, display tooltip next to the icon
         class="card"
       >
         <Card
-          :store="store"
           :card-info="card.fields"
           add-or-remove="add"
         />
@@ -40,18 +39,13 @@ On click, display tooltip next to the icon
 
 <script>
 // import { EventBus } from '@/event-bus.js'
+import { mapState } from 'vuex'
 import Card from '@/components/card'
 
 export default {
   name: 'TypeRow',
   components: { Card },
   props: {
-    store: {
-      type: Object,
-      default: function () {
-        return {}
-      }
-    },
     type: {
       type: Object,
       default: function () {
@@ -59,15 +53,13 @@ export default {
       }
     }
   },
-  data: function () {
-    return {
-      sharedState: this.store.state
-    }
-  },
   computed: {
+    ...mapState ({
+      cards: state => state.cards.cards
+    }),
     currentCards: function () {
       var t = this.type
-      var a = this.sharedState.cards.filter(function (el) {
+      var a = this.cards.filter(function (el) {
         return el.fields.Type[0] === t.id
       })
       // append the type of the card to the array for use in the child component
