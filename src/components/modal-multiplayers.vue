@@ -139,7 +139,6 @@ export default {
   computed: {
     ...mapState ({
       guessCards: state => state.cards.guessCards,
-      // playerName: state => state.game.playerName,
       isMultiPlayer: state => state.game.isMultiPlayer,
       currentGameRoom: state => state.game.currentGameRoom,
       gameMode: state => state.game.gameMode,

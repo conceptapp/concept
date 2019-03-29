@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Mainboard from '@/views/mainboard'
 import Boards from '@/views/boards'
+import Playboard from '@/views/playboard'
 
 
 Vue.use(Router)
@@ -9,14 +10,19 @@ Vue.use(Router)
 const router = new Router({
   routes: [
     {
-      path: '/',
-      name: 'Mainboard',
-      component: Mainboard
-    },
-    {
       path: '/boards',
       name: 'Boards',
       component: Boards
+    },
+    {
+      path: '/playboard/:boardId',
+      name: 'Playboard',
+      component: Playboard,
+    },
+    {
+      path: '/',
+      name: 'Mainboard',
+      component: Mainboard
     },
     // {
     //   path: '/profile',
@@ -25,6 +31,10 @@ const router = new Router({
     //   meta: {
     //     authRequred: true
     //   }
+    // },
+    // {
+    //   path: '*',
+    //   redirect: { name: 'Mainboard' }
     // }
   ]
 })
