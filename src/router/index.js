@@ -11,7 +11,7 @@ const router = new Router({
   routes: [
     {
       path: '/boards',
-      name: 'Boards',
+      name: 'BoardsTable',
       component: Boards
     },
     {

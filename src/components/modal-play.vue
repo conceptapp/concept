@@ -62,7 +62,7 @@ export default {
   }),  
   methods: {
     ...mapMutations([
-      'pushAlert',
+      // 'pushAlert',
       'setGameMode'
     ]),
     hideModal: function () {
@@ -71,16 +71,16 @@ export default {
     createBoard: function() {
       this.hideModal()
       this.setGameMode('boardCreation')
-      // this.$refs.modalwords.show()
       EventBus.$emit('show-modal-words', {})
     },
     displayBoardList: function() {
       this.hideModal()
-      this.pushAlert({
-        msg: "Désolé, le mode plateau n'est pas encore disponible",
-        dismissCountDown: 5,
-        variant: 'warning'
-      })
+      this.$router.push({ name: 'BoardsTable' })
+      // this.pushAlert({
+      //   msg: "Désolé, le mode plateau n'est pas encore disponible",
+      //   dismissCountDown: 5,
+      //   variant: 'warning'
+      // })
     }
   }
 }

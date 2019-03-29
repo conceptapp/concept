@@ -55,12 +55,16 @@ This component displays the main header row
       @filtered="onFiltered"
       :busy="isBusy" 
       striped>
+      <div slot="table-busy" class="text-center text-danger my-2">
+        <b-spinner class="align-middle"></b-spinner>
+        <strong>Chargement en cours...</strong>
+      </div>
       <template slot="index" slot-scope="data">
         {{ data.index + 1 }}
       </template>
       <!-- replace variant by difficulty -->
       <template slot="_id" slot-scope="data">
-        <b-link :to="{ name: 'Mainboard', params: { boardId: data.value } }">{{data.value}}</b-link>
+        <router-link :to="{ name: 'Playboard', params: { boardId: data.item._id }}">{{data.value}}</router-link>
       </template>          <!-- replace variant by difficulty -->
       <template slot="difficulty" slot-scope="data">
         {{ format_difficulty(data.value) }}
@@ -110,7 +114,10 @@ This component displays the main header row
       </template>
       <!-- display Play button -->
       <template slot="play" slot-scope="data">
-        <b-button size="sm" v-if="!is_player(data)" @click="this.alert('TODO lancer le jeu / ouvrir le lien en fait ?')" variant="primary" class="mr-1 p-2">
+        <b-button size="sm"
+          v-if="!is_player(data)" 
+          @click="$router.push({ name: 'Playboard', params: { boardId: data.item._id} })"
+          variant="primary" class="mr-1 p-2">
           Jouer
         </b-button>
       </template>
@@ -245,20 +252,23 @@ export default {
   },
   sockets: {
     connect () {
-      console.log('connected to main server from boards.vue')
+      console.log('connected to server from boards.vue')
       // this.isBusy = true
-      this.$root.$socket.emit('get_boards', { })
+      if (this.boards.length === 0) {
+        console.log('request boards to server')
+        this.$root.$socket.emit('get_boards', { })
+      }
     },
     disconnect() {
-      console.log('disconnnected to server from boards.vue')
+      console.log('disconnected from server from boards.vue')
     },
     boards_info (data) {
       // retrieve boards from server
       console.log('boards_info', data)
       this.isBusy = false
-      this.boards = data
-      // and clean up data
-      this.boards_filtered = this.filter_board(data)
+      // this.boards = data
+      // // and clean up data
+      // this.boards_filtered = this.filter_board(data)
     }
   }
 }

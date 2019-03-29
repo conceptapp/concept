@@ -10,7 +10,8 @@ const state = {
   gameModeIsGod: false,
   gameModeAllowChange: true,
   currentBoardWords: [],
-  currentBoardVariant: ''
+  currentBoardVariant: '',
+  boards: []
 }
 
 // getters
