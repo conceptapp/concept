@@ -14,8 +14,9 @@ This component contains the modal dialogs
     <!-- Modal dialog pour l'identification -->
     <ModalLogin />
     <!-- Modal dialog pour lancer le jeu  -->
-    <ModalPlay />
-    <!-- Modal dialog pour afficher le mode de jeu multijoueurs -->
+    <ModalPlaySolo />
+    <!-- Modal dialog pour Lancer le mode de jeu multijoueurs -->
+    <ModalPlayMultiplayers />
     <ModalMultiplayers />
     <!-- Modal dialog pour afficher les mots -->
     <ModalWords />
@@ -27,14 +28,15 @@ This component contains the modal dialogs
 <script>
 // import { EventBus } from '@/event-bus.js'
 import ModalLogin from '@/components/modal-login'
-import ModalPlay from '@/components/modal-play'
+import ModalPlaySolo from '@/components/modal-play-solo'
+import ModalPlayMultiplayers from '@/components/modal-play-multiplayers'
 import ModalMultiplayers from '@/components/modal-multiplayers'
 import ModalWords from '@/components/modal-words'
 import ModalRules from '@/components/modal-rules'
 
 export default {
   name: 'Modals',
-  components: { ModalLogin, ModalPlay, ModalMultiplayers, ModalWords, ModalRules },
+  components: { ModalLogin, ModalPlaySolo, ModalPlayMultiplayers, ModalMultiplayers, ModalWords, ModalRules },
   props: { },
   methods: { }
 }

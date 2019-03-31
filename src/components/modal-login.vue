@@ -19,7 +19,7 @@ This component displays the login elements
   >
     <div class="row text-left">
       <div v-if="!user" class="col">
-        <h6 class="card-title text-left">Merci de vous authentifier pour lancer le mode multi-joueurs</h6>
+        <h6 class="card-title text-left">Merci de vous authentifier pour lancer ce mode de jeu</h6>
         <b-form-group id="emailForm"
             label="Email :"
             label-cols-xl="4"
@@ -134,7 +134,8 @@ export default {
       // currentUser: state => state.game.currentUser,
       // user: state => state.user.user,
       // playerName: state => state.game.playerName,
-      alerts: state => state.alerts.alerts
+      alerts: state => state.alerts.alerts,
+      pageAfterLogin: state => state.user.pageAfterLogin
     }),
     ...mapGetters(['user'])
   },
@@ -144,7 +145,8 @@ export default {
     ...mapMutations([
       'setPlayerName',
       'updateUser',
-      'pushAlert'
+      'pushAlert',
+      'setPageAfterLogin'
     ]),
     validate_player_form: function() {
       this.playerNameValid = this.playerNameForm.length > 1
@@ -168,6 +170,11 @@ export default {
     },
     hideModal() {
       this.$refs.modallogin.hide()
+      // if user shoudl be redirected to another page or modal, just do it
+      if (this.pageAfterLogin !== '') {
+        this.$root.$emit('bv::show::modal', this.pageAfterLogin)
+      }
+      this.setPageAfterLogin('')
     }
   },
   sockets: {

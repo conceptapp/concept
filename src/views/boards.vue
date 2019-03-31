@@ -63,10 +63,11 @@ This component displays the main header row
       <template slot="index" slot-scope="data">
         {{ data.index + 1 }}
       </template>
-      <!-- replace variant by difficulty -->
-      <template slot="_id" slot-scope="data">
+      <!-- link to board game -->
+<!--       <template slot="_id" slot-scope="data">
         <router-link :to="{ name: 'Playboard', params: { boardId: data.item._id }}">{{data.value}}</router-link>
-      </template>          <!-- replace variant by difficulty -->
+      </template>  -->         
+      <!-- replace variant by difficulty -->
       <template slot="difficulty" slot-scope="data">
         {{ format_difficulty(data.value) }}
       </template>
@@ -265,12 +266,12 @@ export default {
   },
   sockets: {
     connect () {
-      console.log('connected to server from boards.vue')
-      // this.isBusy = true
-      if (this.boards.length === 0) {
-        console.log('request boards to server')
-        this.$root.$socket.emit('get_boards', { })
-      }
+      // console.log('connected to server from boards.vue')
+      // // this.isBusy = true
+      // if (this.boards.length === 0) {
+      //   console.log('request boards to server')
+      //   this.$root.$socket.emit('get_boards', { })
+      // }
     },
     disconnect() {
       console.log('disconnected from server from boards.vue')

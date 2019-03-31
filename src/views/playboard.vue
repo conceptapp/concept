@@ -16,7 +16,7 @@
         </b-col>
         <b-col md="3">
           <b-card title="Temps écoulé">
-            <Timer ref="timer" />            
+            <Timer ref="timer" /><br>
             <b-button @click="chrono()" variant="primary" class="mt-3">
               {{ btnPlayLabel }}
             </b-button>
@@ -52,7 +52,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapMutations } from 'vuex'
 import MainRow from '@/components/main-row'
 import Timer from '@/components/timer'
 
@@ -71,6 +71,7 @@ export default {
       types: state => state.cards.types,
       cards: state => state.cards.cards,
       colors: state => state.cards.colors
+      // boardId: state => state.game.boardId
     }),
     isNewGuess: function () {
       return this.playerGuess === '' ? null : this.playerGuessWords.indexOf(this.playerGuess) === -1
@@ -87,6 +88,11 @@ export default {
     }
   },
   methods: {
+    ...mapMutations([
+      // 'setBoardId',
+      'setGameMode',
+      'setGameModeDisplayBoard'
+    ]),
     checkGuess: function(e) {
       if (this.isPlaying !== true) {
         this.chrono()
@@ -113,13 +119,17 @@ export default {
           timerComponent.reset()
           this.isPlaying = true
       }
+      // display or hide guessCards
+      this.setGameModeDisplayBoard(this.isPlaying)
     }
   },
   created () {
-    // retrieve all the main types from Airtable
-    this.$store.dispatch('retrieveRecords', {'recordType': 'Types'})
-    // retrieve all the cards from airtable (100 records max per request)
-    this.$store.dispatch('retrieveRecords', { 'recordType': 'Cards'})
+    // set game mode
+    this.setGameMode('boardPlay')
+    // // retrieve all the main types from Airtable
+    // this.$store.dispatch('retrieveRecords', {'recordType': 'Types'})
+    // // retrieve all the cards from airtable (100 records max per request)
+    // this.$store.dispatch('retrieveRecords', { 'recordType': 'Cards'})
   }
 }
 </script>
@@ -127,6 +137,5 @@ export default {
 <style scoped>
 #playerGuessWords {
   list-style: none;
-  
 }
 </style>

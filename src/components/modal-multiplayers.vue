@@ -156,6 +156,10 @@ export default {
       return filteredGames
     }
   },
+  created () {
+    EventBus.$on('leave_game', data => this.leave_game())
+    // EventBus.$on('show_modal_multiplayers', data => this.showModal())
+  },
   methods: {
     ...mapMutations([
       'setGameMode',
@@ -231,7 +235,10 @@ export default {
     },
     hideModal: function () {
       this.$refs.modalmultiplayers.hide()
-    }
+    },
+    // showModal() {
+    //   this.$refs.modalmultiplayers.show()
+    // }
   }
 }
 </script>

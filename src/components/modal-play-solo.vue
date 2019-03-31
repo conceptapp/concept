@@ -12,25 +12,11 @@ This component contains the modal dialog for playing
 <template>
   <!-- Modal dialog pour afficher les mots -->
   <b-modal
-    id="modalplay"
-    ref="modalplay"
-    title="Allez, on joue !"
+    id="modalplaysolo"
+    ref="modalplaysolo"
+    title="Jouer en solo"
     :hide-footer="true"
   >
-    <b-card
-      title="Multi-joueurs temps réel"
-      :img-src="require('@/assets/images/play-multiplayers.jpg')"
-      img-alt="Jeu multijoueurs"
-      img-top
-      style=""
-      class="shadow-sm mb-3 bt-white rounded"
-    >
-      <b-card-text class="text-left">
-        Jouez en temps réel sur le même ordinateur / téléphone / tablette ou chacun le vôtre. <br>
-        Piochez un mot et faites-le deviner aux autres grâce aux images <i>Concept</i>.
-      </b-card-text>
-      <b-button v-b-modal.modalmultiplayers @click="hideModal" variant="primary">Lancer le jeu temps réel <font-awesome-icon icon="clock" /></b-button>
-    </b-card>
     <b-card
       title="Jeu individuel en mode plateau"
       :img-src="require('@/assets/images/play-singleplayer.jpg')"
@@ -43,8 +29,8 @@ This component contains the modal dialog for playing
         Piochez un mot et trouvez la meilleure combinaison de cartes pour faire deviner les autres joueurs. <br>
         Et à votre tour, essayez de deviner les mots des plateaux proposés par les autres joueurs.
       </b-card-text>
-      <b-button variant="primary" @click="createBoard">Créer un plateau <font-awesome-icon icon="chess-board" /></b-button>
-      <b-button variant="primary" @click="displayBoardList">Deviner des plateaux <font-awesome-icon icon="question" /></b-button>
+      <b-button variant="primary" @click="createBoard()" class="m-1">Créer un plateau <font-awesome-icon icon="chess-board" /></b-button>
+      <b-button variant="primary" @click="displayBoardList()" class="m-1">Deviner des plateaux <font-awesome-icon icon="question" /></b-button>
     </b-card>
   </b-modal>
 </template>
@@ -54,20 +40,25 @@ import { EventBus } from '@/event-bus.js'
 import { mapState, mapMutations } from 'vuex'
 
 export default {
-  name: 'ModalPlay',
+  name: 'ModalPlaySolo',
   components: { },
   props: { },
   computed: mapState ({
     alerts: state => state.alerts.alerts
-  }),  
+  }),
+  // created () {
+  //   EventBus.$on('show_modal_playsolo', data => this.showModal())
+  // },
   methods: {
     ...mapMutations([
-      // 'pushAlert',
       'setGameMode'
     ]),
     hideModal: function () {
-      this.$refs.modalplay.hide()
+      this.$refs.modalplaysolo.hide()
     },
+    // showModal() {
+    //   this.$refs.modalplaysolo.show()
+    // },
     createBoard: function() {
       this.hideModal()
       this.setGameMode('boardCreation')

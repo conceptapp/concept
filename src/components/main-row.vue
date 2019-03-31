@@ -46,7 +46,8 @@ This component displays the main header row
               class="guess-cards"
             >
               <div
-                v-for="(card, index) in guessCards[color]"
+                v-for="(card, index) in guessCardsToDisplay[color]"
+                v-if="gameMode!=='boardPlay' || gameModeDisplayBoard"
                 :key="index + 1"
                 class="card"
               >
@@ -88,14 +89,6 @@ export default {
       showDismissibleAlert: false
     }
   },
-  created () {
-    // initialize the Guess Cards arrays
-    this.$store.dispatch('initGuessCards')
-    // listen to events
-    EventBus.$on('add-icon', data => this.addIcon(data))
-    EventBus.$on('remove-icon', data => this.removeIcon(data))
-    EventBus.$on('init-guess-cards', data => this.$store.dispatch('initGuessCards'))
-  },
   computed: {
     ...mapState ({
       colors: state => state.cards.colors,
@@ -103,13 +96,21 @@ export default {
       cards: state => state.cards.cards,
       guessCards: state => state.cards.guessCards,
       cardDragged: state => state.cards.cardDragged,
-      // gameModeAllowChange: state => state.game.gameModeAllowChange,
       currentGameRoom: state => state.game.currentGameRoom,
-      alerts: state => state.alerts.alerts
+      alerts: state => state.alerts.alerts,
+      boards: state => state.game.boards,
+      boardId: state => state.game.boardId,
+      gameMode: state => state.game.gameMode,
+      gameModeDisplayBoard: state => state.game.gameModeDisplayBoard,
+      currentBoardGuessCards: state => state.game.currentBoardGuessCards
     }),
     ...mapGetters([
       'gameModeAllowChange'
-    ])
+    ]),
+    guessCardsToDisplay: function() {
+      // return this.guessCards
+      return this.gameMode === 'boardPlay' ? this.currentBoardGuessCards : this.guessCards
+    }
   },
   methods: {
     ...mapMutations([
@@ -118,7 +119,8 @@ export default {
       'removeGuessCards',
       'setCurrentColor',
       'setGameRooms',
-      'pushAlert'
+      'pushAlert',
+      'setBoardId'
     ]),
     addIcon: function (data) {
       // Name, Tooltip_fr
@@ -164,6 +166,22 @@ export default {
       this.addIcon(this.cardDragged)
       ev.preventDefault()
       // return true
+    }
+  },
+  created () {
+    // initialize the Guess Cards arrays
+    this.$store.dispatch('initGuessCards')
+    // set the first boardId and init card
+    this.setBoardId(this.$route.params.boardId)
+    // listen to events
+    EventBus.$on('add-icon', data => this.addIcon(data))
+    EventBus.$on('remove-icon', data => this.removeIcon(data))
+    EventBus.$on('init-guess-cards', data => this.$store.dispatch('initGuessCards'))
+  },  
+  watch: {
+    '$route' (to, from) {
+      // react to route changes - update boardId
+      this.setBoardId(this.$route.params.boardId)
     }
   },
   sockets: {
