@@ -121,7 +121,7 @@ This component contains only the modal dialog and some websocket calls for multi
 <script>
 import { EventBus } from '@/event-bus.js'
 import $socket from '@/websocket-instance.js'
-import { mapState, mapMutations, mapGetters } from 'vuex'
+import { mapState, mapMutations, mapGetters, mapActions } from 'vuex'
 
 export default {
   name: 'ModalMultiplayers',
@@ -162,11 +162,14 @@ export default {
   },
   methods: {
     ...mapMutations([
-      'setGameMode',
+      // 'setGameMode',
       'setIsMultiPlayer',
       'setCurrentGameRoom',
       'setGameModeIsGod'
     ]),
+    ...mapActions([
+      'setGameMode'
+    ]),    
     validate: function() {
       // validate form
       this.newGameValid = !(this.newGame.length === 0)

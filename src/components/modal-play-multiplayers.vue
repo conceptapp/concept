@@ -42,7 +42,7 @@ This component contains the modal dialog for playing multiplayers
 
 <script>
 import { EventBus } from '@/event-bus.js'
-import { mapState, mapMutations } from 'vuex'
+import { mapState, mapMutations, mapActions } from 'vuex'
 
 export default {
   name: 'ModalPlayMultiplayers',
@@ -57,8 +57,10 @@ export default {
   // },
   methods: {
     ...mapMutations([
-      'setGameMode',
       'setPageAfterLogin'
+    ]),
+    ...mapActions([
+      'setGameMode'
     ]),
     hideModal: function () {
       this.$refs.modalplaymultiplayers.hide()

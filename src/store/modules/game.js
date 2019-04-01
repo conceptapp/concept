@@ -1,5 +1,6 @@
 import $socket from '@/websocket-instance'
 import { EventBus } from '@/event-bus.js'
+import alerts from './../modules/alerts'
 
 // initial state
 const state = {
@@ -28,9 +29,19 @@ const getters = {
 
 // actions
 const actions = {
-  // dummyAction ({ commit, state }, { 'recordType': recordType, 'offset': offset}) {
-  //   // console.log('retrieveRecords: ', state, recordType, offset) 
-  // }
+  setGameMode (context, gameMode) {
+    // if switchting from multiplayer game mode to booard creation or play, then leave game
+    if (['allPlayersMode','godMode'].indexOf(state.gameMode) !== -1 && ['boardPlay', 'boardCreation'].indexOf(gameMode) !== -1) {
+      EventBus.$emit('leave_game')
+    }
+    // if switching to anything but boardCreation, remove creation board alert
+    if (gameMode !== 'boardCreation') {
+      // https://stackoverflow.com/questions/41366388/vuex-access-state-from-another-module
+      let index = context.rootState.alerts.alerts.findIndex(x => x.boardCreationMode === true)
+      if (index !== -1) context.commit('removeAlert', index)
+    }
+    state.gameMode = gameMode
+  }
 }
 
 // mutations
@@ -40,13 +51,6 @@ const mutations = {
   },
   setCurrentGameRoom (state, currentGameRoom) {
     state.currentGameRoom = currentGameRoom
-  },
-  setGameMode (state, gameMode) {
-    // if switchting from multiplayer game mode to booard creation or play, then leave game
-    if (['allPlayersMode','godMode'].indexOf(state.gameMode) !== -1 && ['boardPlay', 'boardCreation'].indexOf(gameMode) !== -1) {
-      EventBus.$emit('leave_game')
-    }
-    state.gameMode = gameMode
   },
   setGameModeIsGod (state, isGod) {
     state.gameModeIsGod = isGod

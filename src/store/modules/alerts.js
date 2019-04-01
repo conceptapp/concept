@@ -19,6 +19,7 @@ const mutations = {
     state.alerts.push(alert)
   },
   removeAlert (state, index) {
+    console.log('in removeAlert', state.alerts, index)
     state.alerts.splice(index, 1)
   }
 }

@@ -52,7 +52,7 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex'
+import { mapState, mapMutations, mapActions } from 'vuex'
 import MainRow from '@/components/main-row'
 import Timer from '@/components/timer'
 
@@ -90,8 +90,11 @@ export default {
   methods: {
     ...mapMutations([
       // 'setBoardId',
-      'setGameMode',
+      // 'setGameMode',
       'setGameModeDisplayBoard'
+    ]),
+    ...mapActions([
+      'setGameMode'
     ]),
     checkGuess: function(e) {
       if (this.isPlaying !== true) {

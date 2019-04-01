@@ -37,7 +37,7 @@ This component contains the modal dialog for playing
 
 <script>
 import { EventBus } from '@/event-bus.js'
-import { mapState, mapMutations } from 'vuex'
+import { mapState, mapMutations, mapActions } from 'vuex'
 
 export default {
   name: 'ModalPlaySolo',
@@ -46,19 +46,13 @@ export default {
   computed: mapState ({
     alerts: state => state.alerts.alerts
   }),
-  // created () {
-  //   EventBus.$on('show_modal_playsolo', data => this.showModal())
-  // },
   methods: {
-    ...mapMutations([
+    ...mapActions([
       'setGameMode'
     ]),
     hideModal: function () {
       this.$refs.modalplaysolo.hide()
     },
-    // showModal() {
-    //   this.$refs.modalplaysolo.show()
-    // },
     createBoard: function() {
       this.hideModal()
       this.setGameMode('boardCreation')
@@ -66,6 +60,7 @@ export default {
     },
     displayBoardList: function() {
       this.hideModal()
+      this.setGameMode('boardPlay')
       this.$router.push({ name: 'BoardsTable' })
     }
   }
