@@ -34,7 +34,7 @@ This component displays the main menu bar
           Réinitialiser le plateau
         </b-nav-item>
         <b-nav-item href="https://jrmie818423.typeform.com/to/Kf9Ux6" target="_blank">
-          Contribuer
+          Contribuer <sup><font-awesome-icon icon="external-link-alt" /></sup>
         </b-nav-item>
         <!-- hide about on tablets -->
         <b-nav-item v-b-modal.modalabout class="d-md-none">
