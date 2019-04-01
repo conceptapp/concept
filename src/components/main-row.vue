@@ -108,7 +108,6 @@ export default {
       'gameModeAllowChange'
     ]),
     guessCardsToDisplay: function() {
-      // return this.guessCards
       return this.gameMode === 'boardPlay' ? this.currentBoardGuessCards : this.guessCards
     }
   },
@@ -165,7 +164,6 @@ export default {
       // try to add icon into current color row
       this.addIcon(this.cardDragged)
       ev.preventDefault()
-      // return true
     }
   },
   created () {
