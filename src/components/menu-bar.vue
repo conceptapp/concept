@@ -41,13 +41,13 @@ This component displays the main menu bar
           A propos
         </b-nav-item>
         <!-- right aligned items -->
-        <!-- user not authenticated yet -->
+        <!-- user not authenticated yet, display contact icon -->
         <b-navbar-nav v-if="!user" class="ml-auto">
           <b-nav-item v-b-modal.modallogin>
             <font-awesome-icon icon="user-circle" size="lg" />
           </b-nav-item>
         </b-navbar-nav>
-        <!-- user is authenticated -->
+        <!-- user is authenticated, display user name & information about the current game -->
         <b-navbar-nav v-else class="ml-auto">
           <b-nav-item>
             <span @click="showModalLogin()">{{ playerName }}</span>

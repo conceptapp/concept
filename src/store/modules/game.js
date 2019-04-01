@@ -88,7 +88,7 @@ const mutations = {
     state.boardId = boardId
   },
   SOCKET_CONNECT (state, data) {
-    console.log('connected to server from game.js')
+    // console.log('connected to server from game.js')
     if (state.boards.length === 0) {
       console.log('request boards to server')
       $socket.emit('get_boards', { })
