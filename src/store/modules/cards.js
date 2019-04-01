@@ -61,14 +61,6 @@ const actions = {
       }
     }
   },
-  initGuessCards ({ commit, state, rootState }) {
-    // console.log('initGuessCards: ', commit, state, rootState)
-    var obj = {}
-    for (var i = 0; i < state.colors.length; i++) {
-      obj[state.colors[i]] = []
-    }
-    commit('setGuessCards', { 'guessCards': obj, 'updateServer': true })
-  },
   pushWebsocket ({ commit, state, rootState, rootGetters }) {
     // console.log('pushWebsocket', state, rootState, rootGetters)
     if (rootGetters.gameModeMultiplayers) {
@@ -78,6 +70,22 @@ const actions = {
         'currentGameRoom': rootState.game.currentGameRoom,
         'guessCards': state.guessCards
       })
+    }
+  },
+  initGuessCards ({ commit, state, rootState }) {
+    // console.log('initGuessCards: ', commit, state, rootState)
+    var obj = {}
+    for (var i = 0; i < state.colors.length; i++) {
+      obj[state.colors[i]] = []
+    }
+    commit('setGuessCards', { 'guessCards': obj, 'updateServer': true })
+  },
+  updateCards ({ commit, state, rootState }, data) {
+    // console.log('updateCards', commit, state, rootState, data)
+    // if this is current game, then update the cards but don't update server to avoid infinite loop
+    if (data.currentGameRoom === rootState.game.currentGameRoom) {
+      // this.sharedState.guessCards = data.guessCards
+      commit('setGuessCards', { 'guessCards': data.guessCards, 'updateServer': false })
     }
   }
 }
@@ -113,6 +121,10 @@ const mutations = {
   },
   setCardDragged (state, card) {
     state.cardDragged = card
+  },
+  SOCKET_UPDATE_CARDS_FROM_SERVER (state, data) {
+    console.log('server asked to update cards: ', data)
+    this.dispatch('updateCards', data)
   }
 }
 

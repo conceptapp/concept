@@ -50,6 +50,18 @@ const actions = {
       if (index !== -1) context.commit('removeAlert', index)
     }
     state.gameMode = gameMode
+  },
+  updateGameRooms ({ commit, state, rootState }, data) {
+    commit('setGameRooms', data.game_rooms)
+    // toast message when player joined or left the game
+    if (data.game === state.currentGameRoom) {
+      if (data.playerJoined !== undefined) {
+        this._vm.$toast.info(data.playerJoined + ' a rejoint la partie')
+      }
+      if (data.playerLeft !== undefined) {
+        this._vm.$toast.info(data.playerLeft + ' a quitté la partie')
+      }
+    }
   }
 }
 
@@ -100,6 +112,10 @@ const mutations = {
     if (state.boardId) {
       state.currentBoardGuessCards = data.find(x => x._id === state.boardId).guess_cards
     }
+  },
+  SOCKET_UPDATE_GAME_ROOMS (state, data) {
+    // console.log('update game rooms from socket call')
+    this.dispatch('updateGameRooms', data)
   }
 }
 

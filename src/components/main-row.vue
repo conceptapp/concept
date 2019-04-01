@@ -187,27 +187,6 @@ export default {
   sockets: {
     connect () {
       // console.log('connected to main server')
-    },
-    update_cards_from_server (data) {
-      console.log('server asked to update cards: ', data)
-      // if this is current game, then update the cards but don't update server to avoid infinite loop
-      if (data.currentGameRoom === this.currentGameRoom) {
-        // this.sharedState.guessCards = data.guessCards
-        this.setGuessCards({ 'guessCards': data.guessCards, 'updateServer': false })
-      }
-    },
-    update_game_rooms (data) {
-      console.log('updating game rooms: ', data)
-      this.setGameRooms(data.game_rooms)
-      // toast message when player joined or left the game
-      if (data.game === this.currentGameRoom) {
-        if (data.playerJoined !== undefined) {
-          this.$toast.info(data.playerJoined + ' a rejoint la partie')
-        }
-        if (data.playerLeft !== undefined) {
-          this.$toast.info(data.playerLeft + ' a quitté la partie')
-        }
-      }
     }
   }
 }
