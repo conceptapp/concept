@@ -131,9 +131,6 @@ export default {
   },
   computed: {
     ...mapState ({
-      // currentUser: state => state.game.currentUser,
-      // user: state => state.user.user,
-      // playerName: state => state.game.playerName,
       alerts: state => state.alerts.alerts,
       pageAfterLogin: state => state.user.pageAfterLogin
     }),

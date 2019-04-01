@@ -3,13 +3,9 @@ import { EventBus } from '@/event-bus.js'
 
 // initial state
 const state = {
-  currentUser: '',
-  // isMultiPlayer: false,
   currentGameRoom: '',
   gameRooms: [],
   gameMode: '', // boardPlay, boardCreation, godMode, allPlayersMode, local
-  // gameModeIsGod: false,
-  // gameModeAllowChange: true,
   gameModeDisplayBoard: false,
   currentBoardWords: [],
   currentBoardVariant: '',
@@ -78,12 +74,6 @@ const mutations = {
   },
   setGameModeDisplayBoard (state, bool) {
     state.gameModeDisplayBoard = bool
-  },
-  // setIsMultiPlayer (state, isMultiPlayer) {
-  //   state.isMultiPlayer = isMultiPlayer
-  // },
-  setCurrentUser (state, currentUser) {
-    state.currentUser = currentUser
   },
   pushBoardWord (state, word) {
     state.currentBoardWords.push(word)
