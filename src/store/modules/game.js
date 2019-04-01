@@ -1,16 +1,15 @@
 import $socket from '@/websocket-instance'
 import { EventBus } from '@/event-bus.js'
-import alerts from './../modules/alerts'
 
 // initial state
 const state = {
   currentUser: '',
-  isMultiPlayer: false,
+  // isMultiPlayer: false,
   currentGameRoom: '',
   gameRooms: [],
   gameMode: '', // boardPlay, boardCreation, godMode, allPlayersMode, local
-  gameModeIsGod: false,
-  gameModeAllowChange: true,
+  // gameModeIsGod: false,
+  // gameModeAllowChange: true,
   gameModeDisplayBoard: false,
   currentBoardWords: [],
   currentBoardVariant: '',
@@ -21,16 +20,26 @@ const state = {
 
 // getters
 const getters = {
-  gameModeAllowChange: state => {
-    // is true except when game mode is godMode and player is not God (== admin)
-    return !(state.gameMode === 'godMode' && !state.gameModeIsGod)
+  gameModeIsGod: (state, getters, rootState) => {
+    if (state.gameRooms[state.currentGameRoom]) {
+      return state.gameRooms[state.currentGameRoom].creator_email === rootState.user.user.email
+    } else {
+      return false
+    }
+  },
+  gameModeAllowChange: (state, getters) => {
+    // is true except when game mode is godMode and player is not God (== creator of the game)
+    return !(state.gameMode === 'godMode' && !getters.gameModeIsGod)
+  },
+  gameModeMultiplayers: state => {
+    return ['allPlayersMode','godMode'].indexOf(state.gameMode) !== -1
   }
 }
 
 // actions
 const actions = {
   setGameMode (context, gameMode) {
-    // if switchting from multiplayer game mode to booard creation or play, then leave game
+    // if switchting from multiplayer game mode to board mode, then leave current game room
     if (['allPlayersMode','godMode'].indexOf(state.gameMode) !== -1 && ['boardPlay', 'boardCreation'].indexOf(gameMode) !== -1) {
       EventBus.$emit('leave_game')
     }
@@ -58,9 +67,9 @@ const mutations = {
   setGameModeDisplayBoard (state, bool) {
     state.gameModeDisplayBoard = bool
   },
-  setIsMultiPlayer (state, isMultiPlayer) {
-    state.isMultiPlayer = isMultiPlayer
-  },
+  // setIsMultiPlayer (state, isMultiPlayer) {
+  //   state.isMultiPlayer = isMultiPlayer
+  // },
   setCurrentUser (state, currentUser) {
     state.currentUser = currentUser
   },

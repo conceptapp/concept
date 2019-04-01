@@ -50,12 +50,15 @@ This component displays the main menu bar
         <!-- user is authenticated -->
         <b-navbar-nav v-else class="ml-auto">
           <b-nav-item>
-            <span @click="showModalLogin">{{playerName}}</span>
-            <span v-if="gameRooms[currentGameRoom]" @click="showModalMultiplayers">
+            <span @click="showModalLogin()">{{ playerName }}</span>
+            <span v-if="gameModeMultiplayers" @click="showModalMultiplayers()">
               @ {{ currentGameRoom }} 
               <small v-if="gameRooms[currentGameRoom]" class="text-muted">
                 (<font-awesome-icon icon="male" /> x {{ gameRooms[currentGameRoom]['count'] }})
               </small>
+            </span>
+            <span v-else @click="">
+              {{ displayGameMode }}
             </span>
           </b-nav-item>
         </b-navbar-nav>
@@ -111,9 +114,24 @@ export default {
       gameRooms: state => state.game.gameRooms,
       gameMode: state => state.game.gameMode
     }),
-    ...mapGetters(['user']),
+    ...mapGetters([
+      'user',
+      'gameModeMultiplayers'
+    ]),
     playerName: function () {
       return this.user ? this.user.displayName : ''
+    },
+    displayGameMode: function() {
+      switch (this.gameMode) {
+        case 'boardPlay':
+          return '(jeu solo)'
+        case 'boardCreation':
+          return '(création d\'un plateau)'
+        case 'local':
+          return '' // all
+        default: // 'allPlayersMode' 'gameMode'
+          return '' // already defined in template
+      }
     }
   },
   created () {

@@ -25,13 +25,13 @@ This component contains only the modal dialog and some websocket calls for multi
           </h5>
         </div>
       </div>
-      <div v-if="isMultiPlayer" class="row text-right align-items-center">
+      <div v-if="gameModeMultiplayers" class="row text-right align-items-center">
         <div class="ml-auto col-auto">
           <b-button @click="hideModal();$router.push({ name: 'Mainboard' })" variant="primary">Jouer maintenant</b-button>
           <b-button @click="leave_game()">Quitter la partie</b-button>
         </div>
       </div>
-      <div v-if="!isMultiPlayer" class="row text-left">
+      <div v-if="!gameModeMultiplayers" class="row text-left">
         <div class="col">
           <h5 class="card-title text-left">Créer une nouvelle partie</h5>
           <b-form>
@@ -139,13 +139,17 @@ export default {
   computed: {
     ...mapState ({
       guessCards: state => state.cards.guessCards,
-      isMultiPlayer: state => state.game.isMultiPlayer,
+      // isMultiPlayer: state => state.game.isMultiPlayer,
       currentGameRoom: state => state.game.currentGameRoom,
       gameMode: state => state.game.gameMode,
       gameRooms: state => state.game.gameRooms,
-      gameModeIsGod: state => state.game.gameModeIsGod
+      // gameModeIsGod: state => state.game.gameModeIsGod
     }),
-    ...mapGetters(['user']),
+    ...mapGetters([
+      'user',
+      'gameModeMultiplayers',
+      'gameModeIsGod'
+    ]),
     multiplayersGameModes: function () {
       var filteredGames = {}
       for (var el in this.gameRooms) {
@@ -162,8 +166,6 @@ export default {
   },
   methods: {
     ...mapMutations([
-      // 'setGameMode',
-      'setIsMultiPlayer',
       'setCurrentGameRoom',
       'setGameModeIsGod'
     ]),
@@ -198,19 +200,16 @@ export default {
         'currentGameRoom': this.newGame,
         'guessCards': this.guessCards,
         'gameMode': this.gameMode,
-        'player': this.user.displayName
+        'player': this.user.displayName,
+        'playerEmail': this.user.email
       })
       // push current guess cards to the server
       EventBus.$emit('update-cards')
-      // activate multiplayer mode
-      this.setIsMultiPlayer(true)
     },
     join_game: function (game) {
       console.log('joining game: ', game)
       // register this game as the current game room
       this.setCurrentGameRoom(game)
-      // activate multiplayer mode
-      this.setIsMultiPlayer(true)
       // set current gameMode
       console.log('current game: ', this.gameRooms[game])
       this.setGameMode(this.gameRooms[game]['mode'])
@@ -230,7 +229,7 @@ export default {
       // reset current game room
       this.setCurrentGameRoom('')
       // deactivate multiplayer mode
-      this.setIsMultiPlayer(false)
+      // this.setIsMultiPlayer(false)
       // reset current gameMode
       this.setGameMode('')
       // reset god credentials

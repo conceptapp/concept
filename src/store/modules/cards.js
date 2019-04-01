@@ -68,12 +68,10 @@ const actions = {
       obj[state.colors[i]] = []
     }
     commit('setGuessCards', { 'guessCards': obj, 'updateServer': true })
-    // state.guessCards = obj
-    // this.pushWebsocket()
   },
-  pushWebsocket ({ commit, state, rootState }) {
-    // console.log('pushWebsocket', state, rootState)
-    if (rootState.game.isMultiPlayer) {
+  pushWebsocket ({ commit, state, rootState, rootGetters }) {
+    // console.log('pushWebsocket', state, rootState, rootGetters)
+    if (rootGetters.gameModeMultiplayers) {
       console.log("trigger update to the websocket server: ", state.guessCards, rootState.game.currentGameRoom)
       // if playing in multiplayer mode, push the info to the websocket server
       $socket.emit('update_cards_from_client', {
