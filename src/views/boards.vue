@@ -266,15 +266,9 @@ export default {
   },
   sockets: {
     connect () {
-      // console.log('connected to server from boards.vue')
-      // // this.isBusy = true
-      // if (this.boards.length === 0) {
-      //   console.log('request boards to server')
-      //   this.$root.$socket.emit('get_boards', { })
-      // }
     },
     disconnect() {
-      console.log('disconnected from server from boards.vue')
+      // console.log('disconnected from server from boards.vue')
     }
   }
 }

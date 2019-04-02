@@ -14,7 +14,7 @@
             Vous pouvez proposer autant de mots que vous le souhaitez, à vous d'être le plus rapide.</p>
           </b-card>
         </b-col>
-        <b-col md="3">
+        <b-col md="3" v-if="!isBoardAlreadyPlayed(boardId)">
           <b-card title="Temps écoulé">
             <Timer ref="timer" /><br>
             <b-button @click="chrono()" variant="primary" class="mt-3">
@@ -22,15 +22,15 @@
             </b-button>
           </b-card>
         </b-col>
-        <b-col>
-          <b-card title="A vous de jouer">
-            <b-form inline @submit="checkGuess">
+        <b-col v-if="!isBoardAlreadyPlayed(boardId)">
+          <b-card title="A vous de jouer" :class="{'border-success': isGuessFound}">
+            <b-form inline @submit="checkGuess" v-if="!isGuessFound">
               <b-form-group 
                 label="Proposez des mots :"
                 label-for="playerGuess">
                 <b-form-input
                   id="playerGuess"
-                  v-model="playerGuess"
+                  v-model.trim="playerGuess"
                   :state="isNewGuess"
                   value=""
                   autocomplete="off"
@@ -39,11 +39,23 @@
               </b-form-group>
               <b-button type="submit" variant="primary">Deviner</b-button>
             </b-form>
+            <div v-if="isGuessFound">
+              <h4 class="card-body text-success">Bravo ! vous avez gagné !!!</h4>
+              <h6 class="mb-3">Le mot à trouver était : <strong>{{ getBoardWords(boardId)[0] }}</strong>.</h6>
+            </div>
             <ul id="playerGuessWords" class="text-left ml-2">
               <li v-for="word in playerGuessWords">
                 <span class="fa-li ml-5"><font-awesome-icon icon="question" :color="colors[0]" /></span>{{ word }}
               </li>
             </ul>
+          </b-card>
+        </b-col>
+        <b-col v-if="isBoardAlreadyPlayed(boardId)">
+          <b-card title="Encore vous ?">
+            <div class="card-body">
+              Vous avez déjà joué à ce plateau.<br>
+              Voulez-vous en <b-link :to="{ name: 'BoardsTable' }">essayer un autre ?</b-link>
+            </div>
           </b-card>
         </b-col>
       </b-row>      
@@ -52,7 +64,8 @@
 </template>
 
 <script>
-import { mapState, mapMutations, mapActions } from 'vuex'
+import { mapState, mapMutations, mapActions, mapGetters } from 'vuex'
+import $socket from '@/websocket-instance'
 import MainRow from '@/components/main-row'
 import Timer from '@/components/timer'
 
@@ -63,16 +76,24 @@ export default {
     return {
       playerGuess: '',
       playerGuessWords: [],
-      isPlaying: null
+      isPlaying: null,
+      isGuessFound: false,
     }
   },
   computed: {
     ...mapState ({
       types: state => state.cards.types,
       cards: state => state.cards.cards,
-      colors: state => state.cards.colors
+      colors: state => state.cards.colors,
       // boardId: state => state.game.boardId
     }),
+    ...mapGetters ([
+      'user',
+      'boardId',
+      'getBoard',
+      'getBoardWords',
+      'isBoardAlreadyPlayed'
+    ]),
     isNewGuess: function () {
       return this.playerGuess === '' ? null : this.playerGuessWords.indexOf(this.playerGuess) === -1
     },
@@ -89,24 +110,49 @@ export default {
   },
   methods: {
     ...mapMutations([
-      // 'setBoardId',
-      // 'setGameMode',
       'setGameModeDisplayBoard'
     ]),
     ...mapActions([
       'setGameMode'
     ]),
     checkGuess: function(e) {
-      if (this.isPlaying !== true) {
-        this.chrono()
-      } 
+      e.preventDefault()
+      // start timer if not already running
+      if (this.isPlaying !== true) this.chrono()
       // append the guess words array to feedback what was already tried
       if (this.isNewGuess) {
         this.playerGuessWords.push(this.playerGuess)
       }
-      e.preventDefault()
+      // check if the suggested word is correct
+      console.log('in checkGuess', this.getBoardWords(this.boardId))
+      var currentBoard = this.getBoard(this.boardId)
+      var currentBoardWords = this.getBoardWords(this.boardId)
+      if (currentBoardWords.indexOf(this.playerGuess) !== -1) {
+        this.isGuessFound = true
+        // stop timer
+        this.$refs.timer.pause()
+        // update server with player who won
+        console.log('currentboard', currentBoard)
+        $socket.emit('upsert_board', {
+          'creator': currentBoard.creator,  // need as key for request server-side
+          'word': currentBoardWords[0],     // need as key for request server-side
+          'player': {
+            'playerName': this.user.displayName,
+            'playerEmail': this.user.email,
+            'found': true,
+            'timeSpent': this.$refs.timer.milliseconds,
+            'lastPlayed': new Date()
+          },
+          // need to pass all the params for the mongoose request server-side
+          'word_variants': currentBoard.word_variants,  
+          'guess_cards': currentBoard.guess_cards,
+          'difficulty': currentBoard.difficulty
+        })
+      }
     },
     chrono: function() {
+      // initialize GuessFound variable if user is navigating beween pages without refreshing the page
+      this.isGuessFound = false
       // start, stop or resume chrono depending if currently playing
       var timerComponent = this.$refs.timer
       switch(this.isPlaying) {
@@ -129,10 +175,6 @@ export default {
   created () {
     // set game mode
     this.setGameMode('boardPlay')
-    // // retrieve all the main types from Airtable
-    // this.$store.dispatch('retrieveRecords', {'recordType': 'Types'})
-    // // retrieve all the cards from airtable (100 records max per request)
-    // this.$store.dispatch('retrieveRecords', { 'recordType': 'Cards'})
   }
 }
 </script>

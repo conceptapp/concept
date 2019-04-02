@@ -1,5 +1,6 @@
 import $socket from '@/websocket-instance'
 import { EventBus } from '@/event-bus.js'
+import router from '../../router/index.js'
 
 // initial state
 const state = {
@@ -10,13 +11,17 @@ const state = {
   currentBoardWords: [],
   currentBoardVariant: '',
   currentBoardGuessCards: {},
-  boards: [],
-  boardId: ''
+  boards: {},
+  boardId: '' // keep the variable for socket calls, preferably use the getter if on playboard (url param should be set up)
 }
 
 // getters
 const getters = {
+  boardId: (state, getters, rootState) => {
+    return router.currentRoute.params.boardId
+  },
   gameModeIsGod: (state, getters, rootState) => {
+    console.log('gameModeIsGod', state, getters, rootState)
     if (state.gameRooms[state.currentGameRoom]) {
       return state.gameRooms[state.currentGameRoom].creator_email === rootState.user.user.email
     } else {
@@ -24,11 +29,41 @@ const getters = {
     }
   },
   gameModeAllowChange: (state, getters) => {
-    // is true except when game mode is godMode and player is not God (== creator of the game)
+    // is true except when game mode is godMode and player is not God (God == creator of the game)
     return !(state.gameMode === 'godMode' && !getters.gameModeIsGod)
   },
   gameModeMultiplayers: state => {
     return ['allPlayersMode','godMode'].indexOf(state.gameMode) !== -1
+  },
+  getBoard: (state, getters, rootState) => (boardId) => {
+    // return board information for boardId
+    // console.log('currentboard', state.boards, "boardId", boardId, "length", state.boards.length)
+    if (boardId !== undefined && state.boards.length > 0) {
+      return state.boards.find(x => x._id === boardId)
+    } else {
+      return {}
+    }
+  },
+  getBoardWords: (state, getters, rootState) => (boardId) => {
+    console.log('getBoardWords', state, getters, rootState, boardId)
+    // return word and variants for the boardId in param
+    if (boardId !== undefined) {
+      return getters.getBoard(boardId).word_variants
+    } else {
+      return []
+    }
+  },
+  isBoardAlreadyPlayed: (state, getters, rootState) => (boardId) => {
+    // return true if current user has already played this board
+    var board = getters.getBoard(boardId)
+    if (Object.keys(board).length > 0 && rootState.user.user !== null) {
+      // check if user email matches any of the players and if he won
+      return board.players.some(function (item) {
+        return item.playerEmail === rootState.user.user.email && item.found
+      })
+    } else {
+      return false
+    }
   }
 }
 
@@ -89,7 +124,7 @@ const mutations = {
   },
   SOCKET_CONNECT (state, data) {
     // console.log('connected to server from game.js')
-    if (state.boards.length === 0) {
+    if (Object.keys(state.boards).length === 0) {
       console.log('request boards to server')
       $socket.emit('get_boards', { })
     }
@@ -99,7 +134,7 @@ const mutations = {
     // retrieve boards from server websocket call
     state.boards = data
     console.log('boards info', data, state.boardId)
-    if (state.boardId) {
+    if (state.boardId !== undefined && state.boards.length > 0) {
       state.currentBoardGuessCards = data.find(x => x._id === state.boardId).guess_cards
     }
   },

@@ -175,7 +175,14 @@ export default {
         'word': this.currentBoardWords[0],
         'word_variants': this.currentBoardWords,
         'guess_cards': this.guessCards,
-        'difficulty': this.currentBoardVariant
+        'difficulty': this.currentBoardVariant,
+        'player': {   // set player to avoid null info serverside
+          'playerName': this.user.displayName,
+          'playerEmail': this.user.email,
+          'found': true,
+          'timeSpent': 0,
+          'lastPlayed': new Date()
+        }
       })
       this.pushAlert({
         msg: 'Le plateau de jeu a été enregistré.',
