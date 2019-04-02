@@ -63,10 +63,6 @@ This component displays the main header row
       <template slot="index" slot-scope="data">
         {{ data.index + 1 }}
       </template>
-      <!-- link to board game -->
-<!--       <template slot="_id" slot-scope="data">
-        <router-link :to="{ name: 'Playboard', params: { boardId: data.item._id }}">{{data.value}}</router-link>
-      </template>  -->         
       <!-- replace variant by difficulty -->
       <template slot="difficulty" slot-scope="data">
         {{ format_difficulty(data.value) }}
@@ -90,15 +86,20 @@ This component displays the main header row
           <b-row class="mb-2">
             <b-col>
               <b-list-group>
-                <b-list-group-item v-for="(word, key, index) in data.item.word_variants" :key="index" class="p-1">
+                <b-list-group-item v-for="(word, key, index) in data.item.word_variants" :key="index" class="p-2">
                   {{ word }}
                 </b-list-group-item>
               </b-list-group>
             </b-col>
             <b-col>
-              <b-button size="sm" @click="this.alert('bientôt sur vos écrans')" class="mr-1 p-1">
-                Ajouter des variantes
-              </b-button>
+              <b-form>
+                <b-input-group>
+                  <b-form-input v-model="word_variant" placeholder="Synonymes, variante orthographique..."></b-form-input>
+                  <b-input-group-append>
+                    <b-button type="submit" @click.stop.prevent="addVariant(data.index, data.item)">Ajouter une variante</b-button>
+                  </b-input-group-append>
+                </b-input-group>
+              </b-form>
             </b-col>
           </b-row>
         </b-card>
@@ -141,6 +142,7 @@ This component displays the main header row
 <script>
 import { mapState, mapGetters } from 'vuex'
 import { EventBus } from '@/event-bus.js'
+import $socket from '@/websocket-instance'
 
 export default {
   name: 'Boards',
@@ -148,6 +150,7 @@ export default {
   props: { },
   data: function () {
     return {
+      word_variant: '',
       currentPage: 1,
       perPage: 5,
       pageOptions: [5, 10, 15],
@@ -261,11 +264,23 @@ export default {
       // Trigger pagination to update the number of buttons/pages due to filtering
       this.totalRows = filteredItems.length
       this.currentPage = 1
+    },
+    addVariant(index, item) {
+      console.log(index, item)
+      // push a new variant to word_variant
+      item.word_variants.push(this.word_variant)
+      console.log(item.word_variants)
+      // update board on server
+      $socket.emit('update_board_variants', {
+        'creator': item.creator,  // need as key for request server-side
+        'word': item.word,     // need as key for request server-side
+        'word_variants': item.word_variants
+      })
     }
   },
   created: function() {
     // trigger websocket at the server to get boards
-    this.$root.$socket.emit('get_boards', { })
+    $socket.emit('get_boards', { })
   },
   sockets: {
     connect () {

@@ -34,7 +34,7 @@
                   :state="isNewGuess"
                   value=""
                   autocomplete="off"
-                  class="m-3"></b-form-input>
+                  class="m-3">
                 </b-form-input>
               </b-form-group>
               <b-button type="submit" variant="primary">Deviner</b-button>
@@ -106,10 +106,9 @@ export default {
           minutes = Math.floor((duration / (1000 * 60)) % 60),
           hours = Math.floor((duration / (1000 * 60 * 60)) % 24)
 
-        hours = (hours < 10) ? "0" + hours : hours
-        minutes = (minutes < 10) ? "0" + minutes : minutes
-        seconds = (seconds < 10) ? "0" + seconds : seconds
-        return hours + ":" + minutes + ":" + seconds + "." + milliseconds
+        hours = hours === 0 ? '' : hours + ' heures,'
+        minutes = minutes === 0 ? '' : minutes + ' minutes et '
+        return hours + minutes + seconds + " secondes"
       } else {
         return "00:00"
       }
