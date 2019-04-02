@@ -266,10 +266,8 @@ export default {
       this.currentPage = 1
     },
     addVariant(index, item) {
-      console.log(index, item)
       // push a new variant to word_variant
       item.word_variants.push(this.word_variant)
-      console.log(item.word_variants)
       // update board on server
       $socket.emit('update_board_variants', {
         'creator': item.creator,  // need as key for request server-side

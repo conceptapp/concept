@@ -78,7 +78,7 @@ This component contains only the modal dialog and some websocket calls for multi
               </b-form-invalid-feedback>
             </b-form-group>
             <div class="text-right">
-              <b-button v-if="newGame in gameRooms" @click="join_game(newGame)" variant="light">
+              <b-button v-if="gameRooms === undefined ? false : newGame in gameRooms" @click="join_game(newGame)" variant="light">
                 Rejoindre
               </b-button>
               <b-button v-else @click="create_game(newGame)" variant="primary">

@@ -49,7 +49,7 @@ const getters = {
     }
   },
   getBoardWords: (state, getters, rootState) => (boardId) => {
-    console.log('getBoardWords', state, getters, rootState, boardId)
+    // console.log('getBoardWords', state, getters, rootState, boardId)
     // return word and variants for the boardId in param
     if (boardId !== undefined) {
       return getters.getBoard(boardId).word_variants
@@ -69,7 +69,7 @@ const getters = {
   isBoardAlreadyPlayed: (state, getters, rootState) => (boardId) => {
     // return true if current user has already played this board
     var board = getters.getBoard(boardId)
-    console.log('isBoardAlreadyPlayed', board, board.word, boardId)
+    // console.log('isBoardAlreadyPlayed', board, board.word, boardId)
     if (Object.keys(board).length > 0 && rootState.user.user !== null) {
       // check if user email matches any of the players and if he won
       return board.players.some(function (item) {
@@ -113,6 +113,7 @@ const actions = {
 // mutations
 const mutations = {
   setGameRooms (state, gameRooms) {
+    console.log('set gameRooms', gameRooms)
     state.gameRooms = gameRooms
   },
   setCurrentGameRoom (state, currentGameRoom) {
@@ -152,7 +153,7 @@ const mutations = {
     }
   },
   SOCKET_UPDATE_GAME_ROOMS (state, data) {
-    // console.log('update game rooms from socket call')
+    console.log('update game rooms from socket call', state, data)
     this.dispatch('updateGameRooms', data)
   }
 }

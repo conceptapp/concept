@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import store from '../store'
 import Router from 'vue-router'
+import Home from '@/views/home'
 import Mainboard from '@/views/mainboard'
 import Boards from '@/views/boards'
 import Playboard from '@/views/playboard'
@@ -21,9 +22,14 @@ const router = new Router({
       component: Playboard,
     },
     {
-      path: '/',
+      path: '/mainboard',
       name: 'Mainboard',
       component: Mainboard
+    },
+    {
+      path: '/',
+      name: 'Home',
+      component: Home
     },
     // {
     //   path: '/profile',
