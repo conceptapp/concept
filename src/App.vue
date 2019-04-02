@@ -1,8 +1,8 @@
 <template>
   <div id="app">
-    <div class="container">
+    <div :class="{'container': !isHomePage}">
       <Toasts></Toasts>
-      <MenuBar />
+      <MenuBar v-if="!isHomePage" />
       <Alerts />
       <Modals />
 
@@ -10,13 +10,13 @@
       <router-view></router-view>
 
       <!-- append a blank div to placehold the navbar on mobile and give some space on the other devices -->
-      <div class="container" style="height:70px;" />
+      <div v-if="!isHomePage" class="container" style="height:70px;" />
     </div>
   </div>
 </template>
 
 <script>
-import { mapState, mapMutations, mapGetters } from 'vuex'
+import { mapState } from 'vuex'
 import MenuBar from '@/components/menu-bar'
 import Modals from '@/components/modals'
 import Alerts from '@/components/alerts'
@@ -32,11 +32,11 @@ export default {
     ...mapState ({
       colors: state => state.cards.colors
     }),
-    ...mapGetters(['user']) 
+    isHomePage: function() {
+      return this.$route.name === "Home"
+    }
   },
   methods: {
-    ...mapMutations([
-    ])
   },
   created () {
   }
