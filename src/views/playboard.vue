@@ -53,7 +53,7 @@
         <b-col v-if="isBoardAlreadyPlayed(boardId)">
           <b-card title="Encore vous ?">
             <div class="card-body">
-              Vous avez déjà joué à ce plateau.<br>
+              Vous avez déjà joué à ce plateau et vous avez trouvé en {{ timeSpent }}.<br>
               Voulez-vous en <b-link :to="{ name: 'BoardsTable' }">essayer un autre ?</b-link>
             </div>
           </b-card>
@@ -92,8 +92,28 @@ export default {
       'boardId',
       'getBoard',
       'getBoardWords',
+      'getBoardPlayerInfo',
       'isBoardAlreadyPlayed'
     ]),
+    currentBoard: function() {
+      return this.getBoard(this.boardId)
+    },
+    timeSpent: function() {
+      if ('timeSpent' in this.getBoardPlayerInfo(this.boardId)) {
+        var duration = this.getBoardPlayerInfo(this.boardId).timeSpent
+        var milliseconds = parseInt((duration % 1000) / 100),
+          seconds = Math.floor((duration / 1000) % 60),
+          minutes = Math.floor((duration / (1000 * 60)) % 60),
+          hours = Math.floor((duration / (1000 * 60 * 60)) % 24)
+
+        hours = (hours < 10) ? "0" + hours : hours
+        minutes = (minutes < 10) ? "0" + minutes : minutes
+        seconds = (seconds < 10) ? "0" + seconds : seconds
+        return hours + ":" + minutes + ":" + seconds + "." + milliseconds
+      } else {
+        return "00:00"
+      }
+    },
     isNewGuess: function () {
       return this.playerGuess === '' ? null : this.playerGuessWords.indexOf(this.playerGuess) === -1
     },
@@ -125,16 +145,16 @@ export default {
       }
       // check if the suggested word is correct
       console.log('in checkGuess', this.getBoardWords(this.boardId))
-      var currentBoard = this.getBoard(this.boardId)
+      // var currentBoard = this.getBoard(this.boardId)
       var currentBoardWords = this.getBoardWords(this.boardId)
       if (currentBoardWords.indexOf(this.playerGuess) !== -1) {
         this.isGuessFound = true
         // stop timer
         this.$refs.timer.pause()
         // update server with player who won
-        console.log('currentboard', currentBoard)
+        console.log('currentboard', this.currentBoard)
         $socket.emit('upsert_board', {
-          'creator': currentBoard.creator,  // need as key for request server-side
+          'creator': this.currentBoard.creator,  // need as key for request server-side
           'word': currentBoardWords[0],     // need as key for request server-side
           'player': {
             'playerName': this.user.displayName,
@@ -144,9 +164,9 @@ export default {
             'lastPlayed': new Date()
           },
           // need to pass all the params for the mongoose request server-side
-          'word_variants': currentBoard.word_variants,  
-          'guess_cards': currentBoard.guess_cards,
-          'difficulty': currentBoard.difficulty
+          'word_variants': this.currentBoard.word_variants,  
+          'guess_cards': this.currentBoard.guess_cards,
+          'difficulty': this.currentBoard.difficulty
         })
       }
     },

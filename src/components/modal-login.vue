@@ -102,6 +102,7 @@ This component displays the login elements
       </div>
       <div v-else class="col">
         <p class="text-center">
+          Votre email : {{user.email}}<br>
           <b-button @click="logout" variant="primary">Se déconnecter</b-button>
         </p>
       </div>

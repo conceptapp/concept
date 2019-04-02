@@ -18,6 +18,10 @@ const state = {
 // getters
 const getters = {
   boardId: (state, getters, rootState) => {
+    console.log('getters board Id', router.currentRoute.params.boardId)
+    if (state.boardId !== router.currentRoute.params.boardId) { // keep this test to watch state.boardId in the getter
+      console.log('boardId and route are differents', state.boardId, router.currentRoute.params.boardId)
+    }
     return router.currentRoute.params.boardId
   },
   gameModeIsGod: (state, getters, rootState) => {
@@ -53,9 +57,19 @@ const getters = {
       return []
     }
   },
+  getBoardPlayerInfo: (state, getters, rootState) => (boardId) => {
+    // return the player information (playerName, playerEmail, found, timeSpent: Number in milliseconds, lastPlayed: Date)
+    var board = getters.getBoard(boardId)
+    if (Object.keys(board).length > 0 && rootState.user.user !== null) {
+      return board.players.filter(item => item.playerEmail === rootState.user.user.email)[0]
+    } else {
+      return {}
+    }
+  },
   isBoardAlreadyPlayed: (state, getters, rootState) => (boardId) => {
     // return true if current user has already played this board
     var board = getters.getBoard(boardId)
+    console.log('isBoardAlreadyPlayed', board, board.word, boardId)
     if (Object.keys(board).length > 0 && rootState.user.user !== null) {
       // check if user email matches any of the players and if he won
       return board.players.some(function (item) {
@@ -133,8 +147,7 @@ const mutations = {
     // console.log('got socket board info', data)
     // retrieve boards from server websocket call
     state.boards = data
-    console.log('boards info', data, state.boardId)
-    if (state.boardId !== undefined && state.boards.length > 0) {
+    if (state.boardId && state.boards.length > 0) {
       state.currentBoardGuessCards = data.find(x => x._id === state.boardId).guess_cards
     }
   },

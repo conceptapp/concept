@@ -223,18 +223,21 @@ export default {
   },
   methods: {
     filter_board: function (boards) {
-      return boards.map( (item) => {
-        let tmp = item
-        tmp['_cellVariants'] = { difficulty: item.difficulty }
-        return tmp
-      })
-      boards.forEach( function(board) {
-        // delete board['word_variants']
-        // board['Créé par'] = board['creator']
-        // delete board['creator']
-
-      })
-      return boards
+      if (boards.length > 0) {
+        return boards.map( (item) => {
+          let tmp = item
+          tmp['_cellVariants'] = { difficulty: item.difficulty }
+          return tmp
+        })
+        boards.forEach( function(board) {
+          // delete board['word_variants']
+          // board['Créé par'] = board['creator']
+          // delete board['creator']
+        })
+        return boards
+      } else {
+        return []
+      }
     },
     format_difficulty: function (d) {
       switch (d) {
