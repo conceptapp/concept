@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import store from '../store'
 import Router from 'vue-router'
 import Mainboard from '@/views/mainboard'
 import Boards from '@/views/boards'
@@ -29,7 +30,7 @@ const router = new Router({
     //   name: 'Profile',
     //   component: Profile,
     //   meta: {
-    //     authRequred: true
+    //     authRequired: true
     //   }
     // },
     // {
@@ -40,7 +41,7 @@ const router = new Router({
 })
 
 router.beforeEach((to, from, next) => {
-  if (to.matched.some(record => record.meta.authRequred)) {
+  if (to.matched.some(record => record.meta.authRequired)) { // if auth is required to access the page
     if (!store.state.user) {
       next({
         path: '/signin',
