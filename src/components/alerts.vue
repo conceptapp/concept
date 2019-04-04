@@ -60,7 +60,8 @@ export default {
   methods: {
     ...mapMutations([
       'removeAlert',
-      'resetBoardWords'
+      'resetBoardWords',
+      'setGameMode'
     ]),
     countDownChanged: function(dismissCountDown) {
       // console.log('dismissCountDown', dismissCountDown)
@@ -69,13 +70,13 @@ export default {
     },
     removeCurrentAlert: function(index) {
       // clean up the alert array
-      // this.sharedState.alerts.splice(index, 1)
       this.removeAlert(index)
-      // console.log('remove alert: ', this.sharedState.alerts, index)
     },
     cancelBoardCreation: function(index) {
+      // reset words and gamemode
       this.removeAlert(index)
-      this.resetBoardWords()    
+      this.resetBoardWords()
+      this.setGameMode('')
     },
     saveBoard: function(index) {
       // hide alert
