@@ -79,7 +79,7 @@ This component displays the landing homepage
           </div>
           <div class="col-lg-7 order-lg-1">
             <div class="p-5">
-              <h2 class="display-4">Jouer à plusieurs en même temps...</h2>
+              <h2 class="display-4">Jouer à plusieurs en même temps (live)...</h2>
               <p>Cette version digitale de <i>Concept</i> vous propose le plateau d'icônes du jeu de société, vous pouvez l'utiliser comme sur le jeu physique pour faire deviner des mots. Piochez des mots au hasard (pensez à masquer votre écran) en cliquant sur la carte <i>Concept</i> et lancez-vous&nbsp;!</p>
               <p class="text-center">
                 <b-button @click="$router.push({ name: 'Mainboard' })" variant="primary" size="lg">Jouer en live</b-button>
@@ -100,9 +100,9 @@ This component displays the landing homepage
           </div>
           <div class="col-lg-7">
             <div class="p-5">
-              <h2 class="display-4">... ou chacun son tour</h2>
+              <h2 class="display-4">... ou chacun son tour (solo)</h2>
               <p>Grâce à cette version digitale, vous pouvez construire des plateaux de jeu avec des icônes associées à chaque ligne de concept. L'objectif reste identique : faire deviner des mots aux autres joueurs.</p>
-              <p>Vous pouvez également tentez de découvrir les mots cachés par les plateaux créés par les autres joueurs. Pour accéder à ce mode de jeu, vous devez vous connecter.</p>
+              <p>Vous pouvez également tenter de découvrir les mots cachés par les plateaux créés par les autres joueurs. Pour accéder à ce mode de jeu, vous devez vous connecter.</p>
               <p class="text-center">
                 <b-button @click="$router.push({ name: 'Mainboard' })" variant="primary" size="lg">Se connecter</b-button>
               </p>

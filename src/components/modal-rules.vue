@@ -18,6 +18,7 @@ This component contains the modal dialogs
       ok-title="Merci"
       title="Règles du jeu"
     >
+      <h4>Jeu live</h4>
       <p class="text-left">
         Un premier joueur ouvre le jeu sur son téléphone (ou tous les autres joueurs quittent leurs yeux de l'écran). Ce joueur clique sur le bouton "Jouer" caché derrière la carte "Concept".
       </p>
@@ -32,6 +33,13 @@ This component contains the modal dialogs
       </p>
       <p class="text-left">
         Lorsque l'un des autres joueurs trouve le mot ou l'expression qu'il fallait deviner, le joueur qui faisait deviner peut réinitialiser le plateau en cliquant sur la carte "Concept" et le bouton "Réinitialiser".
+      </p>
+      <h4>Jeu solo / plateau</h4>
+      <p class="text-left">
+        Dans ce mode de jeu, vous piochez un mot et vous pouvez alors construire un plateau de jeu avec des icônes associées. L'objectif reste identique : faire deviner des mots aux autres joueurs. Vous pouvez créer autant de plateaux que vous souhaitez en essayant de nouveaux mots à chaque fois.
+      </p>
+      <p class="text-left">
+        Puis à votre tour, vous pouvez tenter de découvrir les mots cachés par les plateaux créés par les autres joueurs.
       </p>
     </b-modal>
     <b-modal id="modalabout" ok-only ok-title="D'accord"title="A propos">

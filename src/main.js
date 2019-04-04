@@ -21,8 +21,9 @@ import VueBootstrapToasts from 'vue-bootstrap-toasts'
 // import FontAwesome components
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon, FontAwesomeLayers, FontAwesomeLayersText } from '@fortawesome/vue-fontawesome'
-import { faPlus, faPlusCircle, faMinusCircle, faQuestionCircle, faExclamationCircle, faTrash, faPlayCircle, faTrashRestore, faBookOpen, faPlusSquare,
-  faUsers, faBars, faMale, faUserCircle, faPuzzlePiece, faQuestion, faChessBoard, faClock, faExternalLinkAlt} from '@fortawesome/free-solid-svg-icons'
+import { faPlus, faPlusCircle, faPlusSquare, faMinusCircle, faQuestion, faQuestionCircle, faExclamationCircle, faTrash, 
+	faTrashRestore, faBookOpen, faPlayCircle, faUsers, faBars, faMale, faUserCircle, faPuzzlePiece, faChessBoard, 
+	faClock, faExternalLinkAlt} from '@fortawesome/free-solid-svg-icons'
 
 // import and connect to the concept server-side with websocket thanks to Vue Socket IO
 import VueSocketio from 'vue-socket.io-extended'

@@ -24,10 +24,10 @@ This component displays the main menu bar
           Afficher des mots
         </b-nav-item> -->
         <b-nav-item v-b-modal.modalplaymultiplayers>
-          Jeu multijoueurs
+          Jeu live
         </b-nav-item>
         <b-nav-item @click="launchPlaySolo()">
-          Jeu solo
+          Jeu tour à tour
         </b-nav-item>
         <!-- TODO afficher le reset uniquement sur les bons game mode -->
         <b-nav-item @click="reset" v-if="['local', 'allPlayersMode', 'boardCreation'].indexOf(gameMode) !== -1">
@@ -64,32 +64,58 @@ This component displays the main menu bar
         </b-navbar-nav>
       </b-navbar-nav>
     </b-navbar>
+
     <!-- mobile navbar - top navbar to display brand && bottom navbar for navigation -->
-        <!-- TODO update solo & multijoueurs -->
     <div class="d-sm-none" style="line-height:1.3em;">
       <b-navbar id="brand-navbar" class="navbar navbar-expand-lg navbar-dark bg-dark">
         <b-navbar-nav class="ml-auto mx-auto">
           <b-navbar-brand class="navbar-brand">
-            Concept
+            <b-link to="/" style="color:white;text-decoration:none;">Concept</b-link>
           </b-navbar-brand>
         </b-navbar-nav>
+        <b-navbar-nav class="ml-auto">
+          <b-nav-item-dropdown v-if="user" :text="user.displayName + displayGameModeLive" right>
+            <b-dropdown-item v-if="gameModeMultiplayers">
+              <span @click="showModalMultiplayers()">
+                {{ currentGameRoom }} 
+                <small v-if="gameRooms[currentGameRoom]" class="text-muted">
+                  (<font-awesome-icon icon="male" /> x {{ gameRooms[currentGameRoom]['count'] }})
+                </small>
+              </span>
+            </b-dropdown-item>
+            <b-dropdown-item @click="this.alert('ça arrive bientôt :)')">Mon profil</b-dropdown-item>
+            <b-dropdown-item @click="$auth.logout()">Se déconnecter</b-dropdown-item>
+          </b-nav-item-dropdown>
+          <b-nav-item v-b-modal.modallogin v-if="!user" class="ml-auto">
+            <font-awesome-icon icon="user-circle" style="color:white;" />
+          </b-nav-item>
+        </b-navbar-nav>
       </b-navbar>
+      <!-- bottom navbar -->
       <b-navbar class="navbar navbar-expand-lg navbar-dark bg-dark" fixed="bottom" style="padding-top:0;padding-bottom:0;">
         <b-navbar-nav class="ml-auto mx-auto">
           <b-nav-item v-b-modal.modalrules>
             <font-awesome-icon icon="book-open" /><br>Règles
           </b-nav-item>
-          <b-nav-item v-b-modal.modalplaymultiplayers>
-            <font-awesome-icon icon="users" /><br>Multijoueurs
+          <b-nav-item v-b-modal.modalplaymultiplayers
+            v-if="!gameMode">
+            <font-awesome-icon icon="users" /><br>Jeu live
           </b-nav-item>
-          <b-nav-item @click="launchPlaySolo()">
-            <font-awesome-icon icon="play-circle" /><br>Jeu solo
+          <b-nav-item 
+            v-if="!gameMode"
+            @click="launchPlaySolo()">
+            <font-awesome-icon icon="play-circle" /><br>Jeu tour à tour
           </b-nav-item>
-          <b-nav-item @click="reset">
+          <b-nav-item
+            v-b-modal.modalwords
+            v-if="['boardCreation', 'local', 'allPlayersMode'].indexOf(gameMode) !== -1 || (gameMode == 'godMode' &&gameModeAllowChange)">
+            <font-awesome-icon icon="puzzle-piece" /><br>Mots à deviner
+          </b-nav-item>
+          <b-nav-item
+            v-if="['boardCreation', 'local', 'allPlayersMode'].indexOf(gameMode) !== -1 || (gameMode == 'godMode' &&gameModeAllowChange)"
+            @click="reset">
             <font-awesome-icon icon="trash-restore" /><br>Réinitialiser
           </b-nav-item>
-          <!--           <b-nav-item href="#"><font-awesome-icon icon="plus-square" /><br />Contribuer</b-nav-item> -->
-
           <!--           <b-nav-item href="#"><font-awesome-icon icon="bars" /><br />More</b-nav-item> -->
         </b-navbar-nav>
       </b-navbar>
@@ -116,7 +142,8 @@ export default {
     }),
     ...mapGetters([
       'user',
-      'gameModeMultiplayers'
+      'gameModeMultiplayers',
+      'gameModeAllowChange'
     ]),
     playerName: function () {
       return this.user ? this.user.displayName : ''
@@ -124,13 +151,22 @@ export default {
     displayGameMode: function() {
       switch (this.gameMode) {
         case 'boardPlay':
-          return '(jeu solo)'
+          return '(tour à tour)'
         case 'boardCreation':
           return '(création d\'un plateau)'
         case 'local':
           return '' // all
-        default: // 'allPlayersMode' 'gameMode'
+        default: // 'allPlayersMode' 'godMode'
           return '' // already defined in template
+      }
+    },
+    displayGameModeLive: function() {
+      if (['allPlayersMode','godMode', 'local'].indexOf(this.gameMode) !== -1) {
+        return ' (live)'
+      } else if (['boardPlay', 'boardCreation'].indexOf(this.gameMode) !== -1) {
+        return ' (solo)'
+      } else {
+        return ''
       }
     }
   },
