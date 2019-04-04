@@ -29,7 +29,7 @@ This component displays the main card of the game
         <div slot="back">
           <div class="card main-card shadow">
             <b-button
-              v-b-modal.modalplay
+              v-b-modal.modalwords
               variant="primary"
             >
               Jouer
