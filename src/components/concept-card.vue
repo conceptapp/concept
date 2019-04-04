@@ -13,7 +13,7 @@ This component displays the main card of the game
   <div style="width=100%">
     <div id="main-card-front">
       <!-- using Vue flip component https://github.com/kgrandemange/vue-flip -->
-      <vue-flip
+<!--       <vue-flip
         v-if="['allPlayersMode','godMode', 'local'].indexOf(this.gameMode) === -1"
         :active-click="true"
         width="100%"
@@ -37,15 +37,15 @@ This component displays the main card of the game
             </b-button>
             <b-button v-b-modal.modalrules variant="secondary">
               Règles du jeu
-            </b-button>
+            </b-button> -->
             <!-- hide about on tablets -->
-            <b-button v-b-modal.modalabout class="d-md-none d-lg-block" variant="light">
+<!--             <b-button v-b-modal.modalabout class="d-md-none d-lg-block" variant="light">
               A propos
             </b-button>
           </div>
         </div>
-      </vue-flip>
-      <div slot="front" v-else>
+      </vue-flip> -->
+      <div slot="front">
         <div class="card main-card shadow">
           <img
             :src="require('@/assets/images/logo.png')"
