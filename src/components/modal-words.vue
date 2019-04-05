@@ -43,7 +43,7 @@ This component contains the modal dialog for generating words to guess
 </template>
 
 <script>
-import { mapState, mapMutations, mapGetters } from 'vuex'
+import { mapState, mapMutations, mapGetters, mapActions } from 'vuex'
 import { EventBus } from '@/event-bus.js'
 import $socket from '@/websocket-instance.js'
 import axios from 'axios'
@@ -69,6 +69,7 @@ export default {
       gameMode: state => state.game.gameMode,
       currentBoardWords: state => state.game.currentBoardWords,
       currentBoardVariant: state => state.game.currentBoardVariant,
+      colors: state => state.cards.colors,
       guessCards: state => state.cards.guessCards,
       alerts: state => state.alerts.alerts
     }),
@@ -90,6 +91,9 @@ export default {
       'pushAlert',
       'setBoardVariant'
     ]),
+    ...mapActions([
+      'setGameMode'
+    ]), 
     retrieveRecords: function (recordType, offset) {
       offset = offset !== undefined ? '?offset=' + offset : ''
       if (!LOCAL) {
@@ -170,25 +174,38 @@ export default {
     },
     saveBoard: function() {
       // console.log('saveBoard', this.user.displayName , this.currentBoardWords, this.guessCards)
-      $socket.emit('upsert_board', {
-        'creator': this.user.displayName,
-        'word': this.currentBoardWords[0],
-        'word_variants': this.currentBoardWords,
-        'guess_cards': this.guessCards,
-        'difficulty': this.currentBoardVariant,
-        'player': {   // set player to avoid null info serverside
-          'playerName': this.user.displayName,
-          'playerEmail': this.user.email,
-          'found': true,
-          'timeSpent': 0,
-          'lastPlayed': new Date()
-        }
-      })
-      this.pushAlert({
-        msg: 'Le plateau de jeu a été enregistré.',
-        dismissCountDown: 5,
-        variant: 'info'
-      })
+      // check if first guess row is not empty
+      if (this.guessCards[this.colors[0]].length === 0) {
+        this.pushAlert({
+          msg: 'Vous devez ajouter au moins une carte sur le concept princpal (la première ligne).',
+          dismissCountDown: 5,
+          variant: 'danger'
+        })
+      } else {
+        // update board server side
+        $socket.emit('upsert_board', {
+          'creator': this.user.displayName,
+          'word': this.currentBoardWords[0],
+          'word_variants': this.currentBoardWords,
+          'guess_cards': this.guessCards,
+          'difficulty': this.currentBoardVariant,
+          'player': {   // set player to avoid null info serverside
+            'playerName': this.user.displayName,
+            'playerEmail': this.user.email,
+            'found': true,
+            'timeSpent': 0,
+            'lastPlayed': new Date()
+          }
+        })
+        this.pushAlert({
+          msg: 'Le plateau de jeu a été enregistré.',
+          dismissCountDown: 5,
+          variant: 'info'
+        })
+      }
+      // reset game mode and board word array
+      this.setGameMode('')
+      this.resetBoardWords()
     }
   }
 }
