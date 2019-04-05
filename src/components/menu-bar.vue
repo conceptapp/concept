@@ -20,9 +20,6 @@ This component displays the main menu bar
         <b-nav-item v-b-modal.modalrules>
           Règles du jeu
         </b-nav-item>
-<!--         <b-nav-item v-b-modal.modalwords>
-          Afficher des mots
-        </b-nav-item> -->
         <b-nav-item v-b-modal.modalplaymultiplayers>
           Jeu live
         </b-nav-item>
@@ -49,18 +46,19 @@ This component displays the main menu bar
         </b-navbar-nav>
         <!-- user is authenticated, display user name & information about the current game -->
         <b-navbar-nav v-else class="ml-auto">
-          <b-nav-item>
-            <span @click="showModalLogin()">{{ playerName }}</span>
-            <span v-if="gameModeMultiplayers" @click="showModalMultiplayers()">
-              @ {{ currentGameRoom }} 
-              <small v-if="gameRooms[currentGameRoom]" class="text-muted">
-                (<font-awesome-icon icon="male" /> x {{ gameRooms[currentGameRoom]['count'] }})
-              </small>
-            </span>
-            <span v-else @click="">
-              {{ displayGameMode }}
-            </span>
-          </b-nav-item>
+          <b-nav-item-dropdown :text="user.displayName + displayGameMode" right>
+            <b-dropdown-item v-if="gameModeMultiplayers">
+              <span @click="showModalMultiplayers()">
+                {{ currentGameRoom }} 
+                <small v-if="gameRooms[currentGameRoom]" class="text-muted">
+                  (<font-awesome-icon icon="male" /> x {{ gameRooms[currentGameRoom]['count'] }})
+                </small>
+              </span>
+            </b-dropdown-item>
+            <b-dropdown-item @click="$router.push({ name: 'Profile' })">Mon profil</b-dropdown-item>
+            <b-dropdown-item @click="$auth.logout()">Se déconnecter</b-dropdown-item>
+          </b-nav-item-dropdown>
+
         </b-navbar-nav>
       </b-navbar-nav>
     </b-navbar>
@@ -83,7 +81,7 @@ This component displays the main menu bar
                 </small>
               </span>
             </b-dropdown-item>
-            <b-dropdown-item @click="this.alert('ça arrive bientôt :)')">Mon profil</b-dropdown-item>
+            <b-dropdown-item @click="$router.push({ name: 'Profile' })">Mon profil</b-dropdown-item>
             <b-dropdown-item @click="$auth.logout()">Se déconnecter</b-dropdown-item>
           </b-nav-item-dropdown>
           <b-nav-item v-b-modal.modallogin v-if="!user" class="ml-auto">
@@ -151,9 +149,9 @@ export default {
     displayGameMode: function() {
       switch (this.gameMode) {
         case 'boardPlay':
-          return '(tour à tour)'
+          return ' (tour à tour)'
         case 'boardCreation':
-          return '(création d\'un plateau)'
+          return ' (création d\'un plateau)'
         case 'local':
           return '' // all
         default: // 'allPlayersMode' 'godMode'
@@ -188,16 +186,13 @@ export default {
       // if user not authenticated, force auth first else show multiplayers modal
       if (!this.user) {
         this.setPageAfterLogin('modalplaysolo')
-        this.showModalLogin()
+        this.$root.$emit('bv::show::modal', 'modallogin')
       } else {
         this.$root.$emit('bv::show::modal', 'modalplaysolo')
       }
     },
     showModalMultiplayers() {
       this.$root.$emit('bv::show::modal', 'modalmultiplayers')
-    },
-    showModalLogin() {
-      this.$root.$emit('bv::show::modal', 'modallogin')
     }
   }
 }

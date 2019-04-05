@@ -227,8 +227,6 @@ export default {
       })
       // reset current game room
       this.setCurrentGameRoom('')
-      // deactivate multiplayer mode
-      // this.setIsMultiPlayer(false)
       // reset current gameMode
       this.setGameMode('')
       // reset god credentials

@@ -5,6 +5,7 @@ import Home from '@/views/home'
 import Mainboard from '@/views/mainboard'
 import Boards from '@/views/boards'
 import Playboard from '@/views/playboard'
+import Profile from '@/views/profile'
 
 
 Vue.use(Router)
@@ -31,14 +32,14 @@ const router = new Router({
       name: 'Home',
       component: Home
     },
-    // {
-    //   path: '/profile',
-    //   name: 'Profile',
-    //   component: Profile,
-    //   meta: {
-    //     authRequired: true
-    //   }
-    // },
+    {
+      path: '/profile',
+      name: 'Profile',
+      component: Profile,
+      // meta: {
+      //   authRequired: true
+      // }
+    },
     // {
     //   path: '*',
     //   redirect: { name: 'Mainboard' }
