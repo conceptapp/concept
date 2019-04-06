@@ -1,10 +1,10 @@
 <template>
   <div>
     <MainRow />
-    <b-container fluid>
-      <b-row class="rounded shadow-sm p-2 mb-2" style="background-color: #f0f0f0">
+    <b-container fluid class="mt-2">
+      <b-row class="rounded shadow-sm p-2 mb-3" style="background-color: #f0f0f0">
         <b-col>
-          <h4>Devinez le mot caché dans ce plateau</h4>
+          <h4 class="mt-1">Devinez le mot caché dans ce plateau</h4>
         </b-col>
       </b-row>
       <b-row>
@@ -65,6 +65,7 @@
 
 <script>
 import { mapState, mapMutations, mapActions, mapGetters } from 'vuex'
+import { EventBus } from '@/event-bus.js'
 import $socket from '@/websocket-instance'
 import MainRow from '@/components/main-row'
 import Timer from '@/components/timer'
@@ -76,7 +77,7 @@ export default {
     return {
       playerGuess: '',
       playerGuessWords: [],
-      isPlaying: null,
+      // isPlaying: null,
       isGuessFound: false,
     }
   },
@@ -85,6 +86,7 @@ export default {
       types: state => state.cards.types,
       cards: state => state.cards.cards,
       colors: state => state.cards.colors,
+      isPlayingBoard: state => state.game.isPlayingBoard
       // boardId: state => state.game.boardId
     }),
     ...mapGetters ([
@@ -117,7 +119,7 @@ export default {
       return this.playerGuess === '' ? null : this.playerGuessWords.indexOf(this.playerGuess) === -1
     },
     btnPlayLabel: function() {
-      switch(this.isPlaying) {
+      switch(this.isPlayingBoard) {
         case true:
           return 'Pause'
         case false:
@@ -129,7 +131,8 @@ export default {
   },
   methods: {
     ...mapMutations([
-      'setGameModeDisplayBoard'
+      'setGameModeDisplayBoard',
+      'setIsPlayingBoard'
     ]),
     ...mapActions([
       'setGameMode'
@@ -137,7 +140,7 @@ export default {
     checkGuess: function(e) {
       e.preventDefault()
       // start timer if not already running
-      if (this.isPlaying !== true) this.chrono()
+      if (this.isPlayingBoard !== true) this.chrono()
       // append the guess words array to feedback what was already tried
       if (this.isNewGuess) {
         this.playerGuessWords.push(this.playerGuess)
@@ -174,26 +177,28 @@ export default {
       this.isGuessFound = false
       // start, stop or resume chrono depending if currently playing
       var timerComponent = this.$refs.timer
-      switch(this.isPlaying) {
+      switch(this.isPlayingBoard) {
         case true:
           timerComponent.pause()
-          this.isPlaying = false
+          this.setIsPlayingBoard(false)
           break
         case false:
           timerComponent.resume()
-          this.isPlaying = true
+          this.setIsPlayingBoard(true)
           break
         case null:
           timerComponent.reset()
-          this.isPlaying = true
+          this.setIsPlayingBoard(true)
       }
       // display or hide guessCards
-      this.setGameModeDisplayBoard(this.isPlaying)
+      this.setGameModeDisplayBoard(this.isPlayingBoard)
     }
   },
   created () {
     // set game mode
     this.setGameMode('boardPlay')
+    // start game when trigger chrono
+    EventBus.$on('boardplay-chrono', data => this.chrono())
   }
 }
 </script>

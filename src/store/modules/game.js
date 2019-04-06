@@ -11,6 +11,7 @@ const state = {
   currentBoardWords: [],
   currentBoardVariant: '',
   currentBoardGuessCards: {},
+  isPlayingBoard: null, // true if user has started a board game in boardPlay mode
   boards: {},
   boardId: '' // keep the variable for socket calls, preferably use the getter if on playboard (url param should be set up)
 }
@@ -136,6 +137,9 @@ const mutations = {
   },
   setBoardId (state, boardId) {
     state.boardId = boardId
+  },
+  setIsPlayingBoard (state, isPlaying) {
+    state.isPlayingBoard = isPlaying
   },
   SOCKET_CONNECT (state, data) {
     // console.log('connected to server from game.js')

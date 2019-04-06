@@ -43,9 +43,6 @@ export default {
 </script>
 
 <style>
-#header-row{
-  padding-right: 15px;
-}
 #concept-cards {
   margin-left: 15px;
 }

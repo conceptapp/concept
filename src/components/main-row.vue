@@ -12,14 +12,26 @@ This component displays the main header row
 <template>
   <div id="main-row">
     <div class="container-body">
-      <div id="header-row" class="row">
+      <b-row id="header-row" align-v="center">
+        <!-- displays an overlay explanation when playing boardPlay -->
         <!-- hide on screens smaller than lg / md / sm -->
-        <div class="col-2 d-none d-sm-block">
+        <b-col v-if="gameMode==='boardPlay' && !isPlayingBoard" class="overlay d-none d-sm-block">
+          <h4 class="rounded shadow-sm p-2 mb-2" style="background-color: #f0f0f0">Bienvenue dans le mode "tour à tour"</h4>
+          <p class="text-left">Vous allez découvrir un plateau de jeu préparé par un autre joueur, ces icônes doivent vous permettre de trouver le mot caché. Vous pouvez proposer autant de mots que vous le souhaitez, soyez le plus rapide et comparez vous ensuite aux autres joueurs.</p>
+          <p class="text-left">Vous pouvez mettre en pause le jeu ou le reprendre plus tard grâce aux boutons disponibles sous le chronomètre. Vous pouvez également demander un indice (s'ils sont disponibles pour ce plateau de jeu), le nombre d'indices utilisés pour trouver sera affiché dans le classement final.</p>
+          <p class="text-middle">
+            <b-button @click="chrono()" variant="primary" class="mt-3">
+              {{isPlayingBoard===null ? 'Démarrer le jeu' : 'Reprendre le jeu'}}
+            </b-button>
+          </p>
+        </b-col>
+        <!-- hide on screens smaller than lg / md / sm -->
+        <b-col cols="2" class="d-none d-sm-block">
           <ConceptCard />
-        </div>
+        </b-col>
         <!-- show only on mobile -->
-        <div class="col-1 d-sm-none" />
-        <div class="col-10">
+        <b-col cols="1" class="d-sm-none" />
+        <b-col cols="10">
           <!-- show all the concept by row, one color each -->
           <!-- eslinnt-disable-next-line vue/use-v-on-style -->
           <div
@@ -41,10 +53,7 @@ This component displays the main header row
                 size="2x"
               />
             </div>
-            <transition-group
-              name="fade"
-              class="guess-cards"
-            >
+            <transition-group name="fade" class="guess-cards">
               <div
                 v-for="(card, index) in guessCardsToDisplay[color]"
                 v-if="gameMode!=='boardPlay' || gameModeDisplayBoard"
@@ -59,8 +68,8 @@ This component displays the main header row
               </div>
             </transition-group>
           </div>
-        </div>
-      </div>
+        </b-col>
+      </b-row>
     </div>
   </div>
 </template>
@@ -102,7 +111,8 @@ export default {
       boardId: state => state.game.boardId,
       gameMode: state => state.game.gameMode,
       gameModeDisplayBoard: state => state.game.gameModeDisplayBoard,
-      currentBoardGuessCards: state => state.game.currentBoardGuessCards
+      currentBoardGuessCards: state => state.game.currentBoardGuessCards,
+      isPlayingBoard: state => state.game.isPlayingBoard
     }),
     ...mapGetters([
       'gameModeAllowChange'
@@ -119,7 +129,8 @@ export default {
       'setCurrentColor',
       'setGameRooms',
       'pushAlert',
-      'setBoardId'
+      'setBoardId',
+      'setIsPlayingBoard'
     ]),
     addIcon: function (data) {
       // Name, Tooltip_fr
@@ -151,6 +162,9 @@ export default {
         var cardColor = Object.keys(this.cardDragged).length > 0 ? data.color : this.selectedColor
         this.removeGuessCards({ 'color': cardColor, 'cards': data })
       }
+    },
+    chrono: function() {
+      EventBus.$emit('boardplay-chrono')
     },
     dragenter: function (ev) {
       ev.preventDefault()
@@ -192,6 +206,17 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+#header-row{
+  padding-right: 15px;
+  position: relative;
+}
+.overlay {
+  height: 100%;
+  width:100%;
+  background-color:rgba(255,255,255,0.85);
+  position:absolute;
+  z-index: 2;
+}
 .guess-cards {
   display: contents;
 }
