@@ -46,7 +46,8 @@ This component displays the main menu bar
         </b-navbar-nav>
         <!-- user is authenticated, display user name & information about the current game -->
         <b-navbar-nav v-else class="ml-auto">
-          <b-nav-item-dropdown :text="user.displayName + displayGameMode" right>
+          <b-nav-item-dropdown :text="user.displayName" right>
+            <b-dropdown-item>{{ displayGameMode }}</b-dropdown-item>
             <b-dropdown-item v-if="gameModeMultiplayers">
               <span @click="showModalMultiplayers()">
                 {{ currentGameRoom }} 
@@ -149,9 +150,9 @@ export default {
     displayGameMode: function() {
       switch (this.gameMode) {
         case 'boardPlay':
-          return ' (tour à tour)'
+          return ' Mode tour à tour'
         case 'boardCreation':
-          return ' (création d\'un plateau)'
+          return ' Création d\'un plateau en cours'
         case 'local':
           return '' // all
         default: // 'allPlayersMode' 'godMode'

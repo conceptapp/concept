@@ -8,7 +8,7 @@
         </b-col>
       </b-row>
       <b-row>
-        <b-col md="3">
+        <b-col lg="3">
           <b-card title="Règles du jeu">
             <p class="text-left">Essayez de deviner le plus rapidement possible le mot associé à ce tableau.<br>
             Vous pouvez proposer autant de mots que vous le souhaitez, à vous d'être le plus rapide.</p>
@@ -36,8 +36,8 @@
                   autocomplete="off"
                   class="m-3">
                 </b-form-input>
+                <b-button type="submit" variant="primary">Deviner</b-button>
               </b-form-group>
-              <b-button type="submit" variant="primary">Deviner</b-button>
             </b-form>
             <div v-if="isGuessFound">
               <h4 class="card-body text-success">Bravo ! vous avez gagné !!!</h4>
@@ -125,7 +125,7 @@ export default {
         case false:
           return 'Reprendre'
         default:
-          return 'Démarrer le jeu'
+          return 'Démarrer'
       }
     }
   },

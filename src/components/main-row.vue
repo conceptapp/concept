@@ -18,7 +18,7 @@ This component displays the main header row
         <b-col v-if="gameMode==='boardPlay' && !isPlayingBoard" class="overlay d-none d-sm-block">
           <h4 class="rounded shadow-sm p-2 mb-2" style="background-color: #f0f0f0">Bienvenue dans le mode "tour à tour"</h4>
           <p class="text-left">Vous allez découvrir un plateau de jeu préparé par un autre joueur, ces icônes doivent vous permettre de trouver le mot caché. Vous pouvez proposer autant de mots que vous le souhaitez, soyez le plus rapide et comparez vous ensuite aux autres joueurs.</p>
-          <p class="text-left">Vous pouvez mettre en pause le jeu ou le reprendre plus tard grâce aux boutons disponibles sous le chronomètre. Vous pouvez également demander un indice (s'ils sont disponibles pour ce plateau de jeu), le nombre d'indices utilisés pour trouver sera affiché dans le classement final.</p>
+          <p class="text-left d-none d-lg-block">Vous pouvez mettre en pause le jeu ou le reprendre plus tard grâce aux boutons disponibles sous le chronomètre. Vous pouvez également demander un indice (s'ils sont disponibles pour ce plateau de jeu), le nombre d'indices utilisés pour trouver sera affiché dans le classement final.</p>
           <p class="text-middle">
             <b-button @click="chrono()" variant="primary" class="mt-3">
               {{isPlayingBoard===null ? 'Démarrer le jeu' : 'Reprendre le jeu'}}
