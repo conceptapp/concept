@@ -26,12 +26,12 @@ This component displays the main header row
           </p>
         </b-col>
         <!-- hide on screens smaller than lg / md / sm -->
-        <b-col cols="2" class="d-none d-sm-block">
+        <b-col v-if="isBoardEditable" cols="2" class="d-none d-sm-block">
           <ConceptCard />
         </b-col>
         <!-- show only on mobile -->
         <b-col cols="1" class="d-sm-none" />
-        <b-col cols="10">
+        <b-col>
           <!-- show all the concept by row, one color each -->
           <!-- eslinnt-disable-next-line vue/use-v-on-style -->
           <div
@@ -40,7 +40,7 @@ This component displays the main header row
             :id="color"
             :class="{ 'active': color == selectedColor }"
             @click="setCurrentColor(color)"
-            :droppable="gameModeAllowChange"
+            :droppable="isBoardEditable"
             v-on:dragover="dragover"
             v-on:dragenter="dragenter"
             v-on:drop="drop"
@@ -115,7 +115,7 @@ export default {
       isPlayingBoard: state => state.game.isPlayingBoard
     }),
     ...mapGetters([
-      'gameModeAllowChange'
+      'isBoardEditable'
     ]),
     guessCardsToDisplay: function() {
       return this.gameMode === 'boardPlay' ? this.currentBoardGuessCards : this.guessCards
@@ -135,7 +135,7 @@ export default {
     addIcon: function (data) {
       // Name, Tooltip_fr
       // check if user is allowed to change guess cards
-      if (!this.gameModeAllowChange) { 
+      if (!this.isBoardEditable) { 
         // display error message, user is not allowed to change cards
         this.pushAlert({
           msg: "Désolé, seul l'organisateur de la partie peut modifier les cartes",
@@ -148,7 +148,7 @@ export default {
     },
     removeIcon: function (data) {
       // check if user is allowed to change guess cards
-      if (!this.gameModeAllowChange) {
+      if (!this.isBoardEditable) {
         // display error message, user is not allowed to change cards
         this.pushAlert({
           msg: "Désolé, seul l'organisateur de la partie peut modifier les cartes",

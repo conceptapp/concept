@@ -33,10 +33,10 @@ const getters = {
       return false
     }
   },
-  gameModeAllowChange: (state, getters) => {
-    // is true except when game mode is godMode and player is not God (God == creator of the game)
-    return !(state.gameMode === 'godMode' && !getters.gameModeIsGod)
-  },
+  // gameModeAllowChange: (state, getters) => {
+  //   // is true except when game mode is godMode and player is not God (God == creator of the game)
+  //   return !(state.gameMode === 'godMode' && !getters.gameModeIsGod)
+  // },
   gameModeMultiplayers: state => {
     return ['allPlayersMode','godMode'].indexOf(state.gameMode) !== -1
   },
@@ -79,6 +79,10 @@ const getters = {
     } else {
       return false
     }
+  },
+  isBoardEditable: (state, getters, rootState) => {
+    // board is editable unless gameMode == boardPlay or gameMode == isGod and player is not God
+    return !(state.gameMode === 'boardPlay' || (state.gameMode === 'godMode' && !getters.gameModeIsGod))
   }
 }
 

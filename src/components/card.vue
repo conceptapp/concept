@@ -17,7 +17,7 @@ TODO add rollover to display tooltip
     <div class="row no-gutters">
       <div
         @click="tooltipShown = !tooltipShown"
-        :draggable="this.gameModeAllowChange"
+        :draggable="isBoardEditable"
         v-on:dragstart="dragstart"
         v-on:dragend="dragend"
         class="col-auto concept-icon"
@@ -42,7 +42,7 @@ TODO add rollover to display tooltip
                 />
               </div>
               <div
-                v-if="addOrRemove == 'add' && this.gameModeAllowChange"
+                v-if="addOrRemove == 'add' && isBoardEditable"
                 @click="tooltipShown = !tooltipShown;changeIcon('add-icon', cardInfo)"
                 class="col-auto px-1 px-sm-2 icon-pointer"
               >
@@ -53,7 +53,7 @@ TODO add rollover to display tooltip
                 />
               </div>
               <div
-                v-if="addOrRemove == 'remove' && this.gameModeAllowChange"
+                v-if="addOrRemove == 'remove' && isBoardEditable"
                 @click="tooltipShown = !tooltipShown;changeIcon('remove-icon', cardInfo)"
                 class="col-auto px-1 px-sm-2 icon-pointer"
               >
@@ -106,11 +106,10 @@ export default {
       // guessCards: state => state.cards.guessCards,
       cardDragged: state => state.cards.cardDragged,
       gameMode: state => state.game.gameMode,
-      // gameModeAllowChange: state => state.game.gameModeAllowChange,
       gameModeIsGod: state => state.game.gameModeIsGod
     }),
     ...mapGetters([
-      'gameModeAllowChange'
+      'isBoardEditable'
     ]),
     icon: function () {
       return require('../assets/images/cards/' + this.cardInfo.type + '/' + this.cardInfo.Name + '.png')
