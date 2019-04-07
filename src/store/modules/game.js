@@ -20,10 +20,18 @@ const state = {
 const getters = {
   boardId: (state, getters, rootState) => {
     console.log('getters board Id', router.currentRoute.params.boardId)
-    if (state.boardId !== router.currentRoute.params.boardId) { // keep this test to watch state.boardId in the getter
+    if (state.boardId && state.boardId !== router.currentRoute.params.boardId) { // keep this test to watch state.boardId in the getter
       console.log('boardId and route are differents', state.boardId, router.currentRoute.params.boardId)
     }
     return router.currentRoute.params.boardId
+  },
+  currentBoardGuessCards: (state, getters, rootState) => {
+    console.log('currentBoardGuessCards getter')
+    if (getters.boardId && state.boards.length > 0) {
+      return state.boards.find(x => x._id === state.boardId).guess_cards
+    } else {
+      return {}
+    }
   },
   gameModeIsGod: (state, getters, rootState) => {
     console.log('gameModeIsGod', state, getters, rootState)
