@@ -15,7 +15,7 @@ This component displays the main header row
       <b-row id="header-row" align-v="center">
         <!-- displays an overlay explanation when playing boardPlay -->
         <!-- hide on screens smaller than lg / md / sm -->
-        <b-col v-if="gameMode==='boardPlay' && !isPlayingBoard" class="overlay d-none d-sm-block">
+        <b-col v-if="gameMode==='boardPlay' && (!isPlayingBoard && !isBoardAlreadyPlayed(boardId))" class="overlay d-none d-sm-block">
           <h4 class="rounded shadow-sm p-2 mb-2" style="background-color: #f0f0f0">Bienvenue dans le mode "tour à tour"</h4>
           <p class="text-left">Vous allez découvrir un plateau de jeu préparé par un autre joueur, ces icônes doivent vous permettre de trouver le mot caché. Vous pouvez proposer autant de mots que vous le souhaitez, soyez le plus rapide et comparez vous ensuite aux autres joueurs.</p>
           <p class="text-left d-none d-lg-block">Vous pouvez mettre en pause le jeu ou le reprendre plus tard grâce aux boutons disponibles sous le chronomètre. Vous pouvez également demander un indice (s'ils sont disponibles pour ce plateau de jeu), le nombre d'indices utilisés pour trouver sera affiché dans le classement final.</p>
@@ -110,15 +110,17 @@ export default {
       boards: state => state.game.boards,
       boardId: state => state.game.boardId,
       gameMode: state => state.game.gameMode,
-      gameModeDisplayBoard: state => state.game.gameModeDisplayBoard,
-      currentBoardGuessCards: state => state.game.currentBoardGuessCards,
       isPlayingBoard: state => state.game.isPlayingBoard
     }),
     ...mapGetters([
-      'isBoardEditable'
+      'isBoardEditable',
+      'isBoardAlreadyPlayed',
+      'gameModeDisplayBoard',
+      'getBoardGuessCards'
     ]),
     guessCardsToDisplay: function() {
-      return this.gameMode === 'boardPlay' ? this.currentBoardGuessCards : this.guessCards
+      // console.log('guessCardsToDisplay', this.getBoardGuessCards(this.boardId) )
+      return this.gameMode === 'boardPlay' ? this.getBoardGuessCards(this.boardId) : this.guessCards
     }
   },
   methods: {

@@ -7,10 +7,10 @@ const state = {
   currentGameRoom: '',
   gameRooms: [],
   gameMode: '', // boardPlay, boardCreation, godMode, allPlayersMode, local
-  gameModeDisplayBoard: false,
+  // gameModeDisplayBoard: false,
   currentBoardWords: [],
   currentBoardVariant: '',
-  currentBoardGuessCards: {},
+  // currentBoardGuessCards: {},
   isPlayingBoard: null, // true if user has started a board game in boardPlay mode
   boards: {},
   boardId: '' // keep the variable for socket calls, preferably use the getter if on playboard (url param should be set up)
@@ -19,19 +19,11 @@ const state = {
 // getters
 const getters = {
   boardId: (state, getters, rootState) => {
-    console.log('getters board Id', router.currentRoute.params.boardId)
+    // console.log('getters board Id', router.currentRoute.params.boardId)
     if (state.boardId && state.boardId !== router.currentRoute.params.boardId) { // keep this test to watch state.boardId in the getter
       console.log('boardId and route are differents', state.boardId, router.currentRoute.params.boardId)
     }
     return router.currentRoute.params.boardId
-  },
-  currentBoardGuessCards: (state, getters, rootState) => {
-    console.log('currentBoardGuessCards getter')
-    if (getters.boardId && state.boards.length > 0) {
-      return state.boards.find(x => x._id === state.boardId).guess_cards
-    } else {
-      return {}
-    }
   },
   gameModeIsGod: (state, getters, rootState) => {
     console.log('gameModeIsGod', state, getters, rootState)
@@ -41,10 +33,11 @@ const getters = {
       return false
     }
   },
-  // gameModeAllowChange: (state, getters) => {
-  //   // is true except when game mode is godMode and player is not God (God == creator of the game)
-  //   return !(state.gameMode === 'godMode' && !getters.gameModeIsGod)
-  // },
+  gameModeDisplayBoard: (state, getters, rootState) => {
+    // getter should be used on playBoard mode to display guessCards
+    // if user is currently playing (timer running) or if user gave up or found, return true
+    return state.isPlayingBoard || getters.isBoardAlreadyPlayed(getters.boardId)
+  },
   gameModeMultiplayers: state => {
     return ['allPlayersMode','godMode'].indexOf(state.gameMode) !== -1
   },
@@ -54,14 +47,31 @@ const getters = {
     if (boardId !== undefined && state.boards.length > 0) {
       return state.boards.find(x => x._id === boardId)
     } else {
-      return {}
+      return undefined
+    }
+  },
+  getBoardGuessCards: (state, getters, rootState) => (boardId) => {
+    // console.log('getBoardGuessCards', state, getters, rootState, boardId)
+    // return guessCards for the boardId in param
+    if (boardId !== undefined) {
+      var board = getters.getBoard(getters.boardId)
+    }
+    if (board) {
+      return board.guess_cards
+    } else {
+      // if boards are not loaded yet (or wrong boardId) init an empty object with colors to avoid javascript error in console
+      var obj = {}
+      for (var i = 0; i < rootState.cards.colors.length; i++) {
+        obj[rootState.cards.colors[i]] = []
+      }
+      return obj
     }
   },
   getBoardWords: (state, getters, rootState) => (boardId) => {
     // console.log('getBoardWords', state, getters, rootState, boardId)
     // return word and variants for the boardId in param
     if (boardId !== undefined) {
-      return getters.getBoard(boardId).word_variants
+      return getters.getBoard(getters.boardId).word_variants
     } else {
       return []
     }
@@ -69,7 +79,7 @@ const getters = {
   getBoardPlayerInfo: (state, getters, rootState) => (boardId) => {
     // return the player information (playerName, playerEmail, found, timeSpent: Number in milliseconds, lastPlayed: Date)
     var board = getters.getBoard(boardId)
-    if (Object.keys(board).length > 0 && rootState.user.user !== null) {
+    if (board && rootState.user.user !== null) {
       return board.players.filter(item => item.playerEmail === rootState.user.user.email)[0]
     } else {
       return {}
@@ -79,10 +89,10 @@ const getters = {
     // return true if current user has already played this board
     var board = getters.getBoard(boardId)
     // console.log('isBoardAlreadyPlayed', board, board.word, boardId)
-    if (Object.keys(board).length > 0 && rootState.user.user !== null) {
-      // check if user email matches any of the players and if he won
+    if (board && rootState.user.user !== null) {
+      // check if user email matches any of the players and if he won or he gave up
       return board.players.some(function (item) {
-        return item.playerEmail === rootState.user.user.email && item.found
+        return item.playerEmail === rootState.user.user.email && (item.found || item.gaveUp)
       })
     } else {
       return false
@@ -135,9 +145,9 @@ const mutations = {
   setGameModeIsGod (state, isGod) {
     state.gameModeIsGod = isGod
   },
-  setGameModeDisplayBoard (state, bool) {
-    state.gameModeDisplayBoard = bool
-  },
+  // setGameModeDisplayBoard (state, bool) {
+  //   state.gameModeDisplayBoard = bool
+  // },
   pushBoardWord (state, word) {
     state.currentBoardWords.push(word)
   },

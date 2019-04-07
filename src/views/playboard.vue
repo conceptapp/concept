@@ -1,5 +1,12 @@
 <template>
   <div>
+    <b-modal id="confirmGiveUp" ref="confirmGiveUp" 
+      title="Vraiment ?"
+      @ok="giveUp()"
+      @cancel="chrono()"
+    >
+      <p class="my-4">Êtes-vous sûr de vouloir abandonner la partie ?</p>
+    </b-modal>
     <MainRow />
     <b-container fluid class="mt-2">
       <b-row class="rounded shadow-sm p-2 mb-3" style="background-color: #f0f0f0">
@@ -14,17 +21,34 @@
             Vous pouvez proposer autant de mots que vous le souhaitez, à vous d'être le plus rapide.</p>
           </b-card>
         </b-col>
-        <b-col md="3" v-if="!isBoardAlreadyPlayed(boardId)">
+        <b-col v-if="!isBoardAlreadyPlayed(boardId)">
           <b-card title="Temps écoulé">
             <Timer ref="timer" /><br>
-            <b-button @click="chrono()" variant="primary" class="mt-3">
-              {{ btnPlayLabel }}
-            </b-button>
+            <div v-if="!isPlayerGaveUp">
+              <b-button @click="chrono()" variant="primary" class="mt-3">
+                {{ btnPlayLabel }}
+              </b-button>
+              <b-button variant="secondary" class="mt-3"
+                v-if="isPlayingBoard"
+                @click="chrono();$refs['confirmGiveUp'].show()"
+              >
+                Abandonner
+              </b-button>
+              <b-button v-if="isPlayingBoard === false" @click="pauseGame()" variant="secondary" class="mt-3">
+                Finir plus tard
+              </b-button>
+            </div>
+            <div v-if="isPlayerGaveUp">
+              <hr />
+              <h4>Partie abandonnée</h4>
+              <p class="card-body">Dommage ! Meilleure chance la prochaine fois.</p>
+              <p class="mb-3">Le mot à trouver était : <strong>{{ getBoardWords(boardId)[0] }}</strong>.</p>
+            </div>
           </b-card>
         </b-col>
-        <b-col v-if="!isBoardAlreadyPlayed(boardId)">
+        <b-col md="6" v-if="!isBoardAlreadyPlayed(boardId) && !isPlayerGaveUp">
           <b-card title="A vous de jouer" :class="{'border-success': isGuessFound}">
-            <b-form inline @submit="checkGuess" v-if="!isGuessFound">
+            <b-form inline @submit="checkGuess" v-if="!isGuessFound && !isPlayerGaveUp">
               <b-form-group 
                 label="Proposez des mots :"
                 label-for="playerGuess">
@@ -53,7 +77,11 @@
         <b-col v-if="isBoardAlreadyPlayed(boardId)">
           <b-card title="Encore vous ?">
             <div class="card-body">
-              Vous avez déjà joué à ce plateau et vous avez trouvé en {{ timeSpent }}.<br>
+              Vous avez déjà joué à ce plateau 
+              <span v-if="getBoardPlayerInfo(boardId)['found']">et vous avez trouvé en</span>
+              <span v-if="getBoardPlayerInfo(boardId)['gaveUp']">et vous aviez abandonné au bout de</span>
+               {{ timeSpent }}.<br>
+              Le mot à trouver était : <b>{{getBoardWords(boardId)[0]}}</b>.<br>
               Voulez-vous en <b-link :to="{ name: 'BoardsTable' }">essayer un autre ?</b-link>
             </div>
           </b-card>
@@ -77,8 +105,8 @@ export default {
     return {
       playerGuess: '',
       playerGuessWords: [],
-      // isPlaying: null,
       isGuessFound: false,
+      isPlayerGaveUp: false
     }
   },
   computed: {
@@ -162,6 +190,7 @@ export default {
             'playerName': this.user.displayName,
             'playerEmail': this.user.email,
             'found': true,
+            'gaveUp': false,
             'timeSpent': this.$refs.timer.milliseconds,
             'lastPlayed': new Date()
           },
@@ -191,7 +220,35 @@ export default {
           this.setIsPlayingBoard(true)
       }
       // display or hide guessCards
-      this.setGameModeDisplayBoard(this.isPlayingBoard)
+      // this.setGameModeDisplayBoard(this.isPlayingBoard)
+    },
+    giveUp: function() {
+      // player can't find and wants to give up the game
+      // send board update to the server
+      console.log('user gave up && currentboard', this.currentBoard)
+      var currentBoardWords = this.getBoardWords(this.boardId)
+      $socket.emit('upsert_board', {
+        'creator': this.currentBoard.creator,  // need as key for request server-side
+        'word': currentBoardWords[0],     // need as key for request server-side
+        'player': {
+          'playerName': this.user.displayName,
+          'playerEmail': this.user.email,
+          'found': false,
+          'gaveUp': true,
+          'timeSpent': this.$refs.timer.milliseconds,
+          'lastPlayed': new Date()
+        },
+        // need to pass all the params for the mongoose update server-side
+        'word_variants': this.currentBoard.word_variants,  
+        'guess_cards': this.currentBoard.guess_cards,
+        'difficulty': this.currentBoard.difficulty
+      })
+      // display the board and the word to the player
+
+      this.isPlayerGaveUp = true
+    },
+    pauseGame: function() {
+
     }
   },
   created () {
