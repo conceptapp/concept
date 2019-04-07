@@ -41,7 +41,7 @@ This component displays the main header row
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex'
+import { mapState, mapMutations, mapActions } from 'vuex'
 import { EventBus } from '@/event-bus.js'
 
 export default {
@@ -60,7 +60,9 @@ export default {
   methods: {
     ...mapMutations([
       'removeAlert',
-      'resetBoardWords',
+      'resetBoardWords'
+    ]),
+    ...mapActions([
       'setGameMode'
     ]),
     countDownChanged: function(dismissCountDown) {
