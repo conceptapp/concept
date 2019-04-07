@@ -48,7 +48,7 @@ This component displays the main header row
           >
             <div class="col-auto guess-icon">
               <font-awesome-icon
-                :icon="index == 0 ? 'question-circle' : 'exclamation-circle'"
+                :icon="index === 0 ? 'question-circle' : 'exclamation-circle'"
                 :color="color"
                 size="2x"
               />
