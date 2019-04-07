@@ -100,10 +100,7 @@ export default {
   },
   computed: {
     ...mapState ({
-      // colors: state => state.colors,
       selectedColor: state => state.cards.selectedColor,
-      // cards: state => state.cards.cards,
-      // guessCards: state => state.cards.guessCards,
       cardDragged: state => state.cards.cardDragged,
       gameMode: state => state.game.gameMode,
       gameModeIsGod: state => state.game.gameModeIsGod
