@@ -32,13 +32,13 @@ This component displays the main header row
         <!-- show only on mobile -->
         <b-col cols="1" class="d-sm-none" />
         <b-col>
-          <!-- show all the concept by row, one color each -->
+          <!-- show all the concept by row, one color each, hide empty rows on mobile (except first 2 rows) thanks to d-sm-none class -->
           <!-- eslinnt-disable-next-line vue/use-v-on-style -->
           <div
             v-for="(color, index) in colors"
             :key="index"
             :id="color"
-            :class="{ 'active': color == selectedColor }"
+            :class="{ 'active': color == selectedColor, 'd-none d-md-flex' : !isBoardEditable && index > 1 && guessCardsToDisplay[color].length === 0}"
             @click="setCurrentColor(color)"
             :droppable="isBoardEditable"
             v-on:dragover="dragover"
@@ -115,6 +115,7 @@ export default {
     ...mapGetters([
       'isBoardEditable',
       'isBoardAlreadyPlayed',
+      'isBoardEditable',
       'gameModeDisplayBoard',
       'getBoardGuessCards'
     ]),
