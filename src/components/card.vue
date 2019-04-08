@@ -8,13 +8,12 @@ cards: all the cards of the game
 card_id: the currentn card to be displayed
 
 ## Behavior ##
-TODO add rollover to display tooltip
 
 */
 
 <template>
   <section>
-    <div class="row no-gutters">
+    <b-row no-gutters>
       <div
         @click="tooltipShown = !tooltipShown"
         :draggable="isBoardEditable"
@@ -25,49 +24,36 @@ TODO add rollover to display tooltip
         <img
           :src="icon"
           :alt="cardInfo.Tooltip_fr"
+          v-b-tooltip.hover.top
           :title="cardInfo.Tooltip_fr"
         >
       </div>
       <transition name="fade">
-        <div
-          v-show="tooltipShown"
-          class="col"
-        >
+        <b-col v-show="tooltipShown">
           <div class="container-fluid tooltip-row">
-            <div class="row align-items-center tooltip-row">
+            <b-row class="row align-items-center tooltip-row">
               <div class="col-auto px-1 px-sm-2">
-                <p
-                  v-html="cardInfo.Tooltip_fr"
-                  class="card-text"
-                />
+                <p class="card-text">{{cardInfo.Tooltip_fr}}</p>
               </div>
               <div
                 v-if="addOrRemove == 'add' && isBoardEditable"
                 @click="tooltipShown = !tooltipShown;changeIcon('add-icon', cardInfo)"
                 class="col-auto px-1 px-sm-2 icon-pointer"
               >
-                <font-awesome-icon
-                  :color="selectedColor"
-                  icon="plus-circle"
-                  size="2x"
-                />
+                <font-awesome-icon :color="selectedColor" icon="plus-circle" size="2x" />
               </div>
               <div
                 v-if="addOrRemove == 'remove' && isBoardEditable"
                 @click="tooltipShown = !tooltipShown;changeIcon('remove-icon', cardInfo)"
                 class="col-auto px-1 px-sm-2 icon-pointer"
               >
-                <font-awesome-icon
-                  :color="iconColor"
-                  icon="trash"
-                  size="2x"
-                />
+                <font-awesome-icon :color="iconColor" icon="trash" size="2x" />
               </div>
-            </div>
+            </b-row>
           </div>
-        </div>
+        </b-col>
       </transition>
-    </div>
+    </b-row>
   </section>
 </template>
 
