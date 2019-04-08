@@ -1,5 +1,6 @@
 <template>
   <div>
+    <MainRow />
     <b-modal id="confirmGiveUp" ref="confirmGiveUp" 
       title="Vraiment ?"
       @ok="giveUp()"
@@ -7,7 +8,6 @@
     >
       <p class="my-4">Êtes-vous sûr de vouloir abandonner la partie ?</p>
     </b-modal>
-    <MainRow />
     <b-container fluid class="mt-2">
       <b-row class="rounded shadow-sm p-2 mb-3" style="background-color: #f0f0f0">
         <b-col>
@@ -15,13 +15,13 @@
         </b-col>
       </b-row>
       <b-row>
-        <b-col lg="3">
+        <b-col lg="3" order="3" order-md="1">
           <b-card title="Règles du jeu">
             <p class="text-left">Essayez de deviner le plus rapidement possible le mot associé à ce tableau.<br>
             Vous pouvez proposer autant de mots que vous le souhaitez, à vous d'être le plus rapide.</p>
           </b-card>
         </b-col>
-        <b-col v-if="!isBoardAlreadyPlayed(boardId)">
+        <b-col v-if="!isBoardAlreadyPlayed(boardId)" lg="3" order="2" order-md="2">
           <b-card title="Temps écoulé">
             <Timer ref="timer" /><br>
             <div v-if="!isPlayerGaveUp">
@@ -46,7 +46,7 @@
             </div>
           </b-card>
         </b-col>
-        <b-col md="6" v-if="!isBoardAlreadyPlayed(boardId) && !isPlayerGaveUp">
+        <b-col v-if="!isBoardAlreadyPlayed(boardId) && !isPlayerGaveUp" md="6" order="1" order-md="3">
           <b-card title="A vous de jouer" :class="{'border-success': isGuessFound}">
             <b-form inline @submit="checkGuess" v-if="!isGuessFound && !isPlayerGaveUp">
               <b-form-group 

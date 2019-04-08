@@ -97,11 +97,11 @@ This component displays the main menu bar
             <font-awesome-icon icon="book-open" /><br>Règles
           </b-nav-item>
           <b-nav-item v-b-modal.modalplaymultiplayers
-            v-if="!gameMode">
+            v-if="!gameMode || gameMode === 'boardPlay'">
             <font-awesome-icon icon="users" /><br>Jeu live
           </b-nav-item>
           <b-nav-item 
-            v-if="!gameMode"
+            v-if="!gameMode || gameMode === 'boardPlay'"
             @click="launchPlaySolo()">
             <font-awesome-icon icon="play-circle" /><br>Jeu tour à tour
           </b-nav-item>
@@ -172,6 +172,7 @@ export default {
   created () {
     // listen to events
     EventBus.$on('reset', args => this.reset(args))
+    console.log('in menubar', this.$root)
   },
   methods: {
     ...mapMutations([
