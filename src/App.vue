@@ -3,6 +3,7 @@
     <div :class="{'container': !isHomePage}">
       <Toasts></Toasts>
       <MenuBar v-if="!isHomePage" />
+      <Chat />
       <Alerts />
       <Modals />
 
@@ -20,10 +21,11 @@ import { mapState } from 'vuex'
 import MenuBar from '@/components/menu-bar'
 import Modals from '@/components/modals'
 import Alerts from '@/components/alerts'
+import Chat from '@/components/chat'
 
 export default {
   name: 'App',
-  components: { Modals, MenuBar, Alerts },
+  components: { Modals, MenuBar, Alerts, Chat },
   data: function () {
     return {
     }
