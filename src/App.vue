@@ -3,7 +3,7 @@
     <div :class="{'container': !isHomePage}">
       <Toasts></Toasts>
       <MenuBar v-if="!isHomePage" />
-      <Chat />
+      <Chat v-if="gameModeMultiplayers" />
       <Alerts />
       <Modals />
 
@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 import MenuBar from '@/components/menu-bar'
 import Modals from '@/components/modals'
 import Alerts from '@/components/alerts'
@@ -32,8 +32,11 @@ export default {
   },
   computed: {
     ...mapState ({
-      colors: state => state.cards.colors
+      colors: state => state.cards.colors,
     }),
+    ...mapGetters([
+      'gameModeMultiplayers'
+    ]),
     isHomePage: function() {
       return this.$route.name === "Home"
     }

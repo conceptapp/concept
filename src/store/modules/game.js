@@ -7,10 +7,8 @@ const state = {
   currentGameRoom: '',
   gameRooms: [],
   gameMode: '', // boardPlay, boardCreation, godMode, allPlayersMode, local
-  // gameModeDisplayBoard: false,
   currentBoardWords: [],
   currentBoardVariant: '',
-  // currentBoardGuessCards: {},
   isPlayingBoard: null, // true if user has started a board game in boardPlay mode
   boards: {},
   boardId: '' // keep the variable for socket calls, preferably use the getter if on playboard (url param should be set up)

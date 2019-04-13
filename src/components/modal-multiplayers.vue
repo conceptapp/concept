@@ -199,7 +199,7 @@ export default {
         'currentGameRoom': this.newGame,
         'guessCards': this.guessCards,
         'gameMode': this.gameMode,
-        'player': this.user.displayName,
+        'playerName': this.user.displayName,
         'playerEmail': this.user.email
       })
       // push current guess cards to the server
@@ -214,16 +214,16 @@ export default {
       this.setGameMode(this.gameRooms[game]['mode'])
       // join the game server side
       $socket.emit('join_game', {
-        'game': game,
-        'player': this.user.displayName
+        'currentGameRoom': game,
+        'playerName': this.user.displayName
       })
     },
     leave_game: function () {
       console.log('leaving game: ', this.currentGameRoom)
       // tell the server we're leaving the game
       $socket.emit('leave_game', {
-        'game': this.currentGameRoom,
-        'player': this.user.displayName
+        'currentGameRoom': this.currentGameRoom,
+        'playerName': this.user.displayName
       })
       // reset current game room
       this.setCurrentGameRoom('')

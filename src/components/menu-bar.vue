@@ -52,7 +52,7 @@ This component displays the main menu bar
               <span @click="showModalMultiplayers()">
                 {{ currentGameRoom }} 
                 <small v-if="gameRooms[currentGameRoom]" class="text-muted">
-                  (<font-awesome-icon icon="male" /> x {{ gameRooms[currentGameRoom]['count'] }})
+                  (<font-awesome-icon icon="male" /> x {{ gameRooms[currentGameRoom]['players'].length }})
                 </small>
               </span>
             </b-dropdown-item>
@@ -107,11 +107,11 @@ This component displays the main menu bar
           </b-nav-item>
           <b-nav-item
             v-b-modal.modalwords
-            v-if="['boardCreation', 'local', 'allPlayersMode'].indexOf(gameMode) !== -1 || (gameMode == 'godMode' &&gameModeAllowChange)">
+            v-if="['boardCreation', 'local', 'allPlayersMode'].indexOf(gameMode) !== -1 || isBoardEditable">
             <font-awesome-icon icon="puzzle-piece" /><br>Mots à deviner
           </b-nav-item>
           <b-nav-item
-            v-if="['boardCreation', 'local', 'allPlayersMode'].indexOf(gameMode) !== -1 || (gameMode == 'godMode' &&gameModeAllowChange)"
+            v-if="['boardCreation', 'local', 'allPlayersMode'].indexOf(gameMode) !== -1 || isBoardEditable"
             @click="reset">
             <font-awesome-icon icon="trash-restore" /><br>Réinitialiser
           </b-nav-item>
@@ -142,7 +142,7 @@ export default {
     ...mapGetters([
       'user',
       'gameModeMultiplayers',
-      'gameModeAllowChange'
+      'isBoardEditable'
     ]),
     playerName: function () {
       return this.user ? this.user.displayName : ''

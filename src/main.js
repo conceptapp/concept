@@ -18,6 +18,9 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 // import Bootstrap Toast plugin
 import VueBootstrapToasts from 'vue-bootstrap-toasts'
 
+// import Vue Beautiful Chat plugin
+import Chat from 'vue-beautiful-chat'
+
 // import FontAwesome components
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon, FontAwesomeLayers, FontAwesomeLayersText } from '@fortawesome/vue-fontawesome'
@@ -34,6 +37,7 @@ Vue.use(VueSocketio, $socket, { store })
 
 Vue.use(BootstrapVue)
 Vue.use(VueBootstrapToasts)
+Vue.use(Chat)
 
 Vue.use(FirebaseAuthPlugin)
 
