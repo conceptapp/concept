@@ -36,27 +36,16 @@ Design inspired by https://bootsnipp.com/snippets/nNg98
 import { mapState, mapGetters } from 'vuex'
 import $socket from '@/websocket-instance'
 // import { EventBus } from '@/event-bus.js'
+import hash from 'object-hash'
 
 export default {
   name: 'Chat',
   components: { },
   data() {
     return {
-      participants: [
-        {
-          id: 'user1',
-          name: 'Matteo',
-          imageUrl: 'https://avatars3.githubusercontent.com/u/1915989?s=230&v=4'
-        },
-        {
-          id: 'user2',
-          name: 'Support',
-          imageUrl: 'https://avatars3.githubusercontent.com/u/37018832?s=200&v=4'
-        }
-      ], // the list of all the participant of the conversation. `name` is the user name, `id` is used to establish the author of a message, `imageUrl` is supposed to be the user avatar.
-      titleImageUrl: 'https://a.slack-edge.com/66f9/img/avatars-teams/ava_0001-34.png',
       messageList: [], // the list of the messages to show, can be paginated and adjusted dynamically
       // currently empty, could be filled with history when user join the game
+      titleImageUrl: 'https://a.slack-edge.com/66f9/img/avatars-teams/ava_0001-34.png',
       newMessagesCount: 0,
       isChatOpen: false, // to determine whether the chat window should be open or closed
       showTypingIndicator: '', // when set to a value matching the participant.id it shows the typing indicator for the specific user
@@ -91,10 +80,23 @@ export default {
   computed: {
     ...mapState ({
       currentGameRoom: state => state.game.currentGameRoom,
+      gameRooms: state => state.game.gameRooms,
     }),
     ...mapGetters ([
       'user'
-    ]),    
+    ]),
+    participants: function() {
+      if (!this.gameRooms[this.currentGameRoom]) { return [] }
+      // the list of all the participant of the conversation. `name` is the user name, `id` is used to establish the author of a message, `imageUrl` is supposed to be the user avatar.
+      return this.gameRooms[this.currentGameRoom].players.map(function(el) { 
+        // console.log("in participants", el)
+        return {
+          'id': el.chatId,
+          'name': el.name,
+          'imageUrl': el.avatarUrl ? el.avatarUrl : 'https://api.adorable.io/avatars/100/abott@adorable.png'
+        }
+      })
+    }
   },
   methods: {
     sendMessage (text) {
@@ -107,12 +109,12 @@ export default {
       // called when the user sends a message
       this.messageList = [ ...this.messageList, message ]
       // emit a websocket to push message to the other players
-      // change author name for the other players (value == "me" on client side)
       // console.log('onMessageWasSent', message)
       $socket.emit('chat_new_message_from_client', {
         'game_room': this.currentGameRoom,
         'message': {
-          'author': this.user.displayName,
+          // 'playerName': this.user.displayName,
+          'author': hash(this.user.email),
           'data': message.data,
           'type': message.type
         }
@@ -129,10 +131,11 @@ export default {
     }
   }, 
   sockets: {
-    chat_new_message_from_server (message) {
-      console.log('got new chat message from server', message)
+    chat_new_message_from_server (data) {
+      console.log('got new chat message from server', data)
+      var message = data.message
       // if author is me, then don't take into account, message was already pushed
-      if (message.author !== this.user.displayName) {
+      if (message.author !== hash(this.user.email)) {
         this.messageList = [ ...this.messageList, message ]
         this.newMessagesCount = this.newMessagesCount + 1
       } else {

@@ -122,6 +122,7 @@ This component contains only the modal dialog and some websocket calls for multi
 import { EventBus } from '@/event-bus.js'
 import $socket from '@/websocket-instance.js'
 import { mapState, mapMutations, mapGetters, mapActions } from 'vuex'
+import hash from 'object-hash'
 
 export default {
   name: 'ModalMultiplayers',
@@ -194,13 +195,13 @@ export default {
       // game creator is God by default
       this.setGameModeIsGod(true)
       // create a new game server-side
-      console.log('emit create_game')
       $socket.emit('create_game', {
         'currentGameRoom': this.newGame,
         'guessCards': this.guessCards,
         'gameMode': this.gameMode,
         'playerName': this.user.displayName,
-        'playerEmail': this.user.email
+        'playerEmail': this.user.email,
+        'chatId': hash(this.user.email)
       })
       // push current guess cards to the server
       EventBus.$emit('update-cards')
@@ -215,7 +216,8 @@ export default {
       // join the game server side
       $socket.emit('join_game', {
         'currentGameRoom': game,
-        'playerName': this.user.displayName
+        'playerName': this.user.displayName,
+        'chatId': hash(this.user.email)
       })
     },
     leave_game: function () {
